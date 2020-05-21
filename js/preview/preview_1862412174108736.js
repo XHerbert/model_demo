@@ -17,7 +17,6 @@ import { Elevator } from '../usr/elevator.js'
 
 var app, viewer;
 const SINGLE_FILE = 0;
-const INTEGRATION_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 getViewtoken(1862412174108736, SINGLE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
@@ -42,9 +41,6 @@ function onSDKLoadSucceeded(viewMetaData) {
         //雾化颜色
         //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(204, 224, 255, 1));
         window.viewer = viewer;
-        // loadScript("https://static.bimface.com/attach/341bb8bde7bf4a5898ecdf58c2a476fb_TDSLoader.js");
-        // loadScript("https://static.bimface.com/attach/eb19d39099ef4cf1b53f333a7066694f_inflate.min.js");
-        // loadScript("https://static.bimface.com/attach/9b1a9a0eab054241974a2b1c436921bc_FBXLoader.js");
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             // helper.createAixsHelper(viewer);
             // viewer.enableBlinkComponents(true);
@@ -54,15 +50,6 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;
             viewer.getViewer().rendererManager.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             scene.children[0].castShadow = true;
-
-            //停车场配置
-            //initParkModel(viewer);
-
-            //总览配置
-            //initGdGeneralModel(viewer);
-
-            //疏散
-            //evacuate.run_example(viewer);
 
             // 万达F01
             wd_config.init_scene(scene, viewer);

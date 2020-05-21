@@ -58,16 +58,6 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;
             viewer.getViewer().rendererManager.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             scene.children[0].castShadow = true;
-            //scene.traverse(function (child) { if (child.type == 'MeshEx' || child.type == 'Mesh' || true) { child.castShadow = true; child.receiveShadow = true; } }, true);
-
-            //停车场配置
-            //initParkModel(viewer);
-
-            //总览配置
-            //initGdGeneralModel(viewer);
-
-            //疏散
-            //evacuate.run_example(viewer);
 
             // 万达制冷机房
             wd_zljf.init_zljf(scene, viewer);

@@ -48,15 +48,11 @@ function init() {
     let colors = [];
     let pointColor = new THREE.Color();
     let n = 1920, n2 = n / 4;
-    var pointsMaterial = new THREE.PointsMaterial({ size: 5, sizeAttenuation: true, vertexColors: THREE.VertexColors, transparent: true, opacity: 0.7 });
-    // var canvasMaterial = new THREE.SpriteCanvasMaterial({
-    //     color: 0xffffff,    //粒子的颜色
-    //     program: function (context) { //用于绘制粒子的方法
-    //         context.beginPath();
-    //         context.arc(0, 0, 0.5, 0, PI2, true); //画一个圆形。此处可修改大小。
-    //         context.fill();
-    //     }
-    // });
+
+
+    var texture = new THREE.TextureLoader().load("../../images/star.png");
+    var pointsMaterial = new THREE.PointsMaterial({ size: 5, sizeAttenuation: true, map: texture, vertexColors: THREE.VertexColors, transparent: true, opacity: 0.7 });
+
 
 
     for (let j = 0; j < 5500; j++) {
@@ -68,12 +64,12 @@ function init() {
         positions.push(x, y, z);
 
         // 颜色
-        // let vx = (x / n) + 0.3;
-        // let vy = (y / n) + 0.3;
-        // let vz = (z / n) + 0.3;
-        let vx = 1.0;
-        let vy = 1.0;
-        let vz = 1.0;
+        let vx = (x / n) + 0.3;
+        let vy = (y / n) + 0.3;
+        let vz = (z / n) + 0.3;
+        // let vx = 1.0;
+        // let vy = 1.0;
+        // let vz = 1.0;
 
 
         pointColor.setRGB(vx, vy, vz);
