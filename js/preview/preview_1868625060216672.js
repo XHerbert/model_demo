@@ -39,7 +39,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(105, 105, 105, 1), new Glodon.Web.Graphics.Color(105, 10, 105, 0.5));
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 1), new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 0.5));
         viewer.setBorderLineEnabled(false);
-        viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(31, 17, 59, 1));
+        viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(7, 1, 18, 1));
         viewer.hideViewHouse();
         window.viewer = viewer;
 
@@ -194,17 +194,28 @@ function setupWhiteHouses() {
     whiteHousePosition.add(myControls, 'whiteHouseX', -10000, 20000).onChange(changeWhitehouse);
     whiteHousePosition.add(myControls, 'whiteHouseY', 0, 20000).onChange(changeWhitehouse);
 
-    //用于动态递增效果
-    let id = setInterval(() => {
+    let whiteHouseGroup = new THREE.Group();
+    //TODO:划定范围，随机宽高度
+    for (let g = 0; g < 10; g++) {
         cloneMesh = unitWhiteHouse.clone();
-        cloneMesh.position.set(myControls.whiteHouseX, myControls.whiteHouseY, (height * ratio) / 2 * (index + 1) - 5000);
-        viewer.addExternalObject("index" + index, cloneMesh);
-        viewer.render();
+        cloneMesh.position.set(Math.random() * 1000000, Math.random() * 1000000, (height * ratio) / 2 - 5000);
+        whiteHouseGroup.add(cloneMesh);
         index++;
-        if (index >= 1) {
-            clearInterval(id);
-        }
-    }, interval);
+    }
+    viewer.addExternalObject("whiteHouseGroup", whiteHouseGroup);
+    viewer.render();
+
+    //用于动态递增效果
+    // let id = setInterval(() => {
+    //     cloneMesh = unitWhiteHouse.clone();
+    //     cloneMesh.position.set(myControls.whiteHouseX, myControls.whiteHouseY, (height * ratio) / 2 * (index + 1) - 5000);
+    //     viewer.addExternalObject("index" + index, cloneMesh);
+    //     viewer.render();
+    //     index++;
+    //     if (index >= 1) {
+    //         clearInterval(id);
+    //     }
+    // }, interval);
 };
 
 function setupCameraAnimation() {
