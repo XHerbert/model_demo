@@ -147,12 +147,13 @@ function setupSpotLight() {
     let spotLight = light.createSpotLight(0xffffff, 2.5, 10000, Math.PI / 3, 0.65, 0.54);
     let spotHelper = new THREE.SpotLightHelper(spotLight);
     //TODO:灯光位置需要根据报警设备进行计算
-    //spotLight.position.set(-12234.669891357422, 26111.396484375, 7309.98787689209);
+
 
     // 根据报警设备计算出聚光灯位置
     let base = 2000;
     let alarmPos = { x: -13309.474801123268, y: 22771.806640624985, z: 3009.999755859375 };
-    spotLight.position.set(alarmPos.x + base * 0, alarmPos.y + base * 0.5, alarmPos.z + base * 2);
+    // spotLight.position.set(alarmPos.x + base * 0, alarmPos.y + base * 0.5, alarmPos.z + base * 2);
+    spotLight.position.set(0, 0, 45000.98787689209);
     let targetObject = new THREE.Object3D();
     // targetObject.position.set(-13721.8359375, 20874.232421875, 0);
     targetObject.position.set(alarmPos.x, alarmPos.y, alarmPos.z * 0);

@@ -36,7 +36,17 @@
 
 <body>
 
+    <div style="display: none;" id="vertexshader">
+        void main(){
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+        }
+    </div>
 
+    <div style="display: none;" id="fragmentshader">
+        void main(){
+        gl_FragColor = vec4(1.0,0.5,0.5,1.0);
+        }
+    </div>
 
 
     <div class='model' id="view"></div>
@@ -87,7 +97,7 @@
     </div><!-- /content-wrap -->
 
 
-    <script src="../../js/preview/preview_1868625060216672.js" type="module"></script>
+    <script src="../../js/preview/preview_1870708216233888.js" type="module"></script>
     <script src="../../js/classie.js"></script>
     <script src="../../js/main4.js"></script>
     <script src="../../js/switch.js"></script>
