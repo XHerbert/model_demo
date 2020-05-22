@@ -405,7 +405,8 @@ function createBufferGeometryFromPoints() {
         // });
         var mesh = new THREE.Mesh(geometry, material);//模型对象
         // mesh.position.set(0, 0, 30000);
-        myscene.add(mesh);
+        // myscene.add(mesh);
+        viewer.addExternalObject("ccd", mesh);
         viewer.render();
     });
 }
