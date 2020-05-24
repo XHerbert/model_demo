@@ -123,8 +123,6 @@ Elevator.prototype.build = () => {
         buildMaterials(pathList[i]);
     }
 
-
-
     let up = loader.load('images/ele_up.png', function (map) {
         upMaterial.map = map;
         upMaterial.wireframe = false;
@@ -177,24 +175,6 @@ Elevator.prototype.build = () => {
         .onComplete(onComplete)
         .start();
 
-    //let list = document.getElementsByClassName(_domClass_);
-    // for (let b = 0, len = list.length; b < len; b++) {
-    //     list[b].addEventListener("click", (e) => {
-    //         let val = list[b].getAttribute('data-high');
-    //         _target_floor_ = list[b].getAttribute('data-level');
-    //         _time_ = Math.abs(_target_floor_ - _current_floor_) * INTERVAL;
-    //         let _height = Number(val) + (height / 2);
-
-    //         tween = null;
-    //         tween = new TWEEN.Tween(_position_)
-    //             .to({ z: _height }, _time_)
-    //             .easing(TWEEN.Easing.Cubic.Out)
-    //             .onUpdate(onUpdate)
-    //             .onStart(onStart)
-    //             .onComplete(onComplete)
-    //             .start();
-    //     });
-    // }
 
     //TODO:引入websocket代替上面的for循环
     var socket;
