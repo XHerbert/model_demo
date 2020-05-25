@@ -1,22 +1,4 @@
-import { evacuate } from '/js/usr/evacuate.js'
-import { loadScript, initModel } from '/js/usr/utils.js'
 import { getURLParameter, getScene, getPerspectiveCamera, getRender } from '/js/usr/utils.js'
-import { textObject } from '/js/usr/text.js'
-import { FogObject } from '/js/usr/fog.js'
-import { helper } from './usr/helper.js'
-import { light } from './usr/light.js'
-import { material } from './usr/material.js'
-import { initParkModel } from './cfg/park.js'
-import { initGdGeneralModel } from './cfg/general_gd.js'
-
-import { wd_config } from './cfg/wanda_dongba.js'
-import { wd_zljf } from './cfg/wanda_zljf.js'
-import { LineSegmentsGeometry } from '../node_modules/three/examples/jsm/lines/LineSegmentsGeometry.js'
-import { LineGeometry } from '../node_modules/three/examples/jsm/lines/LineGeometry.js'
-import { LineMaterial } from '../node_modules/three/examples/jsm/lines/LineMaterial.js'
-import { LineSegments2 } from '../node_modules/three/examples/jsm/lines/LineSegments2.js'
-import { Line2 } from '../node_modules/three/examples/jsm/lines/Line2.js'
-import { pathAnimation } from './usr/path_animation.js'
 import { Elevator } from './usr/elevator.js'
 
 
@@ -59,8 +41,10 @@ function onSDKLoadSucceeded(viewMetaData) {
             // viewer.getViewer().rendererManager.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             // scene.children[0].castShadow = true;
             //scene.traverse(function (child) { if (child.type == 'MeshEx' || child.type == 'Mesh' || true) { child.castShadow = true; child.receiveShadow = true; } }, true);
-            viewer.showExclusiveComponentsByObjectData([{ levelName: "B01", specialty: "建筑" }]);
+            // viewer.showExclusiveComponentsByObjectData([{ levelName: "B01", specialty: "建筑" }]);
 
+
+            loadElevator();
 
 
         });

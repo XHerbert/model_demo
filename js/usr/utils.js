@@ -39,7 +39,8 @@ export function getScene(viewer) {
 
 // 获取透视相机Camera对象
 export function getPerspectiveCamera(viewer) {
-    return viewer.getViewer().camera.perspectiveCamera;
+    //return viewer.getViewer().camera.perspectiveCamera;
+    return viewer.getViewer().camera;
 }
 
 // 获取Render对象

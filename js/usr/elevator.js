@@ -1,9 +1,11 @@
 /**
  * @author:xuhongbo
  * @function:elevator animation
+ * @description:1846091003430848
+ * @url:http://10.1.73.67:8001/preview.html?viewToken=102751d730a940a68541759cab1cee7f
  */
 
-import TWEEN from '../Tween.js'
+import TWEEN from '../common/Tween.js'
 /**
  * 
  * @param {viewer} viewer 对象

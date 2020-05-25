@@ -1,18 +1,11 @@
-import { evacuate } from '../usr/evacuate.js'
-import { loadScript, initModel } from '../usr/utils.js'
-import { getURLParameter, getViewtoken, getScene, getPerspectiveCamera, getRender } from '../usr/utils.js'
-import { textObject } from '../usr/text.js'
-import { FogObject } from '../usr/fog.js'
+/**
+ * @author:xuhongbo
+ * @description:wanda 
+ */
+import { getViewtoken, getScene, getPerspectiveCamera, getRender, loadScript } from '../usr/utils.js'
 import { helper } from '../usr/helper.js'
 import { light } from '../usr/light.js'
-import { material } from '../usr/material.js'
-import { initParkModel } from '../cfg/park.js'
-import { initGdGeneralModel } from '../cfg/general_gd.js'
-
-import { wd_config } from '../cfg/wanda_dongba.js'
-import { wd_zljf } from '../cfg/wanda_zljf.js'
-import { pathAnimation } from '../usr/path_animation.js'
-import { Elevator } from '../usr/elevator.js'
+import { unreal } from '../../external/bloom/bloom.js'
 
 
 
@@ -59,6 +52,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             setupSpotLight();
             recordComponents();
             createBufferGeometryFromPoints();
+            bloomEffective();
+            viewer.render();
 
         });
     }
@@ -102,30 +97,35 @@ function addComponents() {
     gridHelper.rotation.x = Math.PI / 2;
     gridHelper.position.set(100000, 100000, -4900);
 
-    // viewer.addExternalObject("plane", planeMesh);
+
+    let boxGeometry = new THREE.BoxBufferGeometry(10000, 10000, 10000);
+    let boxMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+    let boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+    boxMesh.position.set(0, 0, 0);
+    boxMesh.layers.set(1);
+    // boxMesh.layers.enable(1);
+    window["box"] = boxMesh;
+    viewer.addExternalObject("box", boxMesh);
+
     // viewer.addExternalObject("gridHelper", gridHelper);
-    //viewer.render();
+    // viewer.render();
 };
 
-
+// 重写构件颜色
 function overrideComponents() {
     viewer.overrideComponentsColorByObjectData([{ "categoryId": "-2000011" }, { "categoryId": "-2000170" }], new Glodon.Web.Graphics.Color(25, 25, 112, 1));
 
     let changeWallColor = () => {
         viewer.overrideComponentsColorByObjectData([{ "categoryId": "-2000011" }, { "categoryId": "-2000170" }], new Glodon.Web.Graphics.Color(myControls.wallColor[0], myControls.wallColor[1], myControls.wallColor[2], 1));
-        viewer.render();
+        //viewer.render();
     };
 
     let changeBgColor = () => {
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(myControls.backgroundColor[0], myControls.backgroundColor[1], myControls.backgroundColor[2], 1));
-        viewer.render();
+        //viewer.render();
     };
-
-
     colors.addColor(myControls, 'backgroundColor').onChange(changeBgColor);
     colors.addColor(myControls, 'wallColor').onChange(changeWallColor);
-
-
 };
 
 // 粒子系统
@@ -275,6 +275,7 @@ function setupCameraAnimation() {
 
         }, viewer.setCameraStatus(target, () => {
             //setupWhiteHouses();
+            viewer.recordCustomedHomeview(target);
         }), 1000);
     })
 };
@@ -366,6 +367,7 @@ function recordComponents() {
             mesh.material.wireframe = true;
             window[_key] = mesh;
             collect.push(window[_key]);
+            // console.log(mesh.layers.mask);
         } else {
             //console.log(mesh);
             if (mesh.material) {
@@ -376,6 +378,7 @@ function recordComponents() {
                 }
             }
             // mesh.visible = false;
+            //console.log(mesh.layers.mask);
         }
     });
     //console.table(collect);
@@ -404,12 +407,32 @@ function createBufferGeometryFromPoints() {
         //     wireframe: true
         // });
         var mesh = new THREE.Mesh(geometry, material);//模型对象
+        mesh.layers.set(3);//2的3次方
         // mesh.position.set(0, 0, 30000);
         // myscene.add(mesh);
-        viewer.addExternalObject("ccd", mesh);
-        viewer.render();
+        // viewer.addExternalObject("ccd", mesh);
+        // viewer.render();
     });
 }
+
+// 创建bloom泛光
+function bloomEffective() {
+    loadScript('../../external/bloom/EffectComposer.js', function () {
+        loadScript('../../external/bloom/RenderPass.js', function () {
+            loadScript('../../external/bloom/UnrealBloomPass.js', function () {
+                loadScript('../../external/bloom/LuminosityHighPassShader.js', function () {
+                    loadScript('../../node_modules/_three@0.85.2@three/examples/js/postprocessing/SSAARenderPass.js', function () {
+                        let scene = getScene(viewer), camera = getPerspectiveCamera(viewer), renderer = getRender(viewer);
+                        unreal.initRenderBloom(scene, camera, renderer);
+                        unreal.composerRenderer();
+                    })
+                })
+            })
+        })
+    });
+}
+
+
 function onSDKLoadFailed(error) {
     console.log("Failed to load SDK!");
 };
