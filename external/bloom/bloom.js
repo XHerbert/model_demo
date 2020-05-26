@@ -12,6 +12,7 @@ var unreal = {
     bloomComposer: null,
 
     bloomLayer: null,
+    entireLayer: null,
     ENTIRE_SCENE: 0,
     BLOOM_SCENE: 1,
     materials: {},
@@ -21,62 +22,80 @@ var unreal = {
 
         this.scene = scene;
         this.camera = camera;
+
         this.renderer = renderer;
+
+        this.renderer.toneMapping = THREE.ReinhardToneMapping;
+        this.renderer.autoClear = false;
+        this.renderer.gammaInput = true;
+        this.renderer.gammaOutput = true;
+        this.renderer.toneMappingExposure = Math.pow(0.9, 4.0);
+
         this.mesh = mesh;
 
         this.bloomLayer = new THREE.Layers();
         this.bloomLayer.set(this.BLOOM_SCENE);
+        window["bloomLayer"] = this.bloomLayer;
+
+        this.entireLayer = new THREE.Layers();
+        this.entireLayer.set(this.ENTIRE_SCENE);
+        window["entireLayer"] = this.entireLayer;
         this.darkMaterial = new THREE.MeshBasicMaterial({});
 
         // this.renderer.autoClear = false;
         var renderScene = new THREE.RenderPass(scene, camera);
         //Bloom通道创建
-        var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.1, 0.0);
-        bloomPass.renderToScreen = false;
-        bloomPass.threshold = 0.2;
-        bloomPass.strength = 0.25;
-        bloomPass.radius = 0.75;
+        var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        bloomPass.renderToScreen = true;
+        bloomPass.threshold = 0.11;
+        bloomPass.strength = 1.2;
+        bloomPass.radius = 0.55;
 
-        bloomPass.threshold = 0;
-        bloomPass.strength = 0.75;
-        bloomPass.radius = 1;
-        bloomPass.bloomStrength = 3.0;
+        // bloomPass.threshold = 0;
+        // bloomPass.strength = 0.75;
+        // bloomPass.radius = 1;
+        // bloomPass.bloomStrength = 3.0;
         window.bloomPass = bloomPass;
 
-        /** 
-        let bloomComposer = new THREE.EffectComposer(this.renderer);
-        bloomComposer.renderToScreen = false;
-        bloomComposer.addPass(renderScene);
-        bloomComposer.addPass(bloomPass);
-        this.bloomComposer = bloomComposer;
+
+        let effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
+        effectFXAA.uniforms.resolution.value.set(1 / window.innerWidth, 1 / window.innerHeight);
+
+        // let bloomComposer = new THREE.EffectComposer(this.renderer);
+        // bloomComposer.renderToScreen = false;
+        // bloomComposer.addPass(renderScene);
+        // bloomComposer.addPass(bloomPass);
+        // this.bloomComposer = bloomComposer;
 
 
-        let finalPass = new THREE.ShaderPass(
-            new THREE.ShaderMaterial({
-                uniforms: {
-                    baseTexture: { value: null },
-                    bloomTexture: { value: bloomComposer.renderTarget2.texture }
-                },
-                vertexShader: this.getVertexShader(),
-                fragmentShader: this.getFragmentShader(),
-                defines: {}
-            }), "baseTexture"
-        );
-        finalPass.needsSwap = true;
-        let finalComposer = new THREE.EffectComposer(renderer);
-        finalComposer.addPass(renderScene);
-        finalComposer.addPass(finalPass);
+        // let finalPass = new THREE.ShaderPass(
+        //     new THREE.ShaderMaterial({
+        //         uniforms: {
+        //             baseTexture: { value: null },
+        //             bloomTexture: { value: bloomComposer.renderTarget2.texture }
+        //         },
+        //         vertexShader: this.getVertexShader(),
+        //         fragmentShader: this.getFragmentShader(),
+        //         defines: {}
+        //     }), "baseTexture"
+        // );
+        // finalPass.needsSwap = true;
+        // let finalComposer = new THREE.EffectComposer(renderer);
+        // finalComposer.addPass(renderScene);
+        // finalComposer.addPass(finalPass);
 
-        this.renderBloom(false);
-        finalComposer.render();
+        // this.renderBloom(true);
+        // finalComposer.render();
 
-        **/
+
 
 
 
         this.composer = new THREE.EffectComposer(this.renderer);
         this.composer.setSize(window.innerWidth, window.innerHeight);
         this.composer.addPass(renderScene);
+
+        this.composer.addPass(effectFXAA);
         // 眩光通道bloomPass插入到composer
         this.composer.addPass(bloomPass);
 
@@ -88,23 +107,22 @@ var unreal = {
         let ssaaRenderPass = new THREE.SSAARenderPass(this.scene, this.camera, 0x000000, 0);
         ssaaRenderPass.setSize(window.innerWidth, window.innerHeight);
         ssaaRenderPass.unbiased = true;
-        this.composer.addPass(ssaaRenderPass);
+        //this.composer.addPass(ssaaRenderPass);
+        this.composerRenderer();
 
     },
 
 
     composerRenderer: function render() {
-        // this.composer.render();
-
-        // this.renderer.clear();
-        this.camera.layers.set(this.BLOOM_SCENE);
-        this.composer.render();
-
-        // this.renderer.clearDepth();
-        //this.camera.layers.set(this.ENTIRE_SCENE);
-        //this.renderer.render(this.scene, this.camera);
 
         requestAnimationFrame(this.composerRenderer.bind(this));
+        this.renderer.clear();
+        this.camera.layers.set(1);
+        // this.camera.layers = this.bloomLayer;
+        this.composer.render();
+        this.renderer.clearDepth();
+        this.camera.layers.set(0);//this.entireLayer;
+        this.renderer.render(this.scene, this.camera);
     },
 
 

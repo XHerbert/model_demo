@@ -40,6 +40,9 @@ function onSDKLoadSucceeded(viewMetaData) {
             helper.createAixsHelper(viewer);
             // viewer.enableBlinkComponents(true);
             let scene = getScene(viewer), camera = getPerspectiveCamera(viewer), renderer = getRender(viewer);
+            camera.layers.enable(1);
+
+
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
             viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;
@@ -51,7 +54,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             setupCameraAnimation();
             setupSpotLight();
             recordComponents();
-            createBufferGeometryFromPoints();
+            // createBufferGeometryFromPoints();
             bloomEffective();
             viewer.render();
 
@@ -99,11 +102,15 @@ function addComponents() {
 
 
     let boxGeometry = new THREE.BoxBufferGeometry(10000, 10000, 10000);
-    let boxMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+    let boxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, depthTest: false });
     let boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
     boxMesh.position.set(0, 0, 0);
+    // boxMesh.layers.set(1);
+
+    // let layers = new THREE.Layers();
+    // layers.mask = 2;
     boxMesh.layers.set(1);
-    // boxMesh.layers.enable(1);
+    boxMesh.layers.enable(1);
     window["box"] = boxMesh;
     viewer.addExternalObject("box", boxMesh);
 
