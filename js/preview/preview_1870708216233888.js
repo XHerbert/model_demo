@@ -54,7 +54,6 @@ function onSDKLoadSucceeded(viewMetaData) {
             setupCameraAnimation();
             setupSpotLight();
             recordComponents();
-            // createBufferGeometryFromPoints();
             bloomEffective();
             viewer.render();
 
@@ -101,10 +100,10 @@ function addComponents() {
     gridHelper.position.set(100000, 100000, -4900);
 
 
-    let boxGeometry = new THREE.BoxBufferGeometry(10000, 10000, 10000);
+    let boxGeometry = new THREE.BoxBufferGeometry(80000, 40, 40);
     let boxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, depthTest: false });
     let boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    boxMesh.position.set(0, 0, 0);
+    boxMesh.position.set(40000, 0, 55);
     // boxMesh.layers.set(1);
 
     // let layers = new THREE.Layers();
@@ -277,12 +276,32 @@ function setupCameraAnimation() {
         "fov": 45,
         "version": 1
     };
+    let target2 = {
+        "name": "persp",
+        "position": {
+            "x": -23538.54952733095,
+            "y": -32727.4275582069,
+            "z": 17847.770292227357
+        },
+        "target": {
+            "x": 399741.6254347889,
+            "y": 235122.26658792433,
+            "z": -43166.988790040574
+        },
+        "up": {
+            "x": 0.10217732391862963,
+            "y": 0.06465362729411368,
+            "z": 0.992662935217459
+        },
+        "fov": 45,
+        "version": 1
+    };
     viewer.setCameraStatus(start, () => {
         setTimeout(() => {
 
-        }, viewer.setCameraStatus(target, () => {
+        }, viewer.setCameraStatus(target2, () => {
             //setupWhiteHouses();
-            viewer.recordCustomedHomeview(target);
+            viewer.recordCustomedHomeview(target2);
         }), 1000);
     })
 };

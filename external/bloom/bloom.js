@@ -48,7 +48,7 @@ var unreal = {
         var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
         bloomPass.renderToScreen = true;
         bloomPass.threshold = 0.11;
-        bloomPass.strength = 1.2;
+        bloomPass.strength = 10.0;
         bloomPass.radius = 0.55;
 
         // bloomPass.threshold = 0;
@@ -87,7 +87,8 @@ var unreal = {
         // this.renderBloom(true);
         // finalComposer.render();
 
-
+        //修改整个场景构件透明度
+        unreal.scene.traverse(unreal.changeAlpha);
 
 
 
@@ -175,7 +176,26 @@ var unreal = {
             obj.material = unreal.materials[obj.uuid];
             delete unreal.materials[obj.uuid];
         }
-    }
+    },
+    changeAlpha: function changeAlpha(obj) {
+        const alpha = 0.75;
+        if (obj.isMesh && unreal.bloomLayer.test(obj.layers) === false) {
+            if (obj.material) {
+                if (obj.material.length) {
+                    for (let m = 0, len = obj.material.length; m < len; m++) {
+                        obj.material[m].transparent = true;
+                        obj.material[m].opacity = alpha;
+                        obj.material.needsUpdate = true;
+                    }
+                } else {
+                    obj.material.transparent = true;
+                    obj.material.opacity = alpha;
+                    obj.material.needsUpdate = true;
+                }
+
+            }
+        }
+    },
 }
 
 export { unreal }
