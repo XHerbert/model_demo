@@ -47,9 +47,9 @@ var unreal = {
         //Bloom通道创建
         var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
         bloomPass.renderToScreen = true;
-        bloomPass.threshold = 0.11;
-        bloomPass.strength = 10.0;
-        bloomPass.radius = 0.55;
+        bloomPass.threshold = 0.0;
+        bloomPass.strength = 70.0;
+        bloomPass.radius = 0.1;
 
         // bloomPass.threshold = 0;
         // bloomPass.strength = 0.75;
@@ -88,7 +88,7 @@ var unreal = {
         // finalComposer.render();
 
         //修改整个场景构件透明度
-        unreal.scene.traverse(unreal.changeAlpha);
+        //unreal.scene.traverse(unreal.changeAlpha);
 
 
 
@@ -178,9 +178,9 @@ var unreal = {
         }
     },
     changeAlpha: function changeAlpha(obj) {
-        const alpha = 0.75;
+        const alpha = 0.8;
         if (obj.isMesh && unreal.bloomLayer.test(obj.layers) === false) {
-            if (obj.material) {
+            if (obj.material && obj.name != "onlyline") {
                 if (obj.material.length) {
                     for (let m = 0, len = obj.material.length; m < len; m++) {
                         obj.material[m].transparent = true;

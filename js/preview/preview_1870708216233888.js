@@ -99,20 +99,69 @@ function addComponents() {
     gridHelper.rotation.x = Math.PI / 2;
     gridHelper.position.set(100000, 100000, -4900);
 
+    // <!-- 开始创建高光边缘线 -->
 
-    let boxGeometry = new THREE.BoxBufferGeometry(80000, 40, 40);
-    let boxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, depthTest: false });
-    let boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    boxMesh.position.set(40000, 0, 55);
-    // boxMesh.layers.set(1);
+    let linesGroup = new THREE.Group();
+    //画线，发光底座
 
-    // let layers = new THREE.Layers();
-    // layers.mask = 2;
-    boxMesh.layers.set(1);
-    boxMesh.layers.enable(1);
-    window["box"] = boxMesh;
-    viewer.addExternalObject("box", boxMesh);
+    let points = [];//存储
+    points.push(new THREE.Vector3(277.4425289822727, 115770.0902268365, -164));
+    points.push(new THREE.Vector3(-135.077686350571, 8214.240517057453, -164));
 
+    points.push(new THREE.Vector3(53475.93716436427, 8214.240517035996, -164));
+    points.push(new THREE.Vector3(54005.079567780645, -1960.000020754663, 43));
+
+    points.push(new THREE.Vector3(215564.33701531516, -2253.978428404575, -164));
+    points.push(new THREE.Vector3(215574.27598882426, 115677.52683345789, -164));
+    points.push(new THREE.Vector3(277.4425289822727, 115770.0902268365, -164));
+
+    let onlyLine = [];
+    onlyLine.push(new THREE.Vector3(-2552.498144020344, 6941.893546154866, 21872.974129265043));
+    onlyLine.push(new THREE.Vector3(-2649.9998391014765, 6753.372131326079, 4431));
+
+
+
+    for (let l = 0, len = points.length; l < len; l++) {
+        let geometry = new THREE.Geometry();
+        geometry.vertices.push(points[l]);
+        if (l + 1 >= len) { break };
+        geometry.vertices.push(points[l + 1]);
+        var material = new THREE.LineBasicMaterial({ color: 0xffffff });
+        var line = new THREE.Line(geometry, material);
+        line.layers.set(1);
+        line.layers.enable(1);
+        linesGroup.add(line);
+    }
+
+
+
+    // let geometry2 = new THREE.Geometry();
+    // geometry2.vertices = onlyLine;
+
+    // let material2 = new THREE.LineBasicMaterial({ color: 0xffffff });
+    // let onlyline = new THREE.Line(geometry2, material2);
+    // line.layers.set(1);
+    // line.layers.enable(1);
+    // linesGroup.add(line);
+    //只修改底板的透明度
+    viewer.overrideComponentsColorById(["1870705090226272.5067484"], new Glodon.Web.Graphics.Color("#0000FF", 0.75));
+
+    var cylindergeometry = new THREE.CylinderGeometry(50, 50, 17440, 32);
+    var cylindermaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    var cylinder = new THREE.Mesh(cylindergeometry, cylindermaterial);
+    cylinder.rotation.x = Math.PI / 2;
+    window["cylinder"] = cylinder;
+    cylinder.position.set(-2649.9998391014765, 6753.372131326079, 4431 + 8725);
+    viewer.addExternalObject("onlyline", cylinder);
+
+    cylindergeometry = new THREE.CylinderGeometry(50, 50, 17440, 32);
+
+
+    viewer.addExternalObject("box", linesGroup);
+
+
+
+    // viewer.convertToExternalObject("line", "1868618629154880.2848461", true); // 转换不全？
     // viewer.addExternalObject("gridHelper", gridHelper);
     // viewer.render();
 };
@@ -158,7 +207,7 @@ function setupPointsCloud() {
             blendDst: THREE.OneMinusSrcAlphaFactor
         });
 
-    for (let j = 0; j < 10500; j++) {
+    for (let j = 0; j < 20500; j++) {
         // 点
         let x = Math.random() * n - n2;
         let y = Math.random() * n - n2;
@@ -167,12 +216,12 @@ function setupPointsCloud() {
         positions.push(x, y, z);
 
         // 颜色
-        let vx = (x / n) + 0.3;
-        let vy = (y / n) + 0.3;
-        let vz = (z / n) + 0.3;
-        // let vx = 1.0;
-        // let vy = 1.0;
-        // let vz = 1.0;
+        // let vx = (x / n) + 0.3;
+        // let vy = (y / n) + 0.3;
+        // let vz = (z / n) + 0.3;
+        let vx = 1.0;
+        let vy = 1.0;
+        let vz = 1.0;
 
         pointColor.setRGB(vx, vy, vz);
         colors.push(pointColor.r, pointColor.g, pointColor.b);
@@ -296,12 +345,33 @@ function setupCameraAnimation() {
         "fov": 45,
         "version": 1
     };
+    let target3 = {
+        "name": "persp",
+        "position": {
+            "x": -39187.73938283122,
+            "y": -42857.860852787766,
+            "z": 23130.977432096384
+        },
+        "target": {
+            "x": 320106.3274588263,
+            "y": 308189.9833147363,
+            "z": -24885.374142182627
+        },
+        "up": {
+            "x": 0.06806321359593363,
+            "y": 0.06649739260386797,
+            "z": 0.9954624532004616
+        },
+        "fov": 45,
+        "version": 1
+    };
+
     viewer.setCameraStatus(start, () => {
         setTimeout(() => {
 
-        }, viewer.setCameraStatus(target2, () => {
+        }, viewer.setCameraStatus(target3, () => {
             //setupWhiteHouses();
-            viewer.recordCustomedHomeview(target2);
+            viewer.recordCustomedHomeview(target3);
         }), 1000);
     })
 };
@@ -317,11 +387,11 @@ function setupSpotLight() {
         }
     });
     //配置曝光
-    viewer.setExposureShift(-0.2);
+    viewer.setExposureShift(-0.15);
     //左侧第一个路灯
     let spotLight = light.createSpotLight(0x0000ff, 5.5, 1000, Math.PI / 3, 0.45, 0.54);
     // let spotHelper = new THREE.SpotLightHelper(spotLight);
-
+    spotLight.shadowDarkness = 2.0;
     // 根据报警设备计算出聚光灯位置
     let lightPos = { x: -5111.036635551991, y: -9890.132060013117, z: 78528.110676428667 };
     spotLight.position.set(lightPos.x, lightPos.y, lightPos.z);
