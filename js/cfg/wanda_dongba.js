@@ -25,19 +25,19 @@ var wd_config = {
         let target = {
             "name": "persp",
             "position": {
-                "x": 49644.27405194369,
-                "y": 123924.08516083205,
-                "z": 40903.24339613964
+                "x": 59520.734802934116,
+                "y": 123093.69817053257,
+                "z": 34260.345659671184
             },
             "target": {
-                "x": -165610.81064635832,
-                "y": 333303.8650391486,
-                "z": -286606.3453421098
+                "x": -224316.19336744788,
+                "y": 315422.04662657925,
+                "z": -248376.47357963238
             },
             "up": {
-                "x": -0.4779036088198181,
-                "y": 0.5631608497369422,
-                "z": 0.6741349998335346
+                "x": -0.5265832546798163,
+                "y": 0.3568088802815823,
+                "z": 0.7716200482381308
             },
             "fov": 45,
             "version": 1
@@ -63,11 +63,33 @@ var wd_config = {
             "version": 1
         };
 
-
-        viewer.addBlinkComponentsById(["2187458"]);
-        viewer.setBlinkColor(new Glodon.Web.Graphics.Color(250, 33, 179, 0.05));
-        // viewer.setBlinkIntervalTime(300);
-        viewer.render();
+        // viewer.addBlinkComponentsById(["2187458"]);
+        // viewer.setBlinkColor(new Glodon.Web.Graphics.Color(250, 33, 179, 0.05));
+        // viewer.setBlinkIntervalTime(300); //耗费性能，改用Shader
+        // viewer.render();
+        var uniform = {
+            time: { value: 0.0 }
+        }
+        //获取着色器程序
+        let vertexShader = document.getElementById('vertex').textContent;
+        let fragmentShader = document.getElementById('fragment').textContent;
+        //获取报警设备包围盒信息
+        let max = { x: 48267.05078125, y: 145279.40625, z: 4566.999938964844 };
+        let min = { x: 47267.050842285156, y: 143739.40625, z: 3833 };
+        //偏移量
+        let offset = 100, segment = 2.0;
+        let width = (max.x - min.x + offset), height = (max.y - min.y + offset), depth = (max.z - min.z + offset);
+        let targetPos = { x: (max.x + min.x + offset / segment) / segment, y: (max.y + min.y + offset / segment) / segment, z: (max.z + min.z + offset / segment) / segment };
+        let boundingBoxGeometry = new THREE.BoxBufferGeometry(width, height, depth);
+        let boundingBoxMaterial = new THREE.ShaderMaterial({
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            transparent: true,
+            uniforms: uniform
+        });
+        let boundingBoxMesh = new THREE.Mesh(boundingBoxGeometry, boundingBoxMaterial);
+        boundingBoxMesh.position.set(targetPos.x, targetPos.y, targetPos.z);
+        viewer.addExternalObject("boundingBox", boundingBoxMesh);
 
         viewer.setCameraStatus(start, () => {
             setTimeout(() => {
@@ -124,23 +146,12 @@ var wd_config = {
         viewer.hideComponentsByObjectData([{ "levelName": "F2" }, { "levelName": "B1" }, { "levelName": "B2" }]);
         // viewer.hideComponentsByObjectData([{ "levelName": "F2" }, { "levelName": "B1" }, { "levelName": "B2" }, { "family": "楼板" }]);
 
-
         // 处理墙面
         viewer.overrideComponentsFrameColorByObjectData([{ "family": "基本墙" }], new Glodon.Web.Graphics.Color('#1E90FF', 0.7));
         viewer.overrideComponentsColorByObjectData([{ "family": "基本墙" }, { "family": "砼矩形柱" }, { "family": "砼圆形柱" }], new Glodon.Web.Graphics.Color('#6699FF', 0.65)); viewer.render();
 
         //楼板颜色
         viewer.overrideComponentsColorByObjectData([{ "family": "楼板" }], new Glodon.Web.Graphics.Color(9, 46, 88, 1));
-
-
-        //添加楼板
-        // let planeGeometry = new THREE.PlaneBufferGeometry(200000, 200000);
-        // let planeMatrial = new THREE.MeshLambertMaterial({ color: 0x222222 });
-        // let plane = new THREE.Mesh(planeGeometry, planeMatrial);
-
-        // plane.receiveShadow = true;
-        // plane.position.set(100000, 100000, 100);
-        // viewer.addExternalObject("plane", plane);
 
         // 设备
         viewer.overrideComponentsColorById(["2187458"], new Glodon.Web.Graphics.Color(250, 33, 179, 1));
@@ -178,8 +189,6 @@ var wd_config = {
         spotPosition.add(myControls, 'spotPY', -1000, 150799).onChange(setSpot);
         spotPosition.add(myControls, 'spotPZ', -1000, 20000).onChange(setSpot);
 
-
-
         let idx = 1;
         scene.traverseVisible(function (child) {
             if (child instanceof CLOUD.MeshEx || child instanceof CLOUD.Object3DEx || child instanceof THREE.Mesh) {
@@ -199,7 +208,13 @@ var wd_config = {
                 idx++;
             }
         }, true);
-        console.log(idx);
+
+        function animation() {
+            uniform.time.value += 0.075;
+            requestAnimationFrame(animation);
+            viewer.render();
+        }
+        animation();
     },
 
     init_model: function () {

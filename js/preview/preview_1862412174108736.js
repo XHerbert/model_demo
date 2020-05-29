@@ -1,17 +1,10 @@
-import { evacuate } from '../usr/evacuate.js'
-import { loadScript, initModel } from '../usr/utils.js'
-import { getURLParameter, getViewtoken, getScene, getPerspectiveCamera, getRender } from '../usr/utils.js'
-import { textObject } from '../usr/text.js'
-import { FogObject } from '../usr/fog.js'
-import { helper } from '../usr/helper.js'
-import { light } from '../usr/light.js'
-import { material } from '../usr/material.js'
-import { initParkModel } from '../cfg/park.js'
-import { initGdGeneralModel } from '../cfg/general_gd.js'
+/**
+ * @author:xuhongbo
+ * @function:wanda F01 effiective
+ */
 
+import { getViewtoken, getScene, getPerspectiveCamera, getRender } from '../usr/utils.js'
 import { wd_config } from '../cfg/wanda_dongba.js'
-import { pathAnimation } from '../usr/path_animation.js'
-import { Elevator } from '../usr/elevator.js'
 
 
 
