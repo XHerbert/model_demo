@@ -1,18 +1,7 @@
-import { evacuate } from '../usr/evacuate.js'
-import { loadScript, initModel } from '../usr/utils.js'
-import { getURLParameter, getViewtoken, getScene, getPerspectiveCamera, getRender } from '../usr/utils.js'
-import { textObject } from '../usr/text.js'
-import { FogObject } from '../usr/fog.js'
+
+import { getViewtoken, getScene, getPerspectiveCamera, getRender } from '../usr/utils.js'
 import { helper } from '../usr/helper.js'
 import { light } from '../usr/light.js'
-import { material } from '../usr/material.js'
-import { initParkModel } from '../cfg/park.js'
-import { initGdGeneralModel } from '../cfg/general_gd.js'
-
-import { wd_config } from '../cfg/wanda_dongba.js'
-import { wd_zljf } from '../cfg/wanda_zljf.js'
-import { pathAnimation } from '../usr/path_animation.js'
-import { Elevator } from '../usr/elevator.js'
 
 
 
@@ -45,18 +34,14 @@ function onSDKLoadSucceeded(viewMetaData) {
 
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             helper.createAixsHelper(viewer);
-            // viewer.enableBlinkComponents(true);
             let scene = getScene(viewer), camera = getPerspectiveCamera(viewer), renderer = getRender(viewer);
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
             viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;
             viewer.getViewer().rendererManager.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            // scene.children[0].castShadow = true;
             filterComponents();
             setupCameraAnimation();
             setupSpotLight();
-
-
         });
     }
 };
