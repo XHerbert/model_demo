@@ -35,8 +35,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         webUtil.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             //helper.createAixsHelper(viewer);
-
-            let scene = webUtil.getScene(viewer), camera = webUtil.getPerspectiveCamera(viewer), renderer = webUtil.getRender(viewer);
+            let scene = webUtil.getScene(), camera = webUtil.getPerspectiveCamera(), renderer = webUtil.getRender();
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
             viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;

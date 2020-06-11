@@ -3,6 +3,8 @@
  * @function plane animation
  */
 
+import { MathLibrary } from '../../js/usr/MathLibrary.js'
+
 var scene = null;
 var camera = null;
 var mesh = null;
@@ -13,25 +15,25 @@ var width = window.innerWidth;
 var height = window.innerHeight;
 
 var uniforms = {
-    time: { value: 0.0 },
+    u_time: { value: 0.0 },
     u_resolution: { value: new THREE.Vector2() },
     u_height: { value: 250.0 }
 }
 
 
-initScene = () => {
+let initScene = () => {
     axesHelper = new THREE.AxisHelper(100);
     scene = new THREE.Scene();
     scene.add(axesHelper);
 };
 
-initCamera = () => {
+let initCamera = () => {
     camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 100);
+    camera.position.set(0, 0, 300);
     camera.lookAt(0, 0, 0);
 };
 
-initRenderer = () => {
+let initRenderer = () => {
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0xD1BEBE);
@@ -39,35 +41,56 @@ initRenderer = () => {
     renderer.domElement.addEventListener('click', callback);
 };
 
-callback = (event) => {
-    console.log(JSON.stringify(event));
+let callback = (event) => {
+
+    let pointX = event.clientX;
+    let pointY = event.clientY;
+    let point = new THREE.Vector2(pointX, pointY);
+
+    let math = new MathLibrary();
+    let width = math.getRandomInt(10, 100);
+    let height = math.getRandomInt(10, 100);
+    let depth = math.getRandomInt(10, 100);
+    let size = new THREE.Vector3(width, height, depth);
+
+    let mesh_position = math.getLocalPosition(event, camera);
+    // let x = math.getRandomInt(10, 300);
+    // let y = math.getRandomInt(10, 300);
+    console.log(mesh_position);
+    let z = 0;
+    let position = new THREE.Vector3(mesh_position.x, mesh_position.y, z);
+    initGeometry(size, position);
 }
 
-initLight = () => {
+let initLight = () => {
     var light = new THREE.DirectionalLight(0x695DEE);
     light.position.set(100, 0, 10);
     scene.add(light);
 
 };
 
-initGeometry = () => {
+let initGeometry = (size, position) => {
     uniforms.u_resolution.value.x = renderer.domElement.width;
     uniforms.u_resolution.value.y = renderer.domElement.height;
-    var boxGeometry = new THREE.BoxGeometry(10, 10, 250);
+    // var boxGeometry = new THREE.BoxGeometry(10, 2, 25);
+    !size && size.set(10, 2, 25);
+    !position && position.set(0, 0, 0);
+    var boxGeometry = new THREE.BoxGeometry(size.x || 10, size.y || 2, size.z || 25);
     var boxMaterial = new THREE.ShaderMaterial({
         vertexShader: document.getElementById('vertex').textContent,
         fragmentShader: document.getElementById('fragment').textContent,
         uniforms: uniforms,
         transparent: true,
-        side: THREE.DoubleSide
+        side: THREE.DoubleSide,
+        depthTest: false
     });
     mesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    console.log(uniforms.u_resolution);
+    position && mesh.position.set(position.x, position.y, position.z);
     scene.add(mesh);
 };
 
 var rollTexture;
-initPlaneGeometry = () => {
+let initPlaneGeometry = () => {
 
     // 依靠移动材质的offset属性实现动画
     var rollMat = new THREE.MeshBasicMaterial();
@@ -97,7 +120,7 @@ initPlaneGeometry = () => {
     scene.add(obj3);
 }
 
-initControl = () => {
+let initControl = () => {
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     // 使用阻尼,指定是否有惯性
     controls.enableDamping = true;
@@ -114,30 +137,32 @@ initControl = () => {
     //是否开启右键拖拽
     controls.enablePan = true;
 };
-render = () => {
+let render = () => {
 
     // mesh.position.x += 0.01;
     // rollTexture.offset.x -= 0.01;
     controls.update();
     renderer.render(scene, camera);
     requestAnimationFrame(render);
+    uniforms.u_time.value += 0.05;
     //window.requestAnimationFrame(render.bind(this));
 };
-init = () => {
+let init = () => {
     window.onresize = onWindowResize;
 
     initScene();
     initCamera();
     initRenderer();
     initLight();
-    initGeometry();
+    // initGeometry();
     //initPlaneGeometry();
     initControl();
     render();
 };
 
 
-onWindowResize = () => {
+
+let onWindowResize = () => {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
