@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>渐变立方</title>
+
+    <style media="screen">
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        .model {
+            flex: 1
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class='model' id="view"></div>
+    <script type="x-vertex-shader" id="vertex">
+        uniform float time;
+        uniform float size;
+        varying vec3 iPosition;
+    
+        void main(){            
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+        }
+    </script>
+
+    <script type="x-fragment-shader" id="fragment">
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+        
+        #define PI 3.14159265359
+        
+        uniform vec2 u_resolution;
+        uniform vec2 u_mouse;
+        uniform float u_time;
+        uniform float u_height;
+        
+        float plot(vec2 st, float pct){
+          return  smoothstep( pct-0.02, pct, st.y) -
+                  smoothstep( pct, pct+0.02, st.y);
+        }
+        
+        void main() {
+            vec2 st = gl_FragCoord.xy/u_resolution;
+        
+            // Smooth interpolation between 0.1 and 0.9
+            float y = smoothstep(0.1,0.9,st.x);
+        
+            vec3 color = vec3(y);
+        
+            //float pct = plot(st,y);
+            //color = (1.0-pct)*color+pct*vec3(0.0,1.0,0.0);
+            // gl_FragCoord 适用于屏幕固定点颜色设置
+            //gl_FragColor = vec4(gl_FragCoord.x/150.0,gl_FragCoord.y/150.0,  gl_FragCoord.y/u_height,1.0);
+             
+            gl_FragColor = vec4(1.0,1.0,gl_FragCoord.x/u_height,1.0);
+        }
+    </script>
+
+    <script src="../../node_modules/three/build/three.min.js"></script>
+    <script src="../../js/common/OrbitControls.js"></script>
+    <script src="linear_box.js"></script>
+    <script src="../../js/common/dat.gui.min.js"></script>
+</body>
+
+</html>

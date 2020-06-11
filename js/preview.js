@@ -1,7 +1,5 @@
-import { getURLParameter, getScene, getPerspectiveCamera, getRender } from '/js/usr/utils.js'
+import { WebUtils } from '../js/usr/utils.js'
 import { Elevator } from './usr/elevator.js'
-
-
 
 var app, viewer, curve;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
@@ -26,6 +24,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         //雾化颜色
         //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(204, 224, 255, 1));
         window.viewer = viewer;
+        //var webUtil = new WebUtils(viewer);
         // loadScript("https://static.bimface.com/attach/341bb8bde7bf4a5898ecdf58c2a476fb_TDSLoader.js");
         // loadScript("https://static.bimface.com/attach/eb19d39099ef4cf1b53f333a7066694f_inflate.min.js");
         // loadScript("https://static.bimface.com/attach/9b1a9a0eab054241974a2b1c436921bc_FBXLoader.js");

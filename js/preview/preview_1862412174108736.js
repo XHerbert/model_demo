@@ -3,15 +3,14 @@
  * @function:wanda F01 effiective
  */
 
-import { getViewtoken, getScene, getPerspectiveCamera, getRender } from '../usr/utils.js'
+import { WebUtils } from '../usr/WebUtils.js'
 import { wd_config } from '../cfg/wanda_dongba.js'
-
-
 
 var app, viewer;
 const SINGLE_FILE = 0;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
-getViewtoken(1862412174108736, SINGLE_FILE).then((token) => {
+var webUtils = new WebUtils();
+webUtils.getViewtoken(1862412174108736, SINGLE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 });
@@ -34,10 +33,11 @@ function onSDKLoadSucceeded(viewMetaData) {
         //雾化颜色
         //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(204, 224, 255, 1));
         window.viewer = viewer;
+        webUtils.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             // helper.createAixsHelper(viewer);
             // viewer.enableBlinkComponents(true);
-            let scene = getScene(viewer), camera = getPerspectiveCamera(viewer), renderer = getRender(viewer);
+            let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
             viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;

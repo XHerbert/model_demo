@@ -3,7 +3,7 @@
  * @function:helper
  */
 
-import { getScene } from './utils.js'
+import { WebUtils } from './WebUtils.js'
 
 var helper = {
     axisHelper: null,
@@ -12,15 +12,17 @@ var helper = {
     viewer: null,
 
     createAixsHelper: function (viewer) {
+        var webUtils = new WebUtils();
         this.viewer = viewer;
         this.axisHelper = new THREE.AxisHelper(this.axisSize);
-        getScene(this.viewer).add(this.axisHelper);
+        webUtils.getScene(this.viewer).add(this.axisHelper);
         window.axis = this.axisHelper;
     },
 
     createAmbientLightHelper: function (viewer) {
+        var webUtils = new WebUtils();
         this.ambientLightHelper = new THREE.DirectionalLightHelper();
-        getScene(this.viewer).add(this.axisHelper);
+        webUtils.getScene(this.viewer).add(this.axisHelper);
     }
 
 }

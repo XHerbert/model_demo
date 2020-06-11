@@ -1,5 +1,8 @@
 
-import { getScene } from './utils.js'
+/**
+ * @author:xuhongbo
+ * @function:lights 
+ */
 
 var light = {
 

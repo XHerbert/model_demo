@@ -1,15 +1,15 @@
 
-import { getViewtoken, getScene, getPerspectiveCamera, getRender } from '../usr/utils.js'
+import { WebUtils } from '../usr/WebUtils.js'
 import { wd_zljf } from '../cfg/wanda_zljf.js'
-
 
 
 var app, viewer;
 const SINGLE_FILE = 0;
 const INTEGRATION_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
+var webUtil = new WebUtils();
 // BimfaceLoaderConfig.viewToken = getURLParameter('viewToken');
-getViewtoken(1850344282898048, INTEGRATION_FILE).then((token) => {
+webUtil.getViewtoken(1850344282898048, INTEGRATION_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 });
@@ -32,15 +32,11 @@ function onSDKLoadSucceeded(viewMetaData) {
         //雾化颜色
         //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(204, 224, 255, 1));
         window.viewer = viewer;
-        // loadScript("https://static.bimface.com/attach/341bb8bde7bf4a5898ecdf58c2a476fb_TDSLoader.js");
-        // loadScript("https://static.bimface.com/attach/eb19d39099ef4cf1b53f333a7066694f_inflate.min.js");
-        // loadScript("https://static.bimface.com/attach/9b1a9a0eab054241974a2b1c436921bc_FBXLoader.js");
-        // 
-        // viewer.render();
+        webUtil.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             //helper.createAixsHelper(viewer);
-            // viewer.enableBlinkComponents(true);
-            let scene = getScene(viewer), camera = getPerspectiveCamera(viewer), renderer = getRender(viewer);
+
+            let scene = webUtil.getScene(viewer), camera = webUtil.getPerspectiveCamera(viewer), renderer = webUtil.getRender(viewer);
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
             viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;

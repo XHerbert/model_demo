@@ -5,11 +5,11 @@
  */
 
 import { FogObject } from '../usr/fog.js'
-import { getScene, getPerspectiveCamera, getRender } from '../usr/utils.js'
+import { WebUtils } from '../usr/WebUtils.js'
 import { pathAnimation } from '../usr/path_animation.js';
 
 export function initGdGeneralModel(viewer) {
-
+    var webUtils = new WebUtils(viewer);
     //document.getElementsByClassName('gld-bf-tree')[0].style.display = 'none';
     document.getElementsByClassName('bf-toolbar bf-toolbar-bottom')[0].style.display = 'none';
     document.getElementById('open-button').style.display = 'block';
@@ -21,7 +21,7 @@ export function initGdGeneralModel(viewer) {
     //限制转角
     viewer.lockAxis(Glodon.Bimface.Viewer.AxisOption.Z, [Math.PI / 8, Math.PI / 2]);
     //雾化效果
-    getScene(viewer).fog = FogObject.enbaleRenderFog();
+    webUtils.getScene(viewer).fog = FogObject.enbaleRenderFog();
     //全部轮廓改色
     viewer.overrideComponentsFrameColorByObjectData([], new Glodon.Web.Graphics.Color("#CECBCB", 0.3));
 
@@ -33,14 +33,11 @@ export function initGdGeneralModel(viewer) {
 
 
     var obj3ds = '../../model/6db9d5bcf88640f997b23be61e870ee8_car.3ds';
-
-
     var loader = new THREE.TDSLoader();
 
 
     let keyValue = { 0: "Two", 1: "Three", 2: "Four" };
     loader.load(obj3ds, function (object) {
-        console.log(object);
         pathAnimation.init(viewer, "One", 8000, "vehicle");
         viewer.addExternalObject("vehicle", object);
         viewer.getExternalComponentManager().setTransform("vehicle", pathAnimation.path.getPointAt(0));

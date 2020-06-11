@@ -1,14 +1,13 @@
 
-import { getViewtoken, getScene, getPerspectiveCamera, getRender } from '../usr/utils.js'
+import { WebUtils } from '../usr/WebUtils.js'
 import { helper } from '../usr/helper.js'
 import { light } from '../usr/light.js'
-
-
 
 var app, viewer;
 const INTEGRATION_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
-getViewtoken(1846137953222272, INTEGRATION_FILE).then((token) => {
+var webUtils = new WebUtils();
+webUtils.getViewtoken(1846137953222272, INTEGRATION_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 });
@@ -31,10 +30,10 @@ function onSDKLoadSucceeded(viewMetaData) {
         //雾化颜色
         //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(204, 224, 255, 1));
         window.viewer = viewer;
-
+        webUtils.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             helper.createAixsHelper(viewer);
-            let scene = getScene(viewer), camera = getPerspectiveCamera(viewer), renderer = getRender(viewer);
+            let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
             viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;

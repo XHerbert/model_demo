@@ -2,7 +2,7 @@
  * @author:xuhongbo
  * @description:wanda 
  */
-import { getViewtoken, getScene, getPerspectiveCamera, getRender, loadScript } from '../usr/utils.js'
+import { WebUtils } from '../usr/utils.js'
 import { helper } from '../usr/helper.js'
 import { light } from '../usr/light.js'
 import { unreal } from '../../external/bloom/bloom.js'
@@ -12,7 +12,8 @@ import { unreal } from '../../external/bloom/bloom.js'
 var app, viewer;
 const INTEGRATION_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
-getViewtoken(1870708216233888, INTEGRATION_FILE).then((token) => {
+var webUtils = new WebUtils();
+webUtils.getViewtoken(1870708216233888, INTEGRATION_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 });
@@ -35,13 +36,11 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(7, 1, 18, 1));
         viewer.hideViewHouse();
         window.viewer = viewer;
-
+        webUtils.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             helper.createAixsHelper(viewer);
-            // viewer.enableBlinkComponents(true);
-            let scene = getScene(viewer), camera = getPerspectiveCamera(viewer), renderer = getRender(viewer);
+            let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
             camera.layers.enable(1);
-
 
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
@@ -230,7 +229,7 @@ function setupPointsCloud() {
     geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
     let points = new THREE.Points(geometry, pointsMaterial);
-    getScene(viewer).add(points);
+    webUtils.getScene().add(points);
     // viewer.addExternalObject("points", points);
 };
 
@@ -513,12 +512,12 @@ function createBufferGeometryFromPoints() {
 
 // 创建bloom泛光
 function bloomEffective() {
-    loadScript('../../external/bloom/EffectComposer.js', function () {
-        loadScript('../../external/bloom/RenderPass.js', function () {
-            loadScript('../../external/bloom/UnrealBloomPass.js', function () {
-                loadScript('../../external/bloom/LuminosityHighPassShader.js', function () {
-                    loadScript('../../node_modules/_three@0.85.2@three/examples/js/postprocessing/SSAARenderPass.js', function () {
-                        let scene = getScene(viewer), camera = getPerspectiveCamera(viewer), renderer = getRender(viewer);
+    webUtils.loadScript('../../external/bloom/EffectComposer.js', function () {
+        webUtils.loadScript('../../external/bloom/RenderPass.js', function () {
+            webUtils.loadScript('../../external/bloom/UnrealBloomPass.js', function () {
+                webUtils.loadScript('../../external/bloom/LuminosityHighPassShader.js', function () {
+                    webUtils.loadScript('../../node_modules/_three@0.85.2@three/examples/js/postprocessing/SSAARenderPass.js', function () {
+                        let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
                         unreal.initRenderBloom(scene, camera, renderer);
                         unreal.composerRenderer();
                     })
