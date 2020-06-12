@@ -8,7 +8,7 @@ const SINGLE_FILE = 0;
 const INTEGRATION_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtil = new WebUtils();
-// BimfaceLoaderConfig.viewToken = getURLParameter('viewToken');
+
 webUtil.getViewtoken(1850344282898048, INTEGRATION_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);

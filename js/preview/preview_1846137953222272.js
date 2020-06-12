@@ -1,12 +1,13 @@
 
 import { WebUtils } from '../usr/WebUtils.js'
-import { helper } from '../usr/helper.js'
+import { ModelHelper } from '../usr/ModelHelper.js'
 import { light } from '../usr/light.js'
 
 var app, viewer;
 const INTEGRATION_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
+
 webUtils.getViewtoken(1846137953222272, INTEGRATION_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
@@ -21,16 +22,15 @@ function onSDKLoadSucceeded(viewMetaData) {
         app = new Glodon.Bimface.Application.WebApplication3D(config);
         viewer = app.getViewer();
         viewer.setCameraAnimation(true);
-        //CLOUD.EnumRendererType.IncrementRender = true;
         app.addView(BimfaceLoaderConfig.viewToken);
         ///viewer.addModel(viewMetaData);//该方法加入的模型不能渲染烘焙
-        //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(105, 105, 105, 1), new Glodon.Web.Graphics.Color(105, 10, 105, 0.5));
+
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 1), new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 0.5));
         viewer.setBorderLineEnabled(false);
-        //雾化颜色
-        //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(204, 224, 255, 1));
+
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
+        var helper = new ModelHelper(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             helper.createAixsHelper(viewer);
             let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();

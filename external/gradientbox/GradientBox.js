@@ -1,9 +1,10 @@
 /**
  * @author xuhbd
- * @function plane animation
+ * @function gradient box for white house
  */
 
 import { MathLibrary } from '../../js/usr/MathLibrary.js'
+import { ModelShaderChunk } from '../../shaders/common/ModelShaderChunk.js'
 
 var scene = null;
 var camera = null;
@@ -17,19 +18,20 @@ var height = window.innerHeight;
 var uniforms = {
     u_time: { value: 0.0 },
     u_resolution: { value: new THREE.Vector2() },
-    u_height: { value: 250.0 }
+    u_height: { value: 0.0 },
+    u_color: { value: new THREE.Vector3() }
 }
 
 
 let initScene = () => {
-    axesHelper = new THREE.AxisHelper(100);
+    axesHelper = new THREE.AxisHelper(1000);
     scene = new THREE.Scene();
     scene.add(axesHelper);
 };
 
 let initCamera = () => {
     camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 300);
+    camera.position.set(0, 1000, 1000);
     camera.lookAt(0, 0, 0);
 };
 
@@ -48,17 +50,23 @@ let callback = (event) => {
     let point = new THREE.Vector2(pointX, pointY);
 
     let math = new MathLibrary();
-    let width = math.getRandomInt(10, 100);
-    let height = math.getRandomInt(10, 100);
-    let depth = math.getRandomInt(10, 100);
+    let width = math.getRandomInt(10, 500);
+    let height = math.getRandomInt(10, 500);
+    let depth = math.getRandomInt(10, 1000);
+    uniforms.u_height.value = depth;
     let size = new THREE.Vector3(width, height, depth);
 
     let mesh_position = math.getLocalPosition(event, camera);
-    // let x = math.getRandomInt(10, 300);
-    // let y = math.getRandomInt(10, 300);
+    let x = math.getRandomInt(10, 500);
+    let y = math.getRandomInt(10, 500);
     console.log(mesh_position);
     let z = 0;
-    let position = new THREE.Vector3(mesh_position.x, mesh_position.y, z);
+
+    uniforms.u_color.value.x = 0.75;
+    uniforms.u_color.value.y = 0.22;
+    uniforms.u_color.value.z = 0.11;
+    //let position = new THREE.Vector3(mesh_position.x, mesh_position.y, z);
+    let position = new THREE.Vector3(x, y, z);
     initGeometry(size, position);
 }
 
@@ -77,8 +85,8 @@ let initGeometry = (size, position) => {
     !position && position.set(0, 0, 0);
     var boxGeometry = new THREE.BoxGeometry(size.x || 10, size.y || 2, size.z || 25);
     var boxMaterial = new THREE.ShaderMaterial({
-        vertexShader: document.getElementById('vertex').textContent,
-        fragmentShader: document.getElementById('fragment').textContent,
+        vertexShader: ModelShaderChunk.gradient_box_vertex_shader,
+        fragmentShader: ModelShaderChunk.gradient_box_fragment_shader,
         uniforms: uniforms,
         transparent: true,
         side: THREE.DoubleSide,
@@ -139,13 +147,10 @@ let initControl = () => {
 };
 let render = () => {
 
-    // mesh.position.x += 0.01;
-    // rollTexture.offset.x -= 0.01;
     controls.update();
     renderer.render(scene, camera);
     requestAnimationFrame(render);
     uniforms.u_time.value += 0.05;
-    //window.requestAnimationFrame(render.bind(this));
 };
 let init = () => {
     window.onresize = onWindowResize;
@@ -159,8 +164,6 @@ let init = () => {
     initControl();
     render();
 };
-
-
 
 let onWindowResize = () => {
     camera.aspect = width / height;

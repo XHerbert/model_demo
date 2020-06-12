@@ -3,7 +3,7 @@
  * @description:wanda 
  */
 import { WebUtils } from '../usr/utils.js'
-import { helper } from '../usr/helper.js'
+import { ModelHelper } from '../usr/ModelHelper.js'
 import { light } from '../usr/light.js'
 import { unreal } from '../../external/bloom/bloom.js'
 
@@ -27,16 +27,15 @@ function onSDKLoadSucceeded(viewMetaData) {
         app = new Glodon.Bimface.Application.WebApplication3D(config);
         viewer = app.getViewer();
         viewer.setCameraAnimation(true);
-        //CLOUD.EnumRendererType.IncrementRender = true;
         app.addView(BimfaceLoaderConfig.viewToken);
-        ///viewer.addModel(viewMetaData);//该方法加入的模型不能渲染烘焙
-        //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(105, 105, 105, 1), new Glodon.Web.Graphics.Color(105, 10, 105, 0.5));
+
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 1), new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 0.5));
         viewer.setBorderLineEnabled(false);
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(7, 1, 18, 1));
         viewer.hideViewHouse();
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
+        var helper = new ModelHelper(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             helper.createAixsHelper(viewer);
             let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
@@ -154,15 +153,7 @@ function addComponents() {
     viewer.addExternalObject("onlyline", cylinder);
 
     cylindergeometry = new THREE.CylinderGeometry(50, 50, 17440, 32);
-
-
     viewer.addExternalObject("box", linesGroup);
-
-
-
-    // viewer.convertToExternalObject("line", "1868618629154880.2848461", true); // 转换不全？
-    // viewer.addExternalObject("gridHelper", gridHelper);
-    // viewer.render();
 };
 
 // 重写构件颜色
@@ -526,7 +517,6 @@ function bloomEffective() {
         })
     });
 }
-
 
 function onSDKLoadFailed(error) {
     console.log("Failed to load SDK!");
