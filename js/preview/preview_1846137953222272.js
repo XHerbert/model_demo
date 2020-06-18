@@ -36,11 +36,12 @@ function onSDKLoadSucceeded(viewMetaData) {
             let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
-            viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;
-            viewer.getViewer().rendererManager.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            viewer.getViewer().rendererManager.renderer.renderer.shadowMap.enabled = true;
+            viewer.getViewer().rendererManager.renderer.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             filterComponents();
             setupCameraAnimation();
             setupSpotLight();
+            viewer.enableShadow(true);
         });
     }
 };

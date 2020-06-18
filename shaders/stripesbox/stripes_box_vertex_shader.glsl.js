@@ -1,5 +1,5 @@
 export default /*glsl*/`
-
+    
     varying vec3 iPosition;
     void main(){ 
         iPosition = position;           

@@ -2,7 +2,7 @@
  * @author:xuhongbo
  * @description:wanda 
  */
-import { WebUtils } from '../usr/utils.js'
+import { WebUtils } from '../usr/WebUtils.js'
 import { ModelHelper } from '../usr/ModelHelper.js'
 import { light } from '../usr/light.js'
 import { unreal } from '../../external/bloom/bloom.js'
@@ -34,6 +34,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(7, 1, 18, 1));
         viewer.hideViewHouse();
         window.viewer = viewer;
+
         webUtils.viewer = window.viewer;
         var helper = new ModelHelper(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
@@ -43,8 +44,8 @@ function onSDKLoadSucceeded(viewMetaData) {
 
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
-            viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;
-            viewer.getViewer().rendererManager.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            viewer.getViewer().rendererManager.renderer.renderer.shadowMap.enabled = true;
+            viewer.getViewer().rendererManager.renderer.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
             addComponents();
             overrideComponents();
@@ -362,6 +363,7 @@ function setupCameraAnimation() {
         }, viewer.setCameraStatus(target3, () => {
             //setupWhiteHouses();
             viewer.recordCustomedHomeview(target3);
+            viewer.enableShadow(true);
         }), 1000);
     })
 };

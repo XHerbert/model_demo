@@ -27,7 +27,6 @@ function onSDKLoadSucceeded(viewMetaData) {
         //CLOUD.EnumRendererType.IncrementRender = true;
         app.addView(BimfaceLoaderConfig.viewToken);
         ///viewer.addModel(viewMetaData);//该方法加入的模型不能渲染烘焙
-        //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(105, 105, 105, 1), new Glodon.Web.Graphics.Color(105, 10, 105, 0.5));
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 1), new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 0.5));
         viewer.setBorderLineEnabled(false);
         //雾化颜色
@@ -36,12 +35,11 @@ function onSDKLoadSucceeded(viewMetaData) {
         webUtils.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             // helper.createAixsHelper(viewer);
-            // viewer.enableBlinkComponents(true);
             let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
-            viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;
-            viewer.getViewer().rendererManager.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            viewer.getViewer().rendererManager.renderer.renderer.shadowMap.enabled = true;
+            viewer.getViewer().rendererManager.renderer.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             scene.children[0].castShadow = true;
 
             // 万达F01

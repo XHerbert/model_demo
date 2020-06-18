@@ -19,19 +19,21 @@ var uniforms = {
     u_time: { value: 0.0 },
     u_resolution: { value: new THREE.Vector2() },
     u_height: { value: 0.0 },
-    u_color: { value: new THREE.Vector3() }
+    u_color: { value: new THREE.Vector3() },
+    surfacePosition: { value: new THREE.Vector2() }
 }
 
 
 let initScene = () => {
     axesHelper = new THREE.AxisHelper(1000);
     scene = new THREE.Scene();
+    window.myscene = scene;
     scene.add(axesHelper);
 };
 
 let initCamera = () => {
-    camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    camera.position.set(0, 1000, 1000);
+    camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    camera.position.set(0, 1800, 1800);
     camera.lookAt(0, 0, 0);
 };
 
@@ -45,26 +47,34 @@ let initRenderer = () => {
 
 let callback = (event) => {
 
+    if (myscene) {
+        myscene.traverse(obj => {
+            if (obj.type !== "DirectionalLight" && obj.type !== "LineSegments") {
+                myscene.remove(obj);
+            }
+        });
+    }
+
     let pointX = event.clientX;
     let pointY = event.clientY;
     let point = new THREE.Vector2(pointX, pointY);
 
     let math = new MathLibrary();
-    let width = math.getRandomInt(10, 500);
-    let height = math.getRandomInt(10, 500);
-    let depth = math.getRandomInt(10, 1000);
+    let width = math.getRandomInt(1, 5, 100);
+    let height = math.getRandomInt(1, 5, 100);
+    let depth = math.getRandomInt(1, 10, 100);
     uniforms.u_height.value = depth;
     let size = new THREE.Vector3(width, height, depth);
+    // console.log(size);
 
     let mesh_position = math.getLocalPosition(event, camera);
-    let x = math.getRandomInt(10, 500);
-    let y = math.getRandomInt(10, 500);
-    console.log(mesh_position);
+    let x = math.getRandomInt(10, 500, 1);
+    let y = math.getRandomInt(10, 500, 1);
     let z = 0;
 
-    uniforms.u_color.value.x = 0.75;
-    uniforms.u_color.value.y = 0.22;
-    uniforms.u_color.value.z = 0.11;
+    uniforms.u_color.value.x = 0.05;
+    uniforms.u_color.value.y = 0.02;
+    uniforms.u_color.value.z = 0.91;
     //let position = new THREE.Vector3(mesh_position.x, mesh_position.y, z);
     let position = new THREE.Vector3(x, y, z);
     initGeometry(size, position);
@@ -80,20 +90,26 @@ let initLight = () => {
 let initGeometry = (size, position) => {
     uniforms.u_resolution.value.x = renderer.domElement.width;
     uniforms.u_resolution.value.y = renderer.domElement.height;
+    uniforms.surfacePosition.value = uniforms.u_resolution.value;
     // var boxGeometry = new THREE.BoxGeometry(10, 2, 25);
     !size && size.set(10, 2, 25);
     !position && position.set(0, 0, 0);
     var boxGeometry = new THREE.BoxGeometry(size.x || 10, size.y || 2, size.z || 25);
     var boxMaterial = new THREE.ShaderMaterial({
         vertexShader: ModelShaderChunk.gradient_box_vertex_shader,
-        fragmentShader: ModelShaderChunk.gradient_box_fragment_shader,
+        // fragmentShader: ModelShaderChunk.gradient_box_fragment_shader,
+        fragmentShader: ModelShaderChunk.stripes_box_fragment_shader,
         uniforms: uniforms,
         transparent: true,
         side: THREE.DoubleSide,
-        depthTest: false
+        depthTest: true,
+        depthWrite: true,
+        wireframe: false
     });
     mesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    position && mesh.position.set(position.x, position.y, position.z);
+    mesh.position.set(position.x, position.y, uniforms.u_height.value / 2);
+    console.log(mesh.position);
+    console.log(uniforms.u_height.value);
     scene.add(mesh);
 };
 
@@ -141,7 +157,7 @@ let initControl = () => {
     //设置相机距离原点的最近距离
     controls.minDistance = 10;
     //设置相机距离原点的最远距离
-    controls.maxDistance = 600;
+    controls.maxDistance = 1200;
     //是否开启右键拖拽
     controls.enablePan = true;
 };
@@ -159,8 +175,6 @@ let init = () => {
     initCamera();
     initRenderer();
     initLight();
-    // initGeometry();
-    //initPlaneGeometry();
     initControl();
     render();
 };

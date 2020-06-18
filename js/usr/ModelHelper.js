@@ -10,7 +10,7 @@ function ModelHelper(viewer) {
 
     this.viewer = viewer || null;
     this.webUtils = new WebUtils(this.viewer);
-    this.type = "glodon.modelhelper";
+    this.type = "Glodon.Helper.ModelHelper";
 }
 
 ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
@@ -21,7 +21,7 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
      */
     createAixsHelper: function () {
         this.axisHelper = new THREE.AxisHelper(this.axisSize || 300);
-        webUtils.getScene(this.viewer).add(this.axisHelper);
+        this.webUtils.getScene().add(this.axisHelper);
         window.axis = this.axisHelper;
     },
 

@@ -72,22 +72,7 @@ var wd_zljf = {
         viewer.setCameraStatus(start, () => {
             setTimeout(() => {
                 viewer.setCameraStatus(target, () => {
-                    // // 添加设备标签
-                    // var position = new Object();
-                    // let max = { x: 48267.05078125, y: 145279.40625, z: 4566.999938964844 };
-                    // let min = { x: 47267.050842285156, y: 143739.40625, z: 3833 };
-                    // position = { x: (max.x + min.x) / 2, y: (max.y + min.y) / 2, z: max.z };
-
-                    // this.createTag(position, "tag", "暖通空调 1#");
-
-                    // let areaPos1 = { x: 10849.856525750167, y: 140403.73229127374, z: 3.259261749377629e-8 };
-                    // this.createTag(areaPos1, "tag3", "23.5℃");
-
-                    // let areaPos2 = { x: 35966.909079778336, y: 154820.3624507177, z: 3.5935210029869324e-8 };
-                    // this.createTag(areaPos2, "tag4", "29.8℃");
-
-                    // let areaPos3 = { x: 11014.188939933792, y: 129270.36637729005, z: 3.000482423631823e-8 };
-                    // this.createTag(areaPos3, "tag", "37.8℃");
+                    viewer.enableShadow(true);
                 });
             }, 800);
         });

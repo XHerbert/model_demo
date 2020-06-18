@@ -1,9 +1,10 @@
-import { WebUtils } from '../js/usr/utils.js'
+import { WebUtils } from '../js/usr/WebUtils.js'
 import { Elevator } from './usr/elevator.js'
 
 var app, viewer, curve;
+var webUtils = new WebUtils();
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
-BimfaceLoaderConfig.viewToken = getURLParameter('viewToken');
+BimfaceLoaderConfig.viewToken = webUtils.getURLParameter('viewToken');
 
 BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 function onSDKLoadSucceeded(viewMetaData) {
@@ -17,34 +18,15 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.setCameraAnimation(true);
         //CLOUD.EnumRendererType.IncrementRender = true;
         app.addView(BimfaceLoaderConfig.viewToken);
-        ///viewer.addModel(viewMetaData);//该方法加入的模型不能渲染烘焙
-        //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(105, 105, 105, 1), new Glodon.Web.Graphics.Color(105, 10, 105, 0.5));
+        ///viewer.addModel(viewMetaData);//该方法加入的模型不能渲染烘焙        
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 1), new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 0.5));
         viewer.setBorderLineEnabled(false);
         //雾化颜色
         //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(204, 224, 255, 1));
         window.viewer = viewer;
-        //var webUtil = new WebUtils(viewer);
-        // loadScript("https://static.bimface.com/attach/341bb8bde7bf4a5898ecdf58c2a476fb_TDSLoader.js");
-        // loadScript("https://static.bimface.com/attach/eb19d39099ef4cf1b53f333a7066694f_inflate.min.js");
-        // loadScript("https://static.bimface.com/attach/9b1a9a0eab054241974a2b1c436921bc_FBXLoader.js");
-        // 
-        // viewer.render();
+        webUtils.viewer = viewer;
+
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
-            // helper.createAixsHelper(viewer);
-            // // viewer.enableBlinkComponents(true);
-            // let scene = getScene(viewer), camera = getPerspectiveCamera(viewer), renderer = getRender(viewer);
-            // window.myscene = scene;
-            // document.getElementById('open-button').style.display = 'block';
-            // viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;
-            // viewer.getViewer().rendererManager.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            // scene.children[0].castShadow = true;
-            //scene.traverse(function (child) { if (child.type == 'MeshEx' || child.type == 'Mesh' || true) { child.castShadow = true; child.receiveShadow = true; } }, true);
-            // viewer.showExclusiveComponentsByObjectData([{ levelName: "B01", specialty: "建筑" }]);
-
-
-            loadElevator();
-
 
         });
     }

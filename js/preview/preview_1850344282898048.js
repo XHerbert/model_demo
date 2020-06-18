@@ -29,6 +29,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(105, 105, 105, 1), new Glodon.Web.Graphics.Color(105, 10, 105, 0.5));
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 1), new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 0.5));
         viewer.setBorderLineEnabled(false);
+
         //雾化颜色
         //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(204, 224, 255, 1));
         window.viewer = viewer;
@@ -38,8 +39,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             let scene = webUtil.getScene(), camera = webUtil.getPerspectiveCamera(), renderer = webUtil.getRender();
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
-            viewer.getViewer().rendererManager.renderer.shadowMap.enabled = true;
-            viewer.getViewer().rendererManager.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            viewer.getViewer().rendererManager.renderer.renderer.shadowMap.enabled = true;
+            viewer.getViewer().rendererManager.renderer.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             scene.children[0].castShadow = true;
 
             // 万达制冷机房

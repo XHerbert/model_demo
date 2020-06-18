@@ -12,8 +12,6 @@ var wd_config = {
     drawableConfig: null,
     drawableContainer: null,
 
-
-
     init_scene: function (scene, viewer) {
         this.scene = scene;
         this.viewer = viewer;
@@ -63,10 +61,6 @@ var wd_config = {
             "version": 1
         };
 
-        // viewer.addBlinkComponentsById(["2187458"]);
-        // viewer.setBlinkColor(new Glodon.Web.Graphics.Color(250, 33, 179, 0.05));
-        // viewer.setBlinkIntervalTime(300); //耗费性能，改用Shader
-        // viewer.render();
         var uniform = {
             time: { value: 0.0 }
         }
@@ -110,6 +104,8 @@ var wd_config = {
 
                     let areaPos3 = { x: 11014.188939933792, y: 129270.36637729005, z: 3.000482423631823e-8 };
                     this.createTag(areaPos3, "tag", "37.8℃");
+                    //启用阴影
+                    viewer.enableShadow(true);
                 });
             }, 800);
         });

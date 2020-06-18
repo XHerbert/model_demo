@@ -23,7 +23,7 @@ var unreal = {
         this.scene = scene;
         this.camera = camera;
 
-        this.renderer = renderer;
+        this.renderer = renderer.renderer;
 
         this.renderer.toneMapping = THREE.ReinhardToneMapping;
         this.renderer.autoClear = false;

@@ -6,7 +6,7 @@
 import { WebUtils } from './WebUtils.js'
 
 function MathLibrary() {
-    this.type = "glodon.math.library";
+    this.type = "Glodon.Math.Library";
 };
 
 MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
@@ -16,10 +16,11 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      * @param {最小值} min 
      * @param {最大值} max 
      */
-    getRandomInt: function (min, max) {
+    getRandomInt: function (min, max, scale) {
+        (scale <= 0) && (scale = 1.0);
         min = Math.ceil(min);
         max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min)) + min;
+        return (Math.floor(Math.random() * (max - min)) + min) * scale;
     },
 
     // 2D 坐标转3D
