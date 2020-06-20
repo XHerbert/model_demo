@@ -104,6 +104,7 @@ var wd_config = {
 
                     let areaPos3 = { x: 11014.188939933792, y: 129270.36637729005, z: 3.000482423631823e-8 };
                     this.createTag(areaPos3, "tag", "37.8℃");
+                    viewer.recordCustomedHomeview(target);
                     //启用阴影
                     viewer.enableShadow(true);
                 });
