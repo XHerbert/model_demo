@@ -69,7 +69,7 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
      * @param {Object} renderer 非bimface场景时，传入的renderer对象
      */
     getRender: function (renderer) {
-        return renderer || this.viewer.getViewer().rendererManager.renderer;
+        return renderer || this.viewer.getViewer().rendererManager.renderer.renderer;
     },
 
     /**
