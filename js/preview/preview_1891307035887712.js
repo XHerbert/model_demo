@@ -14,11 +14,12 @@ const SINGLE_FILE = 0;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 
-BimfaceLoaderConfig.viewToken = '24847c73fa6b4cd8a252828c00a01ea8';
-BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
-// webUtils.getViewtoken(1891307035887712, SINGLE_FILE).then((token) => {
-
-// });
+// BimfaceLoaderConfig.viewToken = '0d3c791f12df41a9b7ce06393cea9333';
+// BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
+webUtils.getViewtoken(1891307035887712, SINGLE_FILE).then((token) => {
+    BimfaceLoaderConfig.viewToken = token;
+    BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
+});
 
 function onSDKLoadSucceeded(viewMetaData) {
     if (viewMetaData.viewType == "3DView") {
@@ -29,13 +30,10 @@ function onSDKLoadSucceeded(viewMetaData) {
         app = new Glodon.Bimface.Application.WebApplication3D(config);
         viewer = app.getViewer();
         viewer.setCameraAnimation(true);
-        //CLOUD.EnumRendererType.IncrementRender = true;
         app.addView(BimfaceLoaderConfig.viewToken);
-        ///viewer.addModel(viewMetaData);//该方法加入的模型不能渲染烘焙
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 1), new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 0.5));
         viewer.setBorderLineEnabled(false);
-        //雾化颜色
-        //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(204, 224, 255, 1));
+
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
@@ -44,8 +42,11 @@ function onSDKLoadSucceeded(viewMetaData) {
             let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
             window.myscene = scene;
             renderer.shadowMap.enabled = true;
+            viewer.enableShadow(true);
+            viewer.setExposureShift(0.2);
             renderer.alpha = true;
-            // renderer.setClearAlpha(0.8);
+            renderer.setClearAlpha(0.08);
+            viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(6, 3, 19, 1));
             let uniform = {
                 time: { value: 0.0 }
             }
@@ -55,12 +56,6 @@ function onSDKLoadSucceeded(viewMetaData) {
             drawableConfig.viewer = viewer;
             drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
 
-            document.getElementById('open-button').style.display = 'block';
-            viewer.getViewer().rendererManager.renderer.renderer.shadowMap.enabled = true;
-            viewer.getViewer().rendererManager.renderer.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            scene.children[0].castShadow = true;
-
-            viewer.setBackgroundColor(new Glodon.Web.Graphics.Color("#333333"));
             //空间
             viewer.overrideComponentsColorById(["2933839"], new Glodon.Web.Graphics.Color(117, 78, 56, 0.7));
             viewer.overrideComponentsColorById(["2935384"], new Glodon.Web.Graphics.Color(133, 36, 48, 0.6));
@@ -70,6 +65,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             //设备
             viewer.overrideComponentsColorById(["1765452"], new Glodon.Web.Graphics.Color(255, 31, 18, 0.8));
             viewer.overrideComponentsColorById(["2263790"], new Glodon.Web.Graphics.Color(255, 31, 18, 0.8));
+            viewer.overrideComponentsColorById(["2299577"], new Glodon.Web.Graphics.Color(255, 245, 18, 0.8));
+            viewer.overrideComponentsColorById(["2299911", "2300102", "2224685", "2300377"], new Glodon.Web.Graphics.Color(233, 30, 99, 0.8));
 
             //白色空间内的风管
             viewer.overrideComponentsColorById(["2059701", "1740248", "1740251", "1740249", "1740677", "1740247", "2220209", "2220206", "2220324", "2220327", "2314358", "2314355", "1733863", "2314580", "2314578", "1733882", "1733864", "2220271", "2220268"], new Glodon.Web.Graphics.Color(255, 255, 255, 0.98));
@@ -86,7 +83,7 @@ function onSDKLoadSucceeded(viewMetaData) {
                 var plane = new THREE.Mesh(planeGeometry, planeMaterial);
                 plane.translateX(wid / 2);
                 plane.translateY(hei / 2);
-                viewer.addExternalObject("plane", plane);
+                // viewer.addExternalObject("plane", plane);
             });
 
             //空间转换
@@ -114,11 +111,19 @@ function onSDKLoadSucceeded(viewMetaData) {
                 let _ = [];
                 _.push(arrays[a]);
                 let name = "fulan" + a;
-                let fulan = viewer.convertToExternalObject(name, _, true);
-                fulan.children[0].material = fulanMaterial;
-                viewer.addExternalObject(name, fulan);
+                // let fulan = viewer.convertToExternalObject(name, _, true);
+                // fulan.children[0].material = fulanMaterial;
+                //暂时不用
+                //viewer.addExternalObject(name, fulan);
             }
 
+            viewer.hideViewHouse();
+            document.getElementsByClassName('bf-toolbar bf-toolbar-bottom')[0].style.display = 'none';
+            document.getElementsByClassName('gld-bf-tree')[0].style.display = 'none';
+            document.getElementById('open-button').style.display = 'block';
+            // let mapDom = document.getElementsByClassName('bf-panel bf-map bf-map-panel bf-pinned')[0];
+            // mapDom.display = 'block';
+            // mapDom.style = "left:84%;top:73;";
             //描边效果可以产生，但是太差，暂时不用composer去渲染，希望bimface升级threejs
             /*
             let selectedObjects = [];
@@ -187,8 +192,8 @@ function onSDKLoadSucceeded(viewMetaData) {
                 var config = new Glodon.Bimface.Plugins.Drawable.CustomItemConfig();
                 var content = document.createElement('div');
                 //TODO:替换图标
-                content.innerHTML = '<div class="item"><div style="width:49px;height:35px;"><img src="../../images/icon.png" height="32" width="32"/></div><div  id="canvasDiv" class="1' + styleClass + '">' + text + '</div></div>'
-                // content.innerHTML = '<div class="item"></div>';
+                // content.innerHTML = '<div class="item"><div style="width:49px;height:35px;"><img src="../../images/icon.png" height="32" width="32"/></div><div  id="canvasDiv" class="1' + styleClass + '">' + text + '</div></div>'
+                content.innerHTML = '<div class="item"><div style="width:49px;height:35px;"></div><div  id="canvasDiv" class="1' + styleClass + '">' + text + '</div></div>'
                 config.content = content;
                 config.viewer = viewer;
                 config.worldPosition = position;
@@ -198,7 +203,7 @@ function onSDKLoadSucceeded(viewMetaData) {
 
             //处理顶部扶栏
             let dir = 1.0;
-            run();
+            //run();
 
             function run() {
                 viewer.render();

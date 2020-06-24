@@ -91,3 +91,11 @@ let onEnableBlinkClickHandler = (obj) => {
         viewer.enableBlinkComponents(false);
     }
 }
+
+let onEnableBackgroundHandler = (obj) => {
+    if (obj.checked) {
+        document.getElementsByTagName('canvas')[0].classList.add('canvasClass'); //`background: url("../../images/projecta.png") no-repeat center;overflow: hidden`;
+    } else {
+        document.getElementsByTagName('canvas')[0].classList.remove('canvasClass');
+    }
+}
