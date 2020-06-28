@@ -11,10 +11,10 @@ const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 
-webUtils.getViewtoken(1893582365950144, INTEGRATE_FILE).then((token) => {
-    BimfaceLoaderConfig.viewToken = token;
-    BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
-});
+//webUtils.getViewtoken(1893582365950144, INTEGRATE_FILE).then((token) => {
+BimfaceLoaderConfig.viewToken = 'd85d1fdfe02b409faefaabb983d2dfb8';
+BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
+//});
 
 function onSDKLoadSucceeded(viewMetaData) {
     if (viewMetaData.viewType == "3DView") {
@@ -109,6 +109,7 @@ function onSDKLoadSucceeded(viewMetaData) {
                 // "1893536618383328.2816617",
                 // "1893574719907808.2882929",
                 // "1893580694636640.2805595"
+                //"1893575056377824.2972734"
 
 
             ];
@@ -152,6 +153,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             let m_3055079 = { max: { x: 156099.994140625, y: 92239.998046875, z: 50899.999992370605 }, min: { x: 136799.943359375, y: 39400.001953125, z: 50700.000007629395 }, d: XZ };
             let m_2870335 = { max: { x: 46200, y: 17180.609375, z: 10749.9990234375 }, min: { x: 46000, y: -2700, z: 5649.9990234375 }, d: XY };
             let m_2738435 = { max: { x: -1982.5788650512695, y: 104314.998046875, z: 26099.998046875 }, min: { x: -2182.5788497924805, y: 39400.001953125, z: 20949.998046875 }, d: YZ };
+            let m_3048897 = { max: { x: -3300, y: 192800, z: 59900 }, min: { x: -3600, y: 158100, z: 33600 }, d: XY };
 
             boundboxlist.push(m_3047070);
             boundboxlist.push(m_3052775);
@@ -203,32 +205,36 @@ function onSDKLoadSucceeded(viewMetaData) {
 
             //开始绘制网格
             let linesGroup = new THREE.Group();
-            let geometry = new THREE.Geometry();
-            let v_geometry = geometry.clone();
+
+
             let lMaterial = new THREE.LineBasicMaterial({ color: 0xeeeeee, opacity: 0.125, transparent: true });
             let h_segments = 20, v_segments = 60;
-            let mo = m_3047070;
-            //mo = m_3052775;
-            geometry.vertices.push(new THREE.Vector3(mo.min.x, mo.min.y, mo.min.z));
-            geometry.vertices.push(new THREE.Vector3(mo.max.x, mo.max.y, mo.min.z));
-            let h_devides = (mo.max.z - mo.min.z) / h_segments;
+            let mo = [m_3047070, m_3052775, m_3051987, m_3048897];
 
-            for (let i = 1; i <= h_segments; i++) {
-                //画横线
-                let line = new THREE.Line(geometry, lMaterial);
-                line.position.z = i * h_devides;
-                line.position.x = line.position.x - offset * 2;
-                linesGroup.add(line);
-            }
-            v_geometry.vertices.push(new THREE.Vector3(mo.min.x, mo.min.y, mo.min.z));
-            v_geometry.vertices.push(new THREE.Vector3(mo.min.x, mo.min.y, mo.max.z));
-            let v_devides = (mo.max.y - mo.min.y) / v_segments;
-            for (let i = 1; i <= v_segments; i++) {
-                //画竖线
-                let line = new THREE.Line(v_geometry, lMaterial);
-                line.position.y = i * v_devides;
-                line.position.x = line.position.x - offset * 2;
-                linesGroup.add(line);
+            for (let m = 0, len = mo.length; m < len; m++) {
+                let geometry = new THREE.Geometry();
+                let v_geometry = geometry.clone();
+                geometry.vertices.push(new THREE.Vector3(mo[m].min.x, mo[m].min.y, mo[m].min.z));
+                geometry.vertices.push(new THREE.Vector3(mo[m].max.x, mo[m].max.y, mo[m].min.z));
+                let h_devides = (mo[m].max.z - mo[m].min.z) / h_segments;
+
+                for (let i = 1; i <= h_segments; i++) {
+                    //画横线
+                    let line = new THREE.Line(geometry, lMaterial);
+                    line.position.z = i * h_devides;
+                    line.position.x = line.position.x - offset * 2;
+                    linesGroup.add(line);
+                }
+                v_geometry.vertices.push(new THREE.Vector3(mo[m].min.x, mo[m].min.y, mo[m].min.z));
+                v_geometry.vertices.push(new THREE.Vector3(mo[m].min.x, mo[m].min.y, mo[m].max.z));
+                let v_devides = (mo[m].max.y - mo[m].min.y) / v_segments;
+                for (let i = 1; i <= v_segments; i++) {
+                    //画竖线
+                    let line = new THREE.Line(v_geometry, lMaterial);
+                    line.position.y = i * v_devides;
+                    line.position.x = line.position.x - offset * 2;
+                    linesGroup.add(line);
+                }
             }
 
             viewer.addExternalObject("lineGrid", linesGroup);
@@ -237,6 +243,32 @@ function onSDKLoadSucceeded(viewMetaData) {
             let light = new THREE.PointLight(0xff0000, 0.35, 10000);
             light.position.set(53789.66668783984, 116882.37157129617, -18220.363535766293);
             myscene.add(light);
+
+            // 星空盒
+            // myscene.background = new THREE.CubeTextureLoader()
+            //     .setPath('../../images/')
+            //     .load(['back.jpg', 'back.jpg', 'back.jpg', 'back.jpg', 'back.jpg', 'back.jpg']);
+
+            // var path = "../../images/";
+            // var img = 'starfiled.jpeg';
+            // var directions = [img, img, img, img, img, img];
+
+            // var skyGeometry = new THREE.BoxGeometry(1000, 1000, 1000);
+
+            // var materialArray = [];
+            // for (var i = 0; i < 6; i++)
+            //     materialArray.push(new THREE.MeshBasicMaterial({
+            //         map: THREE.ImageUtils.loadTexture(path + directions[i]),
+            //         side: THREE.BackSide
+            //     }));
+            // var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
+            // var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
+            // skyBox.translateX = 5000;
+            // skyBox.translateZ = -5000;
+            // window.mySky = skyBox;
+            // //skyBox.scale.x=-1;也是镜像翻转，与上面的side一个效果
+            // myscene.add(skyBox);
+
 
 
             //基础设置

@@ -3,6 +3,8 @@
  * @function light box animation
  */
 
+import { ModelShaderChunk } from '../../shaders/common/ModelShaderChunk.js';
+
 var scene = null;
 var camera = null;
 var mesh = null;
@@ -14,19 +16,19 @@ var height = window.innerHeight;
 var pointLight;
 
 
-initScene = () => {
+let initScene = () => {
     axesHelper = new THREE.AxisHelper(100);
     scene = new THREE.Scene();
     scene.add(axesHelper);
 };
 
-initCamera = () => {
+let initCamera = () => {
     camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
     camera.position.set(0, 0, 100);
     camera.lookAt(0, 0, 0);
 };
 
-initRenderer = () => {
+let initRenderer = () => {
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0xD1BEBE);
@@ -34,7 +36,7 @@ initRenderer = () => {
 };
 
 
-initLight = () => {
+let initLight = () => {
     // var light = new THREE.DirectionalLight(0x695DEE);
     var light = new THREE.DirectionalLight(0xeeeeee);
     light.position.set(100, 100, 100);
@@ -52,7 +54,7 @@ initLight = () => {
 
 };
 
-initGeometry = () => {
+let initGeometry = () => {
     var boxMaterial = new THREE.MeshLambertMaterial({
         transparent: true,
         wireframe: false,
@@ -62,11 +64,43 @@ initGeometry = () => {
 
     var boxGeometry = new THREE.BoxGeometry(40, 40, 40);
     mesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    scene.add(mesh);
+    // scene.add(mesh);
 };
 
 
-initControl = () => {
+let initPlane = () => {
+
+
+    var planeGeo = new THREE.Geometry();
+    planeGeo.vertices.push(new THREE.Vector3(0, 0, 0));
+    planeGeo.vertices.push(new THREE.Vector3(40, 0, 0));
+    planeGeo.vertices.push(new THREE.Vector3(40, 20, 0));
+    planeGeo.vertices.push(new THREE.Vector3(0, 20, 0));
+
+    var color1 = new THREE.Color(0xFF0000);
+    var color2 = new THREE.Color(0x0000FF);
+    var color3 = new THREE.Color(0xFF0000);
+    var color4 = new THREE.Color(0x0000FF);
+
+    var face = new THREE.Face3(0, 1, 2, new THREE.Vector3(0, 0, 1));
+    var face2 = new THREE.Face3(0, 2, 3, new THREE.Vector3(0, 0, 1));
+    face.vertexColors.push(color1, color2, color3);
+    face2.vertexColors.push(color1, color3, color4);
+    planeGeo.faces.push(face);
+    planeGeo.faces.push(face2);
+
+
+    var planeMaterial = new THREE.MeshBasicMaterial({
+        vertexShader: ModelShaderChunk.general_vertex_shader,
+        fragmentShader: ModelShaderChunk.general_fragment_shader,
+        side: THREE.DoubleSide,
+        vertexColors: false
+    });
+    var b = new THREE.Mesh(planeGeo, planeMaterial);
+    scene.add(b);
+}
+
+let initControl = () => {
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     // 使用阻尼,指定是否有惯性
     controls.enableDamping = true;
@@ -84,7 +118,7 @@ initControl = () => {
     controls.enablePan = true;
 };
 let dir = 1;
-render = () => {
+let render = () => {
 
     controls.update();
     renderer.render(scene, camera);
@@ -99,7 +133,7 @@ render = () => {
     }
 
 };
-init = () => {
+let init = () => {
     window.onresize = onWindowResize;
 
     initScene();
@@ -108,12 +142,13 @@ init = () => {
     initLight();
     initGeometry();
     // initPlaneGeometry();
+    initPlane();
     initControl();
     render();
 };
 
 
-onWindowResize = () => {
+let onWindowResize = () => {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
