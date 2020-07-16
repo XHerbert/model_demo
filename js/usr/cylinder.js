@@ -3,6 +3,8 @@
  * @function cylinder animation
  */
 
+import { ModelShaderChunk } from '../../shaders/common/ModelShaderChunk.js'
+
 var scene = null;
 var camera = null;
 var mesh = null;
@@ -16,7 +18,7 @@ var height = window.innerHeight;
 let initScene = () => {
     axesHelper = new THREE.AxisHelper(100);
     scene = new THREE.Scene();
-    scene.add(axesHelper);
+    //scene.add(axesHelper);
 };
 
 let initCamera = () => {
@@ -40,47 +42,37 @@ let initLight = () => {
 
 };
 
-let initGeometry = () => {
-    var cylinderMaterial = new THREE.MeshBasicMaterial({ color: 0xEE2F5F, transparent: true, side: THREE.DoubleSide, wireframe: false });
-    var cylinderShaderMaterial = new THREE.ShaderMaterial({
+let uniform = {
+    u_height: 20.0,
+    u_time: 0.0,
+    u_color: {
+        value: new THREE.Vector3(0.23, 0.54, 0.11)
+    }
+}
 
+let initGeometry = () => {
+    var cylinderMaterial = new THREE.MeshBasicMaterial({ color: 0xEE2F5F, transparent: true, side: THREE.DoubleSide, wireframe: false, depthTest: false });
+    var cylinderShaderMaterial = new THREE.ShaderMaterial({
+        vertexShader: ModelShaderChunk.gradient_box_vertex_shader,
+        fragmentShader: ModelShaderChunk.gradient_box_fragment_shader,
+        uniforms: uniform,
+        side: THREE.DoubleSide,
+        transparent: true,
+        wireframe: false,
+        depthTest: false
     });
-    var cylinderGeometry = new THREE.CylinderGeometry(10, 10, 20, 100, 100, true);
-    mesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+    window["mt"] = cylinderShaderMaterial;
+    var cylinderGeometry = new THREE.CylinderGeometry(10, 10, 20, 100, 100, true, 0, Math.PI * 2.0);
+    mesh = new THREE.Mesh(cylinderGeometry, cylinderShaderMaterial);
+    mesh.position.y = 10;
     scene.add(mesh);
 };
 
 var rollTexture;
 let initPlaneGeometry = () => {
 
-    // 依靠移动材质的offset属性实现动画
-    var rollMat = new THREE.MeshBasicMaterial();
-    rollTexture = new THREE.TextureLoader().load('../images/icon_arrow_right_pow.png', function (map) {
-        rollMat.map = map;
-        rollMat.wireframe = false;
-        rollMat.needsUpdate = true;
-        rollMat.transparent = true;
-        rollMat.side = THREE.DoubleSide;
-    });
-    rollTexture.wrapS = THREE.RepeatWrapping;
-    rollTexture.wrapT = THREE.RepeatWrapping;
-    rollTexture.repeat.x = 10;
-
-    var planeGeometry2 = new THREE.PlaneGeometry(100, 5, 100, 20);
-    var planeGeometry3 = new THREE.PlaneGeometry(100, 5, 100, 20);
-
-    var obj2 = new THREE.Mesh(planeGeometry2, rollMat);
-    obj2.position.set(0, 0, 0);
-    obj2.translateX(50);
-
-    var obj3 = new THREE.Mesh(planeGeometry3, rollMat);
-    obj3.position.set(50, 50, 0);
-    obj3.rotation.z = Math.PI / 2;
-
-
-
-    scene.add(obj2);
-    scene.add(obj3);
+    var gridHelper = new THREE.GridHelper(400, 100, 0xffffff, 0xff0000);
+    scene.add(gridHelper);
 }
 
 let initControl = () => {
@@ -105,13 +97,14 @@ let scale = 1.000;
 let render = () => {
     //mesh.scale.x += scale;
     //mesh.scale.z += scale;
+    uniform.u_time += 0.01;
     scale += 0.01;
     mesh.scale.set(scale, 1, scale);
     mesh.material.opacity -= 0.01;
     if (mesh.material.opacity <= 0) {
         //如果Mesh消失，还原Mesh
         scale = 1.0;
-        mesh.scale.set(1, 1, 1);
+        mesh.scale.set(scale, scale, scale);
         mesh.material.opacity = 1.0;
     }
     controls.update();
@@ -126,7 +119,7 @@ let init = () => {
     initRenderer();
     initLight();
     initGeometry();
-    // initPlaneGeometry();
+    initPlaneGeometry();
     initControl();
     render();
 };
