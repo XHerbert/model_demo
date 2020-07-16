@@ -14,6 +14,12 @@ var axesHelper = null;
 var width = window.innerWidth;
 var height = window.innerHeight;
 var pointLight;
+var uniform = {
+    u_resolution: {
+        // value: new THREE.Vector2(window.innerWidth, window.innerHeight)
+        value: new THREE.Vector2(40, 20)
+    }
+}
 
 
 let initScene = () => {
@@ -90,11 +96,11 @@ let initPlane = () => {
     planeGeo.faces.push(face2);
 
 
-    var planeMaterial = new THREE.MeshBasicMaterial({
+    var planeMaterial = new THREE.ShaderMaterial({
+        uniforms: uniform,
         vertexShader: ModelShaderChunk.general_vertex_shader,
         fragmentShader: ModelShaderChunk.general_fragment_shader,
-        side: THREE.DoubleSide,
-        vertexColors: false
+        side: THREE.DoubleSide
     });
     var b = new THREE.Mesh(planeGeo, planeMaterial);
     scene.add(b);
