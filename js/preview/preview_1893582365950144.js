@@ -11,10 +11,10 @@ const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 
-//webUtils.getViewtoken(1893582365950144, INTEGRATE_FILE).then((token) => {
-BimfaceLoaderConfig.viewToken = 'd85d1fdfe02b409faefaabb983d2dfb8';
-BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
-//});
+webUtils.getViewtoken(1893582365950144, INTEGRATE_FILE).then((token) => {
+    BimfaceLoaderConfig.viewToken = token;
+    BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
+});
 
 function onSDKLoadSucceeded(viewMetaData) {
     if (viewMetaData.viewType == "3DView") {
@@ -33,8 +33,9 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             let helper = new ModelHelper(viewer);
             let open = true;
-            helper.createAixsHelper(viewer);
+            //helper.createAixsHelper(viewer);
             let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
+            renderer.domElement.addClass('canvasClass');
             window.myscene = scene;
             renderer.shadowMap.enabled = true;
             viewer.enableShadow(true);
@@ -56,7 +57,6 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.overrideComponentsFrameColorByObjectData([], new Glodon.Web.Graphics.Color(255, 255, 255, 1));
 
             // 全楼蓝透
-            // viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(48, 50, 184, uniform.alpha));
             viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(114, 116, 203, uniform.alpha));
 
 

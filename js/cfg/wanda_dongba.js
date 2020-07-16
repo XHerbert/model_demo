@@ -207,7 +207,7 @@ var wd_config = {
         }, true);
 
         function animation() {
-            uniform.time.value += 0.075;
+            uniform.time.value += 0.25;
             requestAnimationFrame(animation);
             viewer.render();
         }
