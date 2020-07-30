@@ -3,6 +3,7 @@
  * @function:web utils
  */
 
+
 function WebUtils(viewer) {
     this.viewer = viewer || window.viewer;
 }
@@ -129,6 +130,15 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
         if (open_button) {
             open_button.style.display = 'block';
         }
+    },
+
+    /**
+     * 颜色归一化
+     * @param {Vector3} color 三维颜色向量，如Vector3(120,120,255)
+     * @returns {Vector3} 归一化后的三维颜色向量
+     */
+    normalizeColor: function (color) {
+        return new THREE.Vector3(color.x / 255, color.y / 255, color.z / 255);
     }
 });
 

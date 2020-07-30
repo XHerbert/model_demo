@@ -19,12 +19,14 @@ let initScene = () => {
     axesHelper = new THREE.AxisHelper(100);
     scene = new THREE.Scene();
     //scene.add(axesHelper);
+    window["scene"] = scene;
 };
 
 let initCamera = () => {
     camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
     camera.position.set(0, 100, 0);
     camera.lookAt(0, 0, 0);
+    window["camera"] = camera;
 };
 
 let initRenderer = () => {
@@ -32,6 +34,7 @@ let initRenderer = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0xD1BEBE);
     document.body.appendChild(renderer.domElement);
+    window["renderer"] = renderer;
 };
 
 
@@ -43,10 +46,10 @@ let initLight = () => {
 };
 
 let uniform = {
-    u_height: 20.0,
+    u_height: 50.0,
     u_time: 0.0,
     u_color: {
-        value: new THREE.Vector3(0.23, 0.54, 0.11)
+        value: new THREE.Vector3(30 / 255, 144 / 255, 255 / 255) //颜色归一化
     }
 }
 
@@ -62,16 +65,18 @@ let initGeometry = () => {
         depthTest: false
     });
     window["mt"] = cylinderShaderMaterial;
-    var cylinderGeometry = new THREE.CylinderGeometry(10, 10, 20, 100, 100, true, 0, Math.PI * 2.0);
+    //参数4与5可以控制Mesh的形状，3代表三角形，4代表矩形，值越大越接近圆形
+    var cylinderGeometry = new THREE.CylinderGeometry(10, 10, 50, 100, 100, true, 0, Math.PI * 2.0);
     mesh = new THREE.Mesh(cylinderGeometry, cylinderShaderMaterial);
-    mesh.position.y = 10;
+    mesh.position.y = 25;
+    mesh.name = "cylinder";
     scene.add(mesh);
 };
 
 var rollTexture;
 let initPlaneGeometry = () => {
 
-    var gridHelper = new THREE.GridHelper(400, 100, 0xffffff, 0xff0000);
+    var gridHelper = new THREE.GridHelper(400, 100, 0xff0000, 0xffffff);
     scene.add(gridHelper);
 }
 
@@ -111,6 +116,8 @@ let render = () => {
     renderer.render(scene, camera);
     requestAnimationFrame(render);
 };
+
+
 let init = () => {
     window.onresize = onWindowResize;
 
