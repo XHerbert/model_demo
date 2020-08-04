@@ -5,6 +5,7 @@
 
 import { WebUtils } from '../usr/WebUtils.js'
 import { ModelHelper } from '../usr/ModelHelper.js'
+import { RoomUtils } from '../usr/RoomUtils.js'
 import { DragControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/DragControls.js'
 import { TransformControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/TransformControls.js'
 
@@ -54,23 +55,23 @@ function onSDKLoadSucceeded(viewMetaData) {
 
             //创建房间
             pointCollection = [];
-            viewer.createRoom(cleanBoundaryData({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999873737, "x": 38506.136268202223 }, { "z": 0.0, "y": 99.99999999985306, "x": 44906.136268202215 }], [{ "z": 0.0, "y": 99.99999999985306, "x": 44906.136268202215 }, { "z": 0.0, "y": 8899.9999999998527, "x": 44906.136268202237 }], [{ "z": 0.0, "y": 8899.9999999998527, "x": 44906.136268202237 }, { "z": 0.0, "y": 8899.9999999998672, "x": 41006.136268202237 }], [{ "z": 0.0, "y": 8899.9999999998672, "x": 41006.136268202237 }, { "z": 0.0, "y": 8899.9999999998745, "x": 38506.136268202237 }], [{ "z": 0.0, "y": 8899.9999999998745, "x": 38506.136268202237 }, { "z": 0.0, "y": 99.999999999873737, "x": 38506.136268202223 }]]] })
-                , 5500, 5500, new Glodon.Web.Graphics.Color('#ff0000', 0.25), new Glodon.Web.Graphics.Color('#ff0000'));
+            var roomUtils = new RoomUtils(viewer);
 
-            viewer.createRoom(cleanBoundaryData({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999895067, "x": 31906.136268202226 }, { "z": 0.0, "y": 99.999999999874376, "x": 38306.13626820223 }], [{ "z": 0.0, "y": 99.999999999874376, "x": 38306.13626820223 }, { "z": 0.0, "y": 8899.9999999998745, "x": 38306.136268202237 }], [{ "z": 0.0, "y": 8899.9999999998745, "x": 38306.136268202237 }, { "z": 0.0, "y": 8899.9999999998963, "x": 31906.136268202241 }], [{ "z": 0.0, "y": 8899.9999999998963, "x": 31906.136268202241 }, { "z": 0.0, "y": 99.999999999894968, "x": 31906.136268202226 }]]] })
-                , 5500, 5550, new Glodon.Web.Graphics.Color('#ff0000', 0.25), new Glodon.Web.Graphics.Color('#ff0000'));
+            let leftArea = { "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999873737, "x": 38506.136268202223 }, { "z": 0.0, "y": 99.99999999985306, "x": 44906.136268202215 }], [{ "z": 0.0, "y": 99.99999999985306, "x": 44906.136268202215 }, { "z": 0.0, "y": 8899.9999999998527, "x": 44906.136268202237 }], [{ "z": 0.0, "y": 8899.9999999998527, "x": 44906.136268202237 }, { "z": 0.0, "y": 8899.9999999998672, "x": 41006.136268202237 }], [{ "z": 0.0, "y": 8899.9999999998672, "x": 41006.136268202237 }, { "z": 0.0, "y": 8899.9999999998745, "x": 38506.136268202237 }], [{ "z": 0.0, "y": 8899.9999999998745, "x": 38506.136268202237 }, { "z": 0.0, "y": 99.999999999873737, "x": 38506.136268202223 }]]] };
+            let rightArea = { "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999895067, "x": 31906.136268202226 }, { "z": 0.0, "y": 99.999999999874376, "x": 38306.13626820223 }], [{ "z": 0.0, "y": 99.999999999874376, "x": 38306.13626820223 }, { "z": 0.0, "y": 8899.9999999998745, "x": 38306.136268202237 }], [{ "z": 0.0, "y": 8899.9999999998745, "x": 38306.136268202237 }, { "z": 0.0, "y": 8899.9999999998963, "x": 31906.136268202241 }], [{ "z": 0.0, "y": 8899.9999999998963, "x": 31906.136268202241 }, { "z": 0.0, "y": 99.999999999894968, "x": 31906.136268202226 }]]] };
+            let areaList = [];
+            areaList.push(leftArea);
+            areaList.push(rightArea);
+            roomUtils.mergeBoundaryPipeline(areaList);
 
-            //合并
-            //viewer.createRoom({ version: "2.0", loops: [[[{ z: 0, y: 100, x: 44906 }, { z: 0, y: 8900, x: 44906 }], [{ z: 0, y: 8900, x: 44906 }, { z: 0, y: 8900, x: 31906 }], [{ z: 0, y: 8900, x: 31906 }, { z: 0, y: 100, x: 31906 }], [{ z: 0, y: 100, x: 31906 }, { z: 0, y: 100, x: 44906 }]]] },
-            //  6500, 6500, new Glodon.Web.Graphics.Color('#ffff00', 0.25), new Glodon.Web.Graphics.Color('#ffff00'));
-            viewer.createRoom({ "version": "2.0", "loops": [[[{ z: 0, y: 8900, x: 44906 }, { z: 0, y: 100, x: 44906 }], [{ z: 0, y: 100, x: 44906 }, { z: 0, y: 100, x: 31906 }], [{ z: 0, y: 100, x: 31906 }, { z: 0, y: 8900, x: 31906 }], [{ z: 0, y: 8900, x: 31906 }, { z: 0, y: 8900, x: 44906 }]]] },
-                6500, 6500, new Glodon.Web.Graphics.Color('#ffff00', 0.25), new Glodon.Web.Graphics.Color('#ffff00'));
-
-
+            var roomUtils2 = new RoomUtils(viewer);
+            let areaLists = [];
+            areaLists.push({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001437 }, { "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }], [{ "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }, { "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }], [{ "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }, { "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }], [{ "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }, { "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001462 }]]] });
+            areaLists.push({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999976481, "x": 6706.1362682022218 }, { "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }], [{ "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }, { "z": 0.0, "y": 99.999999999977263, "x": 6706.1362682022218 }]]] });
+            areaLists.push({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999955165, "x": 13306.136268202221 }, { "z": 0.0, "y": 99.999999999934474, "x": 19706.136268202226 }], [{ "z": 0.0, "y": 99.999999999934474, "x": 19706.136268202226 }, { "z": 0.0, "y": 8899.9999999999345, "x": 19706.136268202241 }], [{ "z": 0.0, "y": 8899.9999999999345, "x": 19706.136268202241 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13306.136268202235 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13306.136268202235 }, { "z": 0.0, "y": 99.9999999999556, "x": 13306.136268202221 }]]] });
+            roomUtils2.mergeBoundaryPipeline(areaLists);
             viewer.render();
 
-            console.log(pointCollection);
-            buildBoundaryPoint(pointCollection);
             //经过验证，bimface平台下不支持构件的拖动，通过算法实现拆分与合并
             document.getElementById('horizon').addEventListener('click', () => {
                 let boxGeometry = new THREE.BoxBufferGeometry(1000, 5000, 2500);
@@ -112,6 +113,10 @@ function onSDKLoadSucceeded(viewMetaData) {
 
             });
 
+            viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
+                console.log(e);
+            });
+
             //配置相机
             setCamera(viewer, null);
         });
@@ -124,9 +129,9 @@ function onSDKLoadFailed(error) {
 
 
 //处理边界数据，小数部分四舍五入
-function cleanBoundaryData(data) {
-    for (let m = 0, len = data.loops[0].length; m < len; m++) {
-        let root = data.loops[0];
+function cleanBoundaryData(boundaryData) {
+    for (let m = 0, len = boundaryData.loops[0].length; m < len; m++) {
+        let root = boundaryData.loops[0];
         for (let n = 0, sublen = root[m].length; n < sublen; n++) {
             let sub = root[m];
 
@@ -137,17 +142,15 @@ function cleanBoundaryData(data) {
         }
     }
 
-    let points = storePointArray(data);
-    console.log(points);
-    console.log(data);
-    return data;
+    let points = storePointArray(boundaryData);
+    return boundaryData;
 }
 
 //将处理后的点位数据依次存储到数组
-function storePointArray(data) {
+function storePointArray(boundaryData) {
     let pointArray = [];
-    for (let m = 0, len = data.loops[0].length; m < len; m++) {
-        let root = data.loops[0];
+    for (let m = 0, len = boundaryData.loops[0].length; m < len; m++) {
+        let root = boundaryData.loops[0];
         for (let n = 0, sublen = root[m].length; n < sublen; n++) {
             let sub = root[m];
 
@@ -156,8 +159,15 @@ function storePointArray(data) {
 
         }
     }
+    let result = validatePointData(pointArray);
+    if (!result) {
+        console.warn("边界数据不合法", pointArray);
+        return;
+    }
+
+    //pointCollection用于存储多个空间的点位数据
     pointCollection = pointCollection.concat(pointArray);
-    validatePointData(pointArray);
+    console.log("pointArray", pointArray);
     return pointArray;
 }
 
@@ -188,9 +198,8 @@ function validatePointData(pointArray) {
 }
 
 //计算极值点，移除中间点，构造新的空间边界
-function buildBoundaryPoint(pointCollection, direction) {
-    let leftPoint = [];
-    let resultPoint = [];
+function extremumBoundaryPoint(pointCollection, direction) {
+    let extremumPoint = [];
     direction = vertical;
     minX = maxX = pointCollection[0].x;
     minY = maxY = pointCollection[0].y;
@@ -200,16 +209,16 @@ function buildBoundaryPoint(pointCollection, direction) {
         pointCollection[n].y > maxY ? maxY = pointCollection[n].y : null;
         pointCollection[n].y < minY ? minY = pointCollection[n].y : null;
     }
-    console.log("minX", minX);
-    console.log("minY", minY);
-    console.log("maxX", maxX);
-    console.log("maxY", maxY);
+    console.log("minX", minX);//31906
+    console.log("minY", minY);//100
+    console.log("maxX", maxX);//44906
+    console.log("maxY", maxY);//8900
 
     for (let k = 0, len = pointCollection.length; k < len; k++) {
         let currentPoint = pointCollection[k];
         if (direction === vertical) {
             if (!(currentPoint.x > minX && currentPoint.x < maxX)) {
-                let exist = leftPoint.some(item => {
+                let exist = extremumPoint.some(item => {
                     if (item.x == currentPoint.x && item.y == currentPoint.y) {
                         return true;
                     }
@@ -217,7 +226,7 @@ function buildBoundaryPoint(pointCollection, direction) {
                 })
 
                 if (!exist) {
-                    leftPoint.push(currentPoint);
+                    extremumPoint.push(currentPoint);
                 }
 
             } else {
@@ -226,39 +235,102 @@ function buildBoundaryPoint(pointCollection, direction) {
         }
         if (direction === horizontal) {
             if (!(currentPoint.y > minY && currentPoint.y < maxY)) {
-                leftPoint.push(currentPoint);
+                let exist = extremumPoint.some(item => {
+                    if (item.x == currentPoint.x && item.y == currentPoint.y) {
+                        return true;
+                    }
+                    return false;
+                })
+
+                if (!exist) {
+                    extremumPoint.push(currentPoint);
+                }
                 console.log("分割方向：横向");
             }
         }
     }
-    console.log("leftPoint", leftPoint);
+    console.log("extremumPoint", extremumPoint);
     //对符合条件的点集进行顺时针排序，思路是找到最大和最小占1、3索引，剩余的两个点随机
-    orderPointList(leftPoint);
+    return extremumPoint;
 
 }
 
 //为坐标点进行排序（顺时针或逆时针），构造符合边界的数组数据
-function orderPointList(pointList) {
-    let copy = Object.assign([], pointList);
+function buildBoundary(extremumPoints) {
+    let copy = Object.assign([], extremumPoints);
     console.log(copy);
     copy.forEach(item => {
         if (item.x === maxX && item.y === maxY) {
-            pointList[0] = item;
+            extremumPoints[0] = item;
         }
         if (item.x === minX && item.y === minY) {
-            pointList[2] = item;
+            extremumPoints[2] = item;
         }
         if (item.x === maxX && item.y === minY) {
-            pointList[1] = item;
+            extremumPoints[1] = item;
         }
         if (item.x === minX && item.y === maxY) {
-            pointList[3] = item;
+            extremumPoints[3] = item;
         }
     });
-    console.log("order point", pointList);
     //TODO:排序完成后开始构造新的边界数据
+    let boundaryArray = {};
+    boundaryArray.version = "2.0";
+    boundaryArray.loops = [];
+    boundaryArray.loops[0] = [];
 
+    for (let j = 0, len = extremumPoints.length; j < len; j++) {
+        let arrayItem = [];
+        if (j == len - 1) {
+            arrayItem.push(extremumPoints[j]);
+            arrayItem.push(extremumPoints[0]);
+        } else {
+            arrayItem.push(extremumPoints[j]);
+            arrayItem.push(extremumPoints[j + 1]);
+        }
+
+        boundaryArray.loops[0].push(arrayItem);
+    }
+
+    return boundaryArray;
 }
+
+
+
+
+
+//边界数据处理管线
+function mergeBoundaryPipeline(boundaryArray, id, height, faceColor, frameColor) {
+
+    for (let n = 0, len = boundaryArray.length; n < len; n++) {
+        //第一步：清理数据
+        let cleanData = cleanBoundaryData(boundaryArray[n]);
+        //第二步：将所有的点数据存储至一维数组
+        storePointArray(cleanData);
+    }
+
+
+    //let cleanLeftData = cleanBoundaryData(leftArea);
+    //let cleanRightData = cleanBoundaryData(rightArea);
+
+
+    //storePointArray(cleanLeftData);
+    //storePointArray(cleanRightData);
+    console.log(pointCollection);
+
+    //第三步：验证边界数组合法性
+    //let validateData = validatePointData(storeData);
+
+    //第四步：获取点位集合中的极值
+    let extremum = extremumBoundaryPoint(pointCollection, vertical);
+    console.log("pointCollection", pointCollection);
+
+    //第五步：建立新的空间边界数据
+    let newBoundary = buildBoundary(extremum);
+    viewer.createRoom(newBoundary, height || 5500, id || Math.random(10), faceColor || new Glodon.Web.Graphics.Color('#ff0000', 0.25), frameColor || new Glodon.Web.Graphics.Color('#ff0000'));
+}
+
+
 
 function setCamera(viewer, callback) {
     let start = {
