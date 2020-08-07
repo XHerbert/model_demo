@@ -1,8 +1,12 @@
 /**
- * @author:xuhb
+ * @author:xuhb <xuhbd@foxmail.com>
  * @function:room utils
  */
 
+/**
+ * @fileOverview 空间工具包
+ * @module RoomUtils
+ */
 function RoomUtils(viewer) {
     this.viewer = viewer || window.viewer;
 }
@@ -13,19 +17,32 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
 
     constructor: RoomUtils,
 
+    /**
+     * viewer 对象
+     * @memberOf module:RoomUtils#
+     */
     viewer: null,
 
+    /**
+     * 存储极值点的集合
+     * @memberOf module:RoomUtils#
+     */
     pointCollection: [],
 
+    /**
+     * 空间分割方向 1：纵向 2：横向
+     * @memberOf module:RoomUtils#
+     */
     direction: null,
 
     /**
-     * 空间合并处理管道
+     * 空间合并处理管道，适用于多个规则且相邻的矩形空间
      * @param {Array} boundaryArray 空间边界数据数组(必填)
      * @param {String} id 空间唯一标识(非必填)
      * @param {Number} height 空间高度(非必填)
      * @param {Glodon.Web.Graphics.Color} faceColor 空间表面颜色(非必填)
      * @param {Glodon.Web.Graphics.Color} frameColor 空间轮廓颜色(非必填)
+     * @public
      */
     mergeBoundaryPipeline: function (boundaryArray, id, height, faceColor, frameColor) {
         if (!boundaryArray || !boundaryArray.length) {
@@ -146,10 +163,6 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
             pointCollection[n].y > maxY ? maxY = pointCollection[n].y : null;
             pointCollection[n].y < minY ? minY = pointCollection[n].y : null;
         }
-        console.log("minX", minX);//31906
-        console.log("minY", minY);//100
-        console.log("maxX", maxX);//44906
-        console.log("maxY", maxY);//8900
 
         for (let k = 0, len = pointCollection.length; k < len; k++) {
             let currentPoint = pointCollection[k];

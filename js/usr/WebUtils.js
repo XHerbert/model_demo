@@ -4,20 +4,28 @@
  */
 
 
+
 function WebUtils(viewer) {
     this.viewer = viewer || window.viewer;
 }
 
+/**
+ * @fileOverview 通用工具包
+ * @module WebUtils
+ */
 WebUtils.prototype = Object.assign(WebUtils.prototype, {
 
     constructor: WebUtils,
 
-    // viewer 对象
+    /**
+     * viewer 对象
+     * @memberOf module:WebUtils#
+     */
     viewer: null,
 
     /**
      * 获取URL参数
-     * @param {String} name 
+     * @param {String} name 根据名称获取url地址中的参数值
      */
     getURLParameter: function (name) {
         return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
@@ -27,6 +35,7 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
      * 根据modelId获取viewToken
      * @param {Number} modelId 模型文件Id
      * @param {Number} type 模型类型，0：单模型 1：集成模型
+     * @private
      */
     getViewtoken: function (modelId, type) {
         let _fileUrl = 'http://10.0.197.82:8078/api/token/getFilePreviewToken?fileId=' + modelId;
@@ -113,6 +122,7 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
 
     /**
      * 初始化模型公共配置
+     * @private
      */
     initModel: function () {
         const tree = document.getElementsByClassName('gld-bf-tree');
@@ -139,6 +149,26 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
      */
     normalizeColor: function (color) {
         return new THREE.Vector3(color.x / 255, color.y / 255, color.z / 255);
+    },
+
+    /**
+     * 画线
+     * @param {Array} pointArray 
+     */
+    drawLine: function (pointArray, color) {
+        let lineGeometry = new THREE.Geometry();
+        lineGeometry.vertices.push(
+            // new THREE.Vector3(-100, 0, 100),
+            // new THREE.Vector3(100, 0, -100)
+            pointArray[0], pointArray[1]
+        );
+        lineGeometry.colors.push(
+            new THREE.Color(0xFFFF00 || color),
+            new THREE.Color(0x808000 || color)
+        )
+        let lineMaterial = new THREE.LineBasicMaterial({ vertexColors: true });
+        let line = new THREE.Line(lineGeometry, lineMaterial);
+        this.viewer.addExternalObject("line" + Math.random(), line);
     }
 });
 

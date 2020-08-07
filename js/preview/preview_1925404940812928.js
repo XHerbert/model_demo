@@ -11,7 +11,7 @@ const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 
-webUtils.getViewtoken(1897052362842272, INTEGRATE_FILE).then((token) => {
+webUtils.getViewtoken(1925404940812928, INTEGRATE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 });
@@ -42,7 +42,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.setExposureShift(-0.1);
             renderer.alpha = true;
             renderer.setClearAlpha(0.08);
-            viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(254, 254, 254, 1));
+            viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(6, 3, 19, 1));
 
             // 创建标签容器
             var drawableConfig = new Glodon.Bimface.Plugins.Drawable.DrawableContainerConfig();
@@ -53,24 +53,23 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.overrideComponentsFrameColorByObjectData([], new Glodon.Web.Graphics.Color(255, 255, 255, 1));//214
 
             // 建筑
-            viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color(236, 236, 236, 255));
-            // viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color(185, 185, 185, 255));
+            viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color('#1E90FF', 0.7));
 
             //手动调整颜色
-            viewer.overrideComponentsColorByObjectData([{ "family": "静压箱组4" }, { "family": "静压箱组" }, { "family": "静压箱" }, { "family": "卧式暗装风机盘管" }], new Glodon.Web.Graphics.Color(255, 203, 193, 255));
-
-            // 区域 
-            viewer.overrideComponentsColorById(["1896419529082976.1089007"], new Glodon.Web.Graphics.Color(66, 199, 255, 255));
+            viewer.overrideComponentsColorByObjectData([{ "family": "静压箱组4" }, { "family": "静压箱组" }, { "family": "静压箱" }, { "family": "卧式暗装风机盘管" }], new Glodon.Web.Graphics.Color(255, 203, 193, 1));
 
             //地面
-            viewer.overrideComponentsColorByObjectData([{ "family": "楼板" }], new Glodon.Web.Graphics.Color(147, 147, 147, 255));
+            viewer.overrideComponentsColorByObjectData([{ "family": "楼板" }], new Glodon.Web.Graphics.Color(52, 51, 164, 0.45));
+
+            // 区域 
+            viewer.overrideComponentsColorById(["1896416549734496.1089007"], new Glodon.Web.Graphics.Color(66, 199, 255, 1));
 
             //光源
             let light = new THREE.PointLight(0xff0000, 0.35, 10000);
             light.position.set(53789.66668783984, 116882.37157129617, -18220.363535766293);
             //myscene.add(light);
 
-            bindEvent();
+
             //基础设置
             viewer.hideViewHouse();
             document.getElementsByClassName('bf-toolbar bf-toolbar-bottom')[0].style.display = 'none';
@@ -144,37 +143,4 @@ function setCamera(viewer, callback) {
             })
         }, 800);
     });
-}
-
-
-function bindEvent() {
-    document.getElementById("white").addEventListener("click", () => {
-
-        viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(214, 214, 214, 1));
-        viewer.overrideComponentsColorById(["1896419529082976.1089007"], new Glodon.Web.Graphics.Color(66, 199, 255, 255));
-        viewer.overrideComponentsColorByObjectData([{ "family": "静压箱组4" }, { "family": "静压箱组" }, { "family": "静压箱" }, { "family": "卧式暗装风机盘管" }], new Glodon.Web.Graphics.Color(255, 203, 193, 255));
-        // viewer.overrideComponentsColorByObjectData([{ "family": "机械设备" }], new Glodon.Web.Graphics.Color(255, 203, 193, 255));
-        // viewer.overrideComponentsColorByObjectData([{ "family": "风管" }], new Glodon.Web.Graphics.Color(239, 163, 153, 255));
-        // viewer.overrideComponentsColorByObjectData([{ "familyType": "镀锌钢板 - 接头 - 法兰" }, { "familyType": "不锈钢板 - T型三通 - 法兰" }, {}], new Glodon.Web.Graphics.Color(95, 163, 255, 255));
-        viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color(196, 196, 196, 255));
-        viewer.render();
-    });
-
-    document.getElementById("blue").addEventListener("click", () => {
-        viewer.overrideComponentsFrameColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color('#1E90FF', 0.7));
-        viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color('#6699FF', 0.65));
-        viewer.overrideComponentsColorById(["1896419529082976.1089007"], new Glodon.Web.Graphics.Color(66, 199, 2555, 255));
-        viewer.overrideComponentsColorByObjectData([{ "family": "静压箱组4" }, { "family": "静压箱组" }, { "family": "静压箱" }, { "family": "卧式暗装风机盘管" }], new Glodon.Web.Graphics.Color(255, 203, 193, 255));
-        viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(17, 25, 48, 1));
-        viewer.render();
-    });
-
-    document.getElementById("black").addEventListener("click", () => {
-        viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(6, 3, 19, 1));
-        viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color(52, 51, 164, 255));
-        viewer.overrideComponentsColorById(["1896419529082976.1089007"], new Glodon.Web.Graphics.Color(66, 199, 255, 255));
-        viewer.overrideComponentsColorByObjectData([{ "family": "静压箱组4" }, { "family": "静压箱组" }, { "family": "静压箱" }, { "family": "卧式暗装风机盘管" }], new Glodon.Web.Graphics.Color(255, 203, 193, 255));
-        viewer.render();
-    });
-
 }

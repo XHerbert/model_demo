@@ -6,6 +6,7 @@
 import { WebUtils } from '../usr/WebUtils.js'
 import { ModelHelper } from '../usr/ModelHelper.js'
 import { RoomUtils } from '../usr/RoomUtils.js'
+import { MathLibrary } from '../usr/MathLibrary.js';
 import { DragControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/DragControls.js'
 import { TransformControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/TransformControls.js'
 
@@ -15,6 +16,7 @@ const vertical = 1;
 const horizontal = 2;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
+var math = new MathLibrary();
 
 webUtils.getViewtoken(1650575476384896, SINGLE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
@@ -63,6 +65,11 @@ function onSDKLoadSucceeded(viewMetaData) {
             areaList.push(leftArea);
             areaList.push(rightArea);
             roomUtils.mergeBoundaryPipeline(areaList);
+
+            viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001437 }, { "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }], [{ "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }, { "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }], [{ "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }, { "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }], [{ "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }, { "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001462 }]]] }, 3300, "1151511");
+            viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999976481, "x": 6706.1362682022218 }, { "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }], [{ "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }, { "z": 0.0, "y": 99.999999999977263, "x": 6706.1362682022218 }]]] }, 3300, "vdfvf");
+            viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999955165, "x": 13306.136268202221 }, { "z": 0.0, "y": 99.999999999934474, "x": 19706.136268202226 }], [{ "z": 0.0, "y": 99.999999999934474, "x": 19706.136268202226 }, { "z": 0.0, "y": 8899.9999999999345, "x": 19706.136268202241 }], [{ "z": 0.0, "y": 8899.9999999999345, "x": 19706.136268202241 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13306.136268202235 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13306.136268202235 }, { "z": 0.0, "y": 99.9999999999556, "x": 13306.136268202221 }]]] }, 3300, "ssdsds");
+            viewer.render();
 
             var roomUtils2 = new RoomUtils(viewer);
             let areaLists = [];
@@ -113,8 +120,26 @@ function onSDKLoadSucceeded(viewMetaData) {
 
             });
 
+            let pointArray = [];
             viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
                 console.log(e);
+
+                var temp = {
+                    x: e.clientPosition.x,
+                    y: e.clientPosition.y
+                };
+                var worldPos = e.worldPosition;
+                var worldPosition = viewer.clientToWorld(temp);
+
+                console.log("temp", temp);
+                console.log("worldPosition", worldPosition);
+
+                pointArray.push(new THREE.Vector3(e.worldPosition.x, e.worldPosition.y, e.worldPosition.z));
+                if (pointArray.length == 2) {
+                    webUtils.drawLine(pointArray);
+                    math.resolveEquation(pointArray);
+                    pointArray = [];
+                }
             });
 
             //配置相机
@@ -126,210 +151,6 @@ function onSDKLoadSucceeded(viewMetaData) {
 function onSDKLoadFailed(error) {
     console.log("Failed to load SDK!");
 };
-
-
-//处理边界数据，小数部分四舍五入
-function cleanBoundaryData(boundaryData) {
-    for (let m = 0, len = boundaryData.loops[0].length; m < len; m++) {
-        let root = boundaryData.loops[0];
-        for (let n = 0, sublen = root[m].length; n < sublen; n++) {
-            let sub = root[m];
-
-            //对数据进行简化
-            sub[n].x = Math.round(sub[n].x);
-            sub[n].y = Math.round(sub[n].y);
-            sub[n].z = Math.round(sub[n].z);
-        }
-    }
-
-    let points = storePointArray(boundaryData);
-    return boundaryData;
-}
-
-//将处理后的点位数据依次存储到数组
-function storePointArray(boundaryData) {
-    let pointArray = [];
-    for (let m = 0, len = boundaryData.loops[0].length; m < len; m++) {
-        let root = boundaryData.loops[0];
-        for (let n = 0, sublen = root[m].length; n < sublen; n++) {
-            let sub = root[m];
-
-            //依次存储边界点数据
-            pointArray.push(sub[n]);
-
-        }
-    }
-    let result = validatePointData(pointArray);
-    if (!result) {
-        console.warn("边界数据不合法", pointArray);
-        return;
-    }
-
-    //pointCollection用于存储多个空间的点位数据
-    pointCollection = pointCollection.concat(pointArray);
-    console.log("pointArray", pointArray);
-    return pointArray;
-}
-
-//验证点位数组的逻辑合法性，是否首尾相接，如果不是则进行数据纠错
-function validatePointData(pointArray) {
-    let len = pointArray.length;
-    let result = true;
-    for (let i = 1; i < len; i += 2) {
-        //如果是最后一个点
-        if (i >= len - 1) {
-            let first = pointArray[0];
-            let last = pointArray[len - 1];
-            if (!isObjectEqual(first, last)) {
-                console.warn("数据未闭合");
-                result = false;
-            }
-        } else {
-            let before = pointArray[i];
-            let after = pointArray[i + 1];
-            if (!isObjectEqual(before, after)) {
-                console.warn("数据未闭合");
-                result = false;
-            }
-        }
-    }
-    console.warn("result", result);
-    return result;
-}
-
-//计算极值点，移除中间点，构造新的空间边界
-function extremumBoundaryPoint(pointCollection, direction) {
-    let extremumPoint = [];
-    direction = vertical;
-    minX = maxX = pointCollection[0].x;
-    minY = maxY = pointCollection[0].y;
-    for (let n = 1, len = pointCollection.length; n < len; n++) {
-        pointCollection[n].x > maxX ? maxX = pointCollection[n].x : null;
-        pointCollection[n].x < minX ? minX = pointCollection[n].x : null;
-        pointCollection[n].y > maxY ? maxY = pointCollection[n].y : null;
-        pointCollection[n].y < minY ? minY = pointCollection[n].y : null;
-    }
-    console.log("minX", minX);//31906
-    console.log("minY", minY);//100
-    console.log("maxX", maxX);//44906
-    console.log("maxY", maxY);//8900
-
-    for (let k = 0, len = pointCollection.length; k < len; k++) {
-        let currentPoint = pointCollection[k];
-        if (direction === vertical) {
-            if (!(currentPoint.x > minX && currentPoint.x < maxX)) {
-                let exist = extremumPoint.some(item => {
-                    if (item.x == currentPoint.x && item.y == currentPoint.y) {
-                        return true;
-                    }
-                    return false;
-                })
-
-                if (!exist) {
-                    extremumPoint.push(currentPoint);
-                }
-
-            } else {
-                console.log("分割方向：纵向");
-            }
-        }
-        if (direction === horizontal) {
-            if (!(currentPoint.y > minY && currentPoint.y < maxY)) {
-                let exist = extremumPoint.some(item => {
-                    if (item.x == currentPoint.x && item.y == currentPoint.y) {
-                        return true;
-                    }
-                    return false;
-                })
-
-                if (!exist) {
-                    extremumPoint.push(currentPoint);
-                }
-                console.log("分割方向：横向");
-            }
-        }
-    }
-    console.log("extremumPoint", extremumPoint);
-    //对符合条件的点集进行顺时针排序，思路是找到最大和最小占1、3索引，剩余的两个点随机
-    return extremumPoint;
-
-}
-
-//为坐标点进行排序（顺时针或逆时针），构造符合边界的数组数据
-function buildBoundary(extremumPoints) {
-    let copy = Object.assign([], extremumPoints);
-    console.log(copy);
-    copy.forEach(item => {
-        if (item.x === maxX && item.y === maxY) {
-            extremumPoints[0] = item;
-        }
-        if (item.x === minX && item.y === minY) {
-            extremumPoints[2] = item;
-        }
-        if (item.x === maxX && item.y === minY) {
-            extremumPoints[1] = item;
-        }
-        if (item.x === minX && item.y === maxY) {
-            extremumPoints[3] = item;
-        }
-    });
-    //TODO:排序完成后开始构造新的边界数据
-    let boundaryArray = {};
-    boundaryArray.version = "2.0";
-    boundaryArray.loops = [];
-    boundaryArray.loops[0] = [];
-
-    for (let j = 0, len = extremumPoints.length; j < len; j++) {
-        let arrayItem = [];
-        if (j == len - 1) {
-            arrayItem.push(extremumPoints[j]);
-            arrayItem.push(extremumPoints[0]);
-        } else {
-            arrayItem.push(extremumPoints[j]);
-            arrayItem.push(extremumPoints[j + 1]);
-        }
-
-        boundaryArray.loops[0].push(arrayItem);
-    }
-
-    return boundaryArray;
-}
-
-
-
-
-
-//边界数据处理管线
-function mergeBoundaryPipeline(boundaryArray, id, height, faceColor, frameColor) {
-
-    for (let n = 0, len = boundaryArray.length; n < len; n++) {
-        //第一步：清理数据
-        let cleanData = cleanBoundaryData(boundaryArray[n]);
-        //第二步：将所有的点数据存储至一维数组
-        storePointArray(cleanData);
-    }
-
-
-    //let cleanLeftData = cleanBoundaryData(leftArea);
-    //let cleanRightData = cleanBoundaryData(rightArea);
-
-
-    //storePointArray(cleanLeftData);
-    //storePointArray(cleanRightData);
-    console.log(pointCollection);
-
-    //第三步：验证边界数组合法性
-    //let validateData = validatePointData(storeData);
-
-    //第四步：获取点位集合中的极值
-    let extremum = extremumBoundaryPoint(pointCollection, vertical);
-    console.log("pointCollection", pointCollection);
-
-    //第五步：建立新的空间边界数据
-    let newBoundary = buildBoundary(extremum);
-    viewer.createRoom(newBoundary, height || 5500, id || Math.random(10), faceColor || new Glodon.Web.Graphics.Color('#ff0000', 0.25), frameColor || new Glodon.Web.Graphics.Color('#ff0000'));
-}
-
 
 
 function setCamera(viewer, callback) {
@@ -390,20 +211,3 @@ function setCamera(viewer, callback) {
         }, 800);
     });
 }
-
-//比较对象值是否相等
-function isObjectEqual(obj1, obj2) {
-    var props1 = Object.getOwnPropertyNames(obj1);
-    var props2 = Object.getOwnPropertyNames(obj2);
-    if (props1.length != props2.length) {
-        return false;
-    }
-    for (var i = 0, max = props1.length; i < max; i++) {
-        var propName = props1[i];
-        if (obj1[propName] !== obj2[propName]) {
-            return false;
-        }
-    }
-    return true;
-}
-
