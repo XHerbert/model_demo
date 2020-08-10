@@ -7,8 +7,8 @@ import { WebUtils } from '../usr/WebUtils.js'
 import { ModelHelper } from '../usr/ModelHelper.js'
 import { RoomUtils } from '../usr/RoomUtils.js'
 import { MathLibrary } from '../usr/MathLibrary.js';
-import { DragControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/DragControls.js'
-import { TransformControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/TransformControls.js'
+// import { DragControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/DragControls.js'
+// import { TransformControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/TransformControls.js'
 
 var app, viewer, maxX, maxY, minX, minY, objects = [], pointCollection = [];
 const SINGLE_FILE = 0;
@@ -34,6 +34,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.setCameraAnimation(true);
         app.addView(BimfaceLoaderConfig.viewToken);
         viewer.setBorderLineEnabled(false);
+        window.bim = {};
 
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
@@ -79,6 +80,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             roomUtils2.mergeBoundaryPipeline(areaLists);
             viewer.render();
 
+            /**
             //经过验证，bimface平台下不支持构件的拖动，通过算法实现拆分与合并
             document.getElementById('horizon').addEventListener('click', () => {
                 let boxGeometry = new THREE.BoxBufferGeometry(1000, 5000, 2500);
@@ -118,11 +120,42 @@ function onSDKLoadSucceeded(viewMetaData) {
 
             document.getElementById('vertial').addEventListener('click', () => {
 
-            });
+            });**/
 
             let pointArray = [];
             viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
+                if (!e.objectId) return;
                 console.log(e);
+
+                if (window.bim.queryCondition) {
+                    let condition = viewer.getObjectDataById(e.objectId, (condition) => {
+                        console.log("condition", condition);
+                    });
+                    layer.open({
+                        type: 1,
+                        area: "500px",
+                        title: "筛选条件",
+                        skin: 'layui-layer-molv',
+                        closeBtn: 1,
+                        anim: 5,
+                        shade: 0,
+                        content: formatHtml(condition),
+                    });
+                }
+
+                if (window.bim.component) {
+                    layer.open({
+                        type: 1,
+                        area: "500px",
+                        title: "构件信息",
+                        skin: 'layui-layer-lan',
+                        closeBtn: 1,
+                        anim: 5,
+                        shade: 0,
+                        content: formatHtml(e),
+                    });
+                }
+
 
                 var temp = {
                     x: e.clientPosition.x,
@@ -210,4 +243,8 @@ function setCamera(viewer, callback) {
             })
         }, 800);
     });
+}
+
+function formatHtml(data) {
+    return $('#json-renderer').jsonViewer(data);
 }

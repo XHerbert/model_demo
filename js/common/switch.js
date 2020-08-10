@@ -99,3 +99,25 @@ let onEnableBackgroundHandler = (obj) => {
         document.getElementsByTagName('canvas')[0].classList.remove('canvasClass');
     }
 }
+
+//开启单击构件查询构件筛选条件开关
+let onConditionQueryHandler = (obj) => {
+    if (obj.checked) {
+        window['bim'] = {};
+        window.bim.queryCondition = true;
+    } else {
+        window['bim'] = {};
+        window.bim.queryCondition = false;
+    }
+}
+
+//开启单击构件查询构件筛选条件开关
+let onComponentQueryHandler = (obj) => {
+    if (obj.checked) {
+        window['bim'] = {};
+        window.bim.component = true;
+    } else {
+        window['bim'] = {};
+        window.bim.component = false;
+    }
+}
