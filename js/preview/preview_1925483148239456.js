@@ -11,7 +11,7 @@ const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 
-webUtils.getViewtoken(1925394272297568, INTEGRATE_FILE).then((token) => {
+webUtils.getViewtoken(1925483148239456, INTEGRATE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 });
@@ -42,8 +42,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.setExposureShift(-0.1);
             renderer.alpha = true;
             renderer.setClearAlpha(0.08);
-            viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(198, 207, 211, 1));
-            // viewer.setBackgroundColor(new Glodon.Web.Graphics.Color("#FFFFFF", 1));
+            // viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(214, 214, 214, 1));
+            viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(16, 27, 48, 1));
 
             // 创建标签容器
             var drawableConfig = new Glodon.Bimface.Plugins.Drawable.DrawableContainerConfig();
@@ -54,17 +54,19 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.overrideComponentsFrameColorByObjectData([], new Glodon.Web.Graphics.Color(255, 255, 255, 1));//214
 
             // 建筑
-            // viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color(236, 236, 236, 1));
-            viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color(185, 185, 185, 1));
+            // viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color(81, 147, 217, 1));
+            viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color(119, 170, 225, 1));
 
             //手动调整颜色
-            viewer.overrideComponentsColorByObjectData([{ "family": "静压箱组4" }, { "family": "静压箱组" }, { "family": "静压箱" }, { "family": "卧式暗装风机盘管" }], new Glodon.Web.Graphics.Color(255, 203, 193, 255));
+            viewer.overrideComponentsColorByObjectData([{ "family": "静压箱组4" }, { "family": "静压箱组" }, { "family": "静压箱" }, { "family": "卧式暗装风机盘管" }], new Glodon.Web.Graphics.Color(52, 199, 36, 1));
 
             //地面
-            viewer.overrideComponentsColorByObjectData([{ "family": "楼板" }], new Glodon.Web.Graphics.Color(208, 208, 208, 1));
+            // viewer.overrideComponentsColorByObjectData([{ "family": "楼板" }], new Glodon.Web.Graphics.Color(52, 51, 164, 0.45));
+
+            viewer.overrideComponentsColorByObjectData([{ "family": "楼板" }], new Glodon.Web.Graphics.Color(35, 96, 163, 0.65));
 
             // 区域 
-            viewer.overrideComponentsColorById(["1896416549734496.1089007"], new Glodon.Web.Graphics.Color(66, 199, 255, 1));
+            viewer.overrideComponentsColorById(["1896416549734496.1089007"], new Glodon.Web.Graphics.Color(245, 78, 69, 1));
 
             //光源
             let light = new THREE.PointLight(0xff0000, 0.35, 10000);
