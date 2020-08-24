@@ -38,8 +38,8 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
      * @private
      */
     getViewtoken: function (modelId, type) {
-        let _fileUrl = 'http://10.0.197.82:8078/api/token/getFilePreviewToken?fileId=' + modelId;
-        let _integrateUrl = 'http://10.0.197.82:8078/api/token/getIntegratePreviewToken?integrateId=' + modelId;
+        let _fileUrl = 'http://10.0.197.82:8078/bim/token/getFilePreviewToken?fileId=' + modelId;
+        let _integrateUrl = 'http://10.0.197.82:8078/bim/token/getIntegratePreviewToken?integrateId=' + modelId;
 
         return new Promise(function (resolve, reject) {
             let option = {
@@ -169,6 +169,43 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
         let lineMaterial = new THREE.LineBasicMaterial({ vertexColors: true });
         let line = new THREE.Line(lineGeometry, lineMaterial);
         this.viewer.addExternalObject("line" + Math.random(), line);
+    },
+
+    /**
+     * 弾层显示JSON格式数据
+     * @param {String} selector  DOM
+     * @param {String} width 弾层宽度，可设置为auto
+     * @param {String} height 弾层高度，可设置为auto
+     * @param {String} title 弾层标题
+     * @param {String} skin 弾层皮肤
+     * @param {Object} data JSON数据
+     */
+    layerPanel: function (selector, width, height, title, skin, data) {
+        layer.open({
+            type: 1,
+            area: [width || "", height || ""],
+            title: title || "",
+            skin: skin,
+            closeBtn: 1,
+            anim: 5,
+            shade: 0,
+            content: this.formatHtml(selector, data)
+        });
+    },
+
+    /**
+     * 格式化JSON数据
+     * @param {String} selector DOM节点 
+     * @param {Object} data JSON数据 
+     */
+    formatHtml: function (selector, data) {
+        var options = {
+            collapsed: false,
+            rootCollapsable: true,
+            withQuotes: false,
+            withLinks: false
+        };
+        return $(selector).jsonViewer(data, options);
     }
 });
 

@@ -7,6 +7,7 @@ import { WebUtils } from '../usr/WebUtils.js'
 import { ModelHelper } from '../usr/ModelHelper.js'
 import { RoomUtils } from '../usr/RoomUtils.js'
 import { MathLibrary } from '../usr/MathLibrary.js';
+// import { MeshLine, MeshLineMaterial } from '../usr/THREE.MeshLine.js';
 // import { DragControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/DragControls.js'
 // import { TransformControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/TransformControls.js'
 
@@ -154,6 +155,22 @@ function onSDKLoadSucceeded(viewMetaData) {
                         shade: 0,
                         content: formatHtml(e),
                     });
+
+
+
+                    //测试MeshLine
+
+                    // var geometry = new THREE.Geometry();
+                    // for (var j = 0; j < Math.PI; j += 2 * Math.PI / 100) {
+                    //     var v = new THREE.Vector3(Math.cos(j), Math.sin(j), 0);
+                    //     geometry.vertices.push(v);
+                    // }
+
+                    // var line = new MeshLine();
+                    // line.setGeometry(geometry, function (p) { return 2 + Math.sin(50 * p); });
+                    // let material = new MeshLineMaterial({ color: 0x00ffff });
+                    // let l = new THREE.Mesh(line, material);
+                    // viewer.addExteranlObject("MeshLine", l);
                 }
 
 

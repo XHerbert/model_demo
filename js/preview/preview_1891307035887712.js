@@ -57,15 +57,16 @@ function onSDKLoadSucceeded(viewMetaData) {
             drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
 
             //空间
-            viewer.overrideComponentsColorById(["2933839"], new Glodon.Web.Graphics.Color(117, 78, 56, 0.7));
-            viewer.overrideComponentsColorById(["2935384"], new Glodon.Web.Graphics.Color(133, 36, 48, 0.6));
-            viewer.overrideComponentsColorById(["2932489"], new Glodon.Web.Graphics.Color(255, 255, 255, 0.51));
-            viewer.overrideComponentsColorById(["2934706"], new Glodon.Web.Graphics.Color(133, 36, 48, 0.6));
+            viewer.overrideComponentsColorById(["2933839"], new Glodon.Web.Graphics.Color(255, 136, 0, 0.7));//orange
+            viewer.overrideComponentsColorById(["2935384"], new Glodon.Web.Graphics.Color(245, 78, 69, 0.6));//red
+            viewer.overrideComponentsColorById(["2932489"], new Glodon.Web.Graphics.Color(255, 255, 255, 0.5));//white
+            viewer.overrideComponentsColorById(["2934706"], new Glodon.Web.Graphics.Color(245, 78, 69, 0.6));//red
 
             //设备
             viewer.overrideComponentsColorById(["1765452"], new Glodon.Web.Graphics.Color(255, 31, 18, 0.8));
             viewer.overrideComponentsColorById(["2263790"], new Glodon.Web.Graphics.Color(255, 31, 18, 0.8));
             viewer.overrideComponentsColorById(["2299577"], new Glodon.Web.Graphics.Color(255, 245, 18, 0.8));
+
             viewer.overrideComponentsColorById(["2299911", "2300102", "2224685", "2300377"], new Glodon.Web.Graphics.Color(233, 30, 99, 0.8));
 
             //白色空间内的风管
@@ -132,29 +133,11 @@ function onSDKLoadSucceeded(viewMetaData) {
                     let condition = viewer.getObjectDataById(e.objectId, (condition) => {
                         console.log("condition", condition);
                     });
-                    layer.open({
-                        type: 1,
-                        area: "500px",
-                        title: "筛选条件",
-                        skin: 'layui-layer-molv',
-                        closeBtn: 1,
-                        anim: 5,
-                        shade: 0,
-                        content: formatHtml(condition),
-                    });
+                    webUtil.layerPanel("#json-renderer", "auto", "auto", "筛选条件", 'layui-layer-molv', condition);
                 }
 
                 if (window.bim.component) {
-                    layer.open({
-                        type: 1,
-                        area: "500px",
-                        title: "构件信息",
-                        skin: 'layui-layer-lan',
-                        closeBtn: 1,
-                        anim: 5,
-                        shade: 0,
-                        content: formatHtml(e),
-                    });
+                    webUtil.layerPanel("#json-renderer", "auto", undefined, "构件信息", 'layui-layer-lan', e);
                 }
             })
 
@@ -328,14 +311,11 @@ function formatHtml(data) {
 
 function bindEvent() {
     document.getElementById("white").addEventListener("click", () => {
-
         viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(234, 234, 234, 1));
-        // viewer.overrideComponentsColorById(["1896419529082976.1089007"], new Glodon.Web.Graphics.Color(66, 199, 255, 255));
         viewer.overrideComponentsColorByObjectData([{ "family": "基本墙" }, { "family": "圆柱" }, { "family": "矩形柱" }, { "family": "砼圆形柱" }, { "family": "砼矩形柱" }], new Glodon.Web.Graphics.Color(167, 167, 167, 1));
-        // viewer.overrideComponentsColorByObjectData([{ "family": "机械设备" }], new Glodon.Web.Graphics.Color(255, 203, 193, 255));
         viewer.overrideComponentsColorByObjectData([{ "systemType": "空调送风风管" }, { "systemType": "排油烟管" }, { "systemType": "排烟风管" }, { "systemType": "新风风管" }, { "systemType": "通风排风风管" }, { "systemType": "正压送风风管" }, { "systemType": "回风风管" }, { "systemType": "给水管" }, { "systemType": "补风管" }, { "systemType": "消防供水管" }, { "family": "管道类型" }, { "systemType": "喷淋管" }, { "systemType": "污水管" }, { "systemType": "雨水管" }, { "systemType": "冷、热水回水管" }, { "systemType": "冷凝水管" }, { "systemType": "冷、热水供水管" }], new Glodon.Web.Graphics.Color(13, 173, 247, 1));
         viewer.overrideComponentsColorByObjectData([{ "family": "SCEF-轴流风机" }, { "family": "VTSF-柜式离心风机 - 电机外置1" }, { "family": "KLAP-油烟净化器" }, { "family": "ATFC-卧式暗装风机盘管1" }, { "family": "ATAH-吊顶式空气处理机组" }, { "family": "ATAH- 卧式 - 顶出后送式 - 2000-9000 CMH" }], new Glodon.Web.Graphics.Color(248, 226, 31, 1));
-        // viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], new Glodon.Web.Graphics.Color(196, 196, 196, 255));
+        viewer.overrideComponentsColorById(["2263790"], new Glodon.Web.Graphics.Color(255, 0, 0, 1));
         viewer.render();
     });
 }

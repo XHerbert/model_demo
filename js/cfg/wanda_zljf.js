@@ -97,7 +97,7 @@ var wd_zljf = {
                 //     }
                 //     // child.visible = false;
                 // }
-                console.log(child);
+                // console.log(child);
                 idx++;
 
             } else if (child instanceof CLOUD.ObjectGroup) {
