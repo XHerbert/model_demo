@@ -5,9 +5,11 @@
 
 import { WebUtils } from './WebUtils.js'
 import { RoomUtils } from './RoomUtils.js'
+import { ModelHelper } from './ModelHelper.js'
 
 function MathLibrary() {
     this.type = "Glodon.Math.Library";
+
 };
 
 MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
@@ -63,7 +65,7 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
             return;
         }
 
-        //解方程 Y = Ax + b 核心算法
+        //解方程 Y = Ax + b 核心算法，此处考虑要不要四舍五入
         let A, b
         //不存在斜率
         if (Math.round(pointArray[1].y) === Math.round(pointArray[0].y)) {
@@ -90,8 +92,10 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      * 根据点集合与边界计算交点
      * @param {Object} boundary 空间边界数据
      * @param {Array} pointArray 分割点集合
+     * @param {Number} height 高度
+     * @returns {Array} crossPointArray 直线与边界交点集合
      */
-    findCrossPoint: function (boundary, pointArray) {
+    findCrossPoint: function (boundary, pointArray, height) {
         let roomUtils = new RoomUtils();
         //整理边界数据
         boundary = roomUtils.cleanBoundaryData(boundary);
@@ -100,29 +104,40 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
         let pointList = boundary.loops[0];
         //直线与边界的交点集合，N条边N个点，最终会保留两个交点
         let pointCollection = [];
-
+        let crossObjectArray = [];
         for (let n = 0, len = pointList.length; n < len; n++) {
             //item => 标识线段的两端点集合 [{x:x,y:y},{x:x,y:y}]
             let item = pointList[n];
-            if (item[0].x === item[1].x) {
+            let roundX0 = Math.round(item[0].x), roundX1 = Math.round(item[1].x);
+            let roundY0 = Math.round(item[0].y), roundY1 = Math.round(item[1].y);
+            let crossObject = { item: item, cross: false, crossBy: undefined };
+            //当边界线是垂直直线
+            if (roundX0 === roundX1) {
                 let y = this.calculateCoordinate(A, b, item[0].x, 0);
-                let point = { x: item[0].x, y: y };
+                let point = { x: item[0].x, y: y, z: height };
                 //如果交点Y坐标在线段两端之间则加入到集合
                 if (Math.min(item[0].y, item[1].y) < y && Math.max(item[0].y, item[1].y) > y) {
-                    pointCollection.push(point);
+                    pointCollection.push(new THREE.Vector3(point.x, point.y, point.z));
+                    crossObject.cross = true;
+                    crossObject.crossBy = new THREE.Vector3(point.x, point.y, point.z);
                 }
             }
 
-            if (item[0].y === item[1].y) {
+            //当边界线是水平直线
+            if (roundY0 === roundY1) {
                 let x = this.calculateCoordinate(A, b, 0, item[0].y);
-                let point = { x: x, y: item[0].y };
+                let point = { x: x, y: item[0].y, z: height };
                 //如果交点X坐标在线段两端之间则加入到集合
                 if (Math.min(item[0].x, item[1].x) < x && Math.max(item[0].x, item[1].x) > x) {
-                    pointCollection.push(point);
+                    pointCollection.push(new THREE.Vector3(point.x, point.y, point.z));
+                    crossObject.cross = true;
+                    crossObject.crossBy = new THREE.Vector3(point.x, point.y, point.z);
                 }
             }
+            crossObjectArray.push(crossObject);
+            //其他情形暂不考虑，先验证可行性与准确性            
         }
-        console.log(pointCollection);
+        return { pointCollection: pointCollection, crossObjectArray: crossObjectArray };
     },
 
     /**
@@ -136,13 +151,88 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
         //如果x没有传值，求x；如果y没有传值，求y；
         if (!x) {
             if (A == 0) {
-                console.warn("A can not be zero!");
-                return;
+                console.warn("Y = b!");
+                return b;
             }
             return (y - b) / A;
         } else {
             return A * x + b;
         }
+    },
+
+    /**
+     * 创建拆分后的空间
+     * @param {Array} crossObjectArray 用于拆分空间的点集合 
+     * @returns 拆分后的空间边界集合
+     */
+    buildSplitAreas: function (crossObjectArray) {
+        if (!crossObjectArray) return;
+        var webUtils = new WebUtils();
+        var modelHelper = new ModelHelper();
+        //标识切割边是否相邻
+        let isAdjacent = false;
+        let boundaryCollection = [];
+        //TODO：区分邻边还是对边
+        for (let i = 0, len = crossObjectArray.length; i < len; i++) {
+            if (i !== len - 1 && crossObjectArray[i].cross && crossObjectArray[i + 1].cross) {
+                isAdjacent = true;
+            }
+        };
+        //首尾相接时
+        if (crossObjectArray[0].cross && crossObjectArray[crossObjectArray.length - 1].cross) {
+            isAdjacent = true;
+        }
+
+        console.log(isAdjacent);
+        //如果交点相邻
+        if (isAdjacent) {
+            //找到切割点的公共点作为中间点构件边界
+            let boundaryPoints = [];
+            let boundary = crossObjectArray.filter(p => { return p.cross });
+            console.log(crossObjectArray);
+            //找到公共点，如果不是首尾相接，取中间，否则取两边
+            let commonPoint = webUtils.isObjectEqual(boundary[0].item[0], boundary[1].item[1]) ? boundary[0].item[0] : boundary[0].item[1];
+            //寻找相交线中非公共点
+            let leftPoint = [];
+            webUtils.isObjectEqual(boundary[0].item[0], boundary[1].item[1]) ? leftPoint.push(boundary[0].item[1], boundary[1].item[0]) : leftPoint.push(boundary[0].item[0], boundary[1].item[1]);
+
+
+            for (let k = 0, len = boundary.length; k < len; k++) {
+                boundary[k].crossBy.z = 0;
+                boundaryPoints.push(boundary[k].crossBy);
+            }
+            boundaryPoints.splice(1, 0, commonPoint);
+
+            var boundarys = modelHelper.buildAreaBoundary(boundaryPoints);
+            boundaryCollection.push(boundarys);
+
+            console.log("boundarys", JSON.stringify(boundarys));
+
+            //开始寻找另一侧点集
+            let oppositeBoundary = crossObjectArray.filter(p => { return !p.cross });
+            let oppositePoint = webUtils.isObjectEqual(oppositeBoundary[0].item[0], oppositeBoundary[1].item[1]) ? oppositeBoundary[0].item[0] : oppositeBoundary[0].item[1];
+
+            //组装另一侧空间边界
+            leftPoint.splice(1, 0, oppositePoint);
+
+            //找到与切割点，排序有问题
+            if (leftPoint[0].x === boundary[0].crossBy.x || leftPoint[0].y === boundary[0].crossBy.y) {
+                leftPoint.splice(0, 0, boundary[0].crossBy);
+                leftPoint.splice(leftPoint.length, 0, boundary[1].crossBy);
+            } else {
+                leftPoint.splice(0, 0, boundary[1].crossBy);
+                leftPoint.splice(leftPoint.length, 0, boundary[0].crossBy);
+            }
+            var boundarys2 = modelHelper.buildAreaBoundary(leftPoint);
+            console.log("boundarys2", boundarys2);
+            boundaryCollection.push(boundarys2);
+
+        } else {
+            //如果交点非相邻（对边）
+
+        }
+        return boundaryCollection;
+
     }
 });
 

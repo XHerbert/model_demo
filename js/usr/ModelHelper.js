@@ -32,6 +32,31 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
     createAmbientLightHelper: function () {
         this.ambientLightHelper = new THREE.DirectionalLightHelper();
         this.webUtils.getScene(this.viewer).add(this.axisHelper);
+    },
+
+    /**
+     * 创建边界信息对象
+     * @param {Array} pointArray 用于创建边界的点集 
+     * @returns 边界对象
+     */
+    buildAreaBoundary: function (pointArray) {
+        var boundarys = {};
+        boundarys.version = "2.0";
+        boundarys.loops = [];
+        boundarys.loops[0] = [];
+
+        for (let j = 0, len = pointArray.length; j < len; j++) {
+            let arrayItem = [];
+            if (j == len - 1) {
+                arrayItem.push(pointArray[j]);
+                arrayItem.push(pointArray[0]);
+            } else {
+                arrayItem.push(pointArray[j]);
+                arrayItem.push(pointArray[j + 1]);
+            }
+            boundarys.loops[0].push(arrayItem);
+        }
+        return boundarys;
     }
 });
 

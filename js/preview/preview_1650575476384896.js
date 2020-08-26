@@ -11,7 +11,7 @@ import { MathLibrary } from '../usr/MathLibrary.js';
 // import { DragControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/DragControls.js'
 // import { TransformControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/TransformControls.js'
 
-var app, viewer, maxX, maxY, minX, minY, objects = [], pointCollection = [];
+var app, viewer, maxX, maxY, minX, minY, objects = [], pointCollection = [], eoManager, newBoundary;
 const SINGLE_FILE = 0;
 const vertical = 1;
 const horizontal = 2;
@@ -39,6 +39,7 @@ function onSDKLoadSucceeded(viewMetaData) {
 
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
+        eoManager = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             let helper = new ModelHelper(viewer);
 
@@ -66,7 +67,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             let areaList = [];
             areaList.push(leftArea);
             areaList.push(rightArea);
-            roomUtils.mergeBoundaryPipeline(areaList);
+            newBoundary = roomUtils.mergeBoundaryPipeline(areaList);
 
             viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001437 }, { "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }], [{ "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }, { "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }], [{ "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }, { "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }], [{ "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }, { "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001462 }]]] }, 3300, "1151511");
             viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999976481, "x": 6706.1362682022218 }, { "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }], [{ "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }, { "z": 0.0, "y": 99.999999999977263, "x": 6706.1362682022218 }]]] }, 3300, "vdfvf");
@@ -124,71 +125,44 @@ function onSDKLoadSucceeded(viewMetaData) {
             });**/
 
             let pointArray = [];
+            let lineName;
             viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
                 if (!e.objectId) return;
-                console.log(e);
 
                 if (window.bim.queryCondition) {
-                    let condition = viewer.getObjectDataById(e.objectId, (condition) => {
-                        console.log("condition", condition);
-                    });
-                    layer.open({
-                        type: 1,
-                        area: "500px",
-                        title: "筛选条件",
-                        skin: 'layui-layer-molv',
-                        closeBtn: 1,
-                        anim: 5,
-                        shade: 0,
-                        content: formatHtml(condition),
-                    });
+                    let condition = viewer.getObjectDataById(e.objectId);
+                    webUtils.layerPanel("#json-renderer", "auto", "auto", "筛选条件", 'layui-layer-molv', condition);
                 }
 
                 if (window.bim.component) {
-                    layer.open({
-                        type: 1,
-                        area: "500px",
-                        title: "构件信息",
-                        skin: 'layui-layer-lan',
-                        closeBtn: 1,
-                        anim: 5,
-                        shade: 0,
-                        content: formatHtml(e),
-                    });
-
-
-
-                    //测试MeshLine
-
-                    // var geometry = new THREE.Geometry();
-                    // for (var j = 0; j < Math.PI; j += 2 * Math.PI / 100) {
-                    //     var v = new THREE.Vector3(Math.cos(j), Math.sin(j), 0);
-                    //     geometry.vertices.push(v);
-                    // }
-
-                    // var line = new MeshLine();
-                    // line.setGeometry(geometry, function (p) { return 2 + Math.sin(50 * p); });
-                    // let material = new MeshLineMaterial({ color: 0x00ffff });
-                    // let l = new THREE.Mesh(line, material);
-                    // viewer.addExteranlObject("MeshLine", l);
+                    webUtils.layerPanel("#json-renderer", "auto", undefined, "构件信息", 'layui-layer-lan', e);
                 }
-
-
-                var temp = {
-                    x: e.clientPosition.x,
-                    y: e.clientPosition.y
-                };
-                var worldPos = e.worldPosition;
-                var worldPosition = viewer.clientToWorld(temp);
-
-                console.log("temp", temp);
-                console.log("worldPosition", worldPosition);
 
                 pointArray.push(new THREE.Vector3(e.worldPosition.x, e.worldPosition.y, e.worldPosition.z));
                 if (pointArray.length == 2) {
-                    webUtils.drawLine(pointArray);
-                    math.resolveEquation(pointArray);
-                    pointArray = [];
+                    // viewer.clearAllRooms();
+                    // viewer.render();
+                    if (lineName) {
+                        eoManager.removeById(eoManager.getObjectIdByName(lineName));
+                    }
+                    try {
+                        //计算直线方程
+                        math.resolveEquation(pointArray);
+
+                        //寻找交点
+                        let crossPoint = math.findCrossPoint(newBoundary, pointArray, e.worldPosition.z);
+                        console.log(crossPoint);
+
+                        //绘制线段
+                        //lineName = webUtils.drawLine(crossPoint.pointCollection);
+
+                        viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[0], e.worldPosition.z, "first", webUtils.fromColor(255, 0, 0, 0.5), webUtils.fromColor(255, 0, 0, 1));
+                        viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[1], e.worldPosition.z, "second", webUtils.fromColor(0, 255, 0, 0.5), webUtils.fromColor(0, 255, 0, 1));
+                        pointArray = [];
+                    } catch (error) {
+                        console.log(error);
+                        pointArray = [];
+                    }
                 }
             });
 
@@ -260,8 +234,4 @@ function setCamera(viewer, callback) {
             })
         }, 800);
     });
-}
-
-function formatHtml(data) {
-    return $('#json-renderer').jsonViewer(data);
 }

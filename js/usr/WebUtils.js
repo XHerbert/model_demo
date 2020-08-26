@@ -152,14 +152,13 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
     },
 
     /**
-     * 画线
-     * @param {Array} pointArray 
+     * 绘制直线
+     * @param {Array} pointArray 用于绘制直线的点集
+     * @returns {String} 返回直线的名称
      */
     drawLine: function (pointArray, color) {
         let lineGeometry = new THREE.Geometry();
         lineGeometry.vertices.push(
-            // new THREE.Vector3(-100, 0, 100),
-            // new THREE.Vector3(100, 0, -100)
             pointArray[0], pointArray[1]
         );
         lineGeometry.colors.push(
@@ -168,8 +167,11 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
         )
         let lineMaterial = new THREE.LineBasicMaterial({ vertexColors: true });
         let line = new THREE.Line(lineGeometry, lineMaterial);
-        this.viewer.addExternalObject("line" + Math.random(), line);
+        let lineName = "line" + Math.random();
+        this.viewer.addExternalObject(lineName, line);
+        return lineName;
     },
+
 
     /**
      * 弾层显示JSON格式数据
@@ -206,6 +208,30 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
             withLinks: false
         };
         return $(selector).jsonViewer(data, options);
+    },
+
+    /**
+     * 比较两个对象属性值是否完全相同
+     * @param {Object} obj1 被比较的第一个对象
+     * @param {Object} obj2 被比较的第二个对象
+     */
+    isObjectEqual: function (obj1, obj2) {
+        let props1 = Object.getOwnPropertyNames(obj1);
+        let props2 = Object.getOwnPropertyNames(obj2);
+        if (props1.length != props2.length) {
+            return false;
+        }
+        for (let i = 0, max = props1.length; i < max; i++) {
+            let propName = props1[i];
+            if (obj1[propName] !== obj2[propName]) {
+                return false;
+            }
+        }
+        return true;
+    },
+
+    fromColor: function (r, g, b, a) {
+        return new Glodon.Web.Graphics.Color(r, g, b, a);
     }
 });
 

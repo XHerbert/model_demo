@@ -2,7 +2,8 @@
  * @author:xuhb <xuhbd@foxmail.com>
  * @function:room utils
  */
-
+import { WebUtils } from './WebUtils.js'
+import { ModelHelper } from './ModelHelper.js';
 /**
  * @fileOverview 空间工具包
  * @module RoomUtils
@@ -12,6 +13,7 @@ function RoomUtils(viewer) {
 }
 
 var maxX, maxY, minX, minY;
+var webUtils = new WebUtils();
 
 RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
 
@@ -42,6 +44,7 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
      * @param {Number} height 空间高度(非必填)
      * @param {Glodon.Web.Graphics.Color} faceColor 空间表面颜色(非必填)
      * @param {Glodon.Web.Graphics.Color} frameColor 空间轮廓颜色(非必填)
+     * @returns {Object} 新构造的空间边界
      * @public
      */
     mergeBoundaryPipeline: function (boundaryArray, id, height, faceColor, frameColor) {
@@ -63,6 +66,7 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
         //第四步：根据极值点构造新边界
         let newBoundary = this.buildBoundary(extremum);
         this.viewer.createRoom(newBoundary, height || 5500, id || Math.random(10), faceColor || new Glodon.Web.Graphics.Color('#ff0000', 0.25), frameColor || new Glodon.Web.Graphics.Color('#ff0000'));
+        return newBoundary;
     },
 
     /**
@@ -128,20 +132,19 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
             if (i >= len - 1) {
                 let first = pointArray[0];
                 let last = pointArray[len - 1];
-                if (!this.isObjectEqual(first, last)) {
+                if (!webUtils.isObjectEqual(first, last)) {
                     console.warn("data not closed!");
                     result = false;
                 }
             } else {
                 let before = pointArray[i];
                 let after = pointArray[i + 1];
-                if (!this.isObjectEqual(before, after)) {
+                if (!webUtils.isObjectEqual(before, after)) {
                     console.warn("data not closed!");
                     result = false;
                 }
             }
         }
-        console.warn("result", result);
         return result;
 
     },
@@ -180,7 +183,7 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
                     }
 
                 } else {
-                    console.log("分割方向：纵向");
+                    // console.log("分割方向：纵向");
                 }
             }
             if (direction === 2) {
@@ -195,11 +198,11 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
                     if (!exist) {
                         extremumPoint.push(currentPoint);
                     }
-                    console.log("分割方向：横向");
+                    // console.log("分割方向：横向");
                 }
             }
         }
-        console.log("extremumPoint", extremumPoint);
+        // console.log("extremumPoint", extremumPoint);
         //对符合条件的点集进行顺时针排序，思路是找到最大和最小占1、3索引，剩余的两个点随机
         return extremumPoint;
 
@@ -228,46 +231,10 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
             }
         });
         //排序完成后开始构造新的边界数据
-        let boundaryArray = {};
-        boundaryArray.version = "2.0";
-        boundaryArray.loops = [];
-        boundaryArray.loops[0] = [];
-
-        for (let j = 0, len = extremumPoints.length; j < len; j++) {
-            let arrayItem = [];
-            if (j == len - 1) {
-                arrayItem.push(extremumPoints[j]);
-                arrayItem.push(extremumPoints[0]);
-            } else {
-                arrayItem.push(extremumPoints[j]);
-                arrayItem.push(extremumPoints[j + 1]);
-            }
-
-            boundaryArray.loops[0].push(arrayItem);
-        }
-
+        let modelHelper = new ModelHelper();
+        let boundaryArray = modelHelper.buildAreaBoundary(extremumPoints);
         return boundaryArray;
 
-    },
-
-    /**
-     * 比较两个对象属性值是否完全相同
-     * @param {Object} obj1 被比较的第一个对象
-     * @param {Object} obj2 被比较的第二个对象
-     */
-    isObjectEqual: function (obj1, obj2) {
-        let props1 = Object.getOwnPropertyNames(obj1);
-        let props2 = Object.getOwnPropertyNames(obj2);
-        if (props1.length != props2.length) {
-            return false;
-        }
-        for (let i = 0, max = props1.length; i < max; i++) {
-            let propName = props1[i];
-            if (obj1[propName] !== obj2[propName]) {
-                return false;
-            }
-        }
-        return true;
     }
 
 });
