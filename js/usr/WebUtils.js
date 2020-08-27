@@ -230,8 +230,35 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
         return true;
     },
 
+    /**
+     * 获取十进制颜色值
+     * @param {Number} r 
+     * @param {Number} g 
+     * @param {Number} b 
+     * @param {Number} a 
+     */
     fromColor: function (r, g, b, a) {
         return new Glodon.Web.Graphics.Color(r, g, b, a);
+    },
+
+    /**
+     * 获取十六进制颜色值
+     * @param {Number} color 
+     * @param {Number} a 
+     */
+    fromHexColor: function (color, a) {
+        return new Glodon.Web.Graphics.Color(color, a);
+    },
+
+
+    /**
+     * 产生随机字符
+     */
+    guid: function () {
+        return 'xxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
     }
 });
 

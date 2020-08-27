@@ -9,7 +9,6 @@ import { ModelHelper } from './ModelHelper.js'
 
 function MathLibrary() {
     this.type = "Glodon.Math.Library";
-
 };
 
 MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
@@ -167,12 +166,14 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      */
     buildSplitAreas: function (crossObjectArray) {
         if (!crossObjectArray) return;
+        console.log(crossObjectArray);
+
         var webUtils = new WebUtils();
         var modelHelper = new ModelHelper();
         //标识切割边是否相邻
         let isAdjacent = false;
         let boundaryCollection = [];
-        //TODO：区分邻边还是对边
+        //区分邻边还是对边
         for (let i = 0, len = crossObjectArray.length; i < len; i++) {
             if (i !== len - 1 && crossObjectArray[i].cross && crossObjectArray[i + 1].cross) {
                 isAdjacent = true;
@@ -189,9 +190,10 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
             //找到切割点的公共点作为中间点构件边界
             let boundaryPoints = [];
             let boundary = crossObjectArray.filter(p => { return p.cross });
-            console.log(crossObjectArray);
+
             //找到公共点，如果不是首尾相接，取中间，否则取两边
             let commonPoint = webUtils.isObjectEqual(boundary[0].item[0], boundary[1].item[1]) ? boundary[0].item[0] : boundary[0].item[1];
+
             //寻找相交线中非公共点
             let leftPoint = [];
             webUtils.isObjectEqual(boundary[0].item[0], boundary[1].item[1]) ? leftPoint.push(boundary[0].item[1], boundary[1].item[0]) : leftPoint.push(boundary[0].item[0], boundary[1].item[1]);
@@ -203,10 +205,9 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
             }
             boundaryPoints.splice(1, 0, commonPoint);
 
+            //获取三角侧边界对象
             var boundarys = modelHelper.buildAreaBoundary(boundaryPoints);
             boundaryCollection.push(boundarys);
-
-            console.log("boundarys", JSON.stringify(boundarys));
 
             //开始寻找另一侧点集
             let oppositeBoundary = crossObjectArray.filter(p => { return !p.cross });
@@ -215,7 +216,7 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
             //组装另一侧空间边界
             leftPoint.splice(1, 0, oppositePoint);
 
-            //找到与切割点，排序有问题
+            //点集排序
             if (leftPoint[0].x === boundary[0].crossBy.x || leftPoint[0].y === boundary[0].crossBy.y) {
                 leftPoint.splice(0, 0, boundary[0].crossBy);
                 leftPoint.splice(leftPoint.length, 0, boundary[1].crossBy);
@@ -223,15 +224,35 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
                 leftPoint.splice(0, 0, boundary[1].crossBy);
                 leftPoint.splice(leftPoint.length, 0, boundary[0].crossBy);
             }
+
+            //获取非三角侧边界对象
             var boundarys2 = modelHelper.buildAreaBoundary(leftPoint);
-            console.log("boundarys2", boundarys2);
             boundaryCollection.push(boundarys2);
 
         } else {
+            let points = [];
             //如果交点非相邻（对边）
-
+            if (crossObjectArray[0].cross) {
+                crossObjectArray[0].crossBy.z = crossObjectArray[2].crossBy.z = 0;
+                points.push(crossObjectArray[3].item[0], crossObjectArray[3].item[1], crossObjectArray[0].crossBy, crossObjectArray[2].crossBy);
+                boundaryCollection.push(modelHelper.buildAreaBoundary(points));
+                points = [];
+                points.push(crossObjectArray[0].crossBy, crossObjectArray[1].item[0], crossObjectArray[1].item[1], crossObjectArray[2].crossBy);
+                boundaryCollection.push(modelHelper.buildAreaBoundary(points));
+            } else {
+                crossObjectArray[1].crossBy.z = crossObjectArray[3].crossBy.z = 0;
+                points.push(crossObjectArray[0].item[0], crossObjectArray[0].item[1], crossObjectArray[1].crossBy, crossObjectArray[3].crossBy);
+                boundaryCollection.push(modelHelper.buildAreaBoundary(points));
+                points = [];
+                points.push(crossObjectArray[1].crossBy, crossObjectArray[2].item[0], crossObjectArray[2].item[1], crossObjectArray[3].crossBy);
+                boundaryCollection.push(modelHelper.buildAreaBoundary(points));
+            }
         }
         return boundaryCollection;
+
+    },
+
+    convertBoundary: function () {
 
     }
 });

@@ -7,9 +7,6 @@ import { WebUtils } from '../usr/WebUtils.js'
 import { ModelHelper } from '../usr/ModelHelper.js'
 import { RoomUtils } from '../usr/RoomUtils.js'
 import { MathLibrary } from '../usr/MathLibrary.js';
-// import { MeshLine, MeshLineMaterial } from '../usr/THREE.MeshLine.js';
-// import { DragControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/DragControls.js'
-// import { TransformControls } from '../../node_modules/_three@0.115.0@three/examples/jsm/controls/TransformControls.js'
 
 var app, viewer, maxX, maxY, minX, minY, objects = [], pointCollection = [], eoManager, newBoundary;
 const SINGLE_FILE = 0;
@@ -67,7 +64,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             let areaList = [];
             areaList.push(leftArea);
             areaList.push(rightArea);
-            newBoundary = roomUtils.mergeBoundaryPipeline(areaList);
+            newBoundary = roomUtils.mergeBoundaryPipeline(areaList, "origin");
 
             viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001437 }, { "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }], [{ "z": 0.0, "y": 99.99999999999784, "x": 100.00000000000017 }, { "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }], [{ "z": 0.0, "y": 99.999999999977135, "x": 6506.1362682022218 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6506.1362682022354 }, { "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }], [{ "z": 0.0, "y": 8899.9999999999873, "x": 3606.1362682022323 }, { "z": 0.0, "y": 8899.9999999999982, "x": 100.00000000001462 }]]] }, 3300, "1151511");
             viewer.createRoom({ "version": "2.0", "loops": [[[{ "z": 0.0, "y": 99.999999999976481, "x": 6706.1362682022218 }, { "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }], [{ "z": 0.0, "y": 99.999999999955818, "x": 13106.136268202223 }, { "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }], [{ "z": 0.0, "y": 8899.9999999999563, "x": 13106.136268202239 }, { "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }], [{ "z": 0.0, "y": 8899.9999999999764, "x": 6706.1362682022354 }, { "z": 0.0, "y": 99.999999999977263, "x": 6706.1362682022218 }]]] }, 3300, "vdfvf");
@@ -82,47 +79,6 @@ function onSDKLoadSucceeded(viewMetaData) {
             roomUtils2.mergeBoundaryPipeline(areaLists);
             viewer.render();
 
-            /**
-            //经过验证，bimface平台下不支持构件的拖动，通过算法实现拆分与合并
-            document.getElementById('horizon').addEventListener('click', () => {
-                let boxGeometry = new THREE.BoxBufferGeometry(1000, 5000, 2500);
-                let boxMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-                let box = new THREE.Mesh(boxGeometry, boxMaterial);
-                objects.push(box);
-                viewer.addExternalObject("box", box);
-
-                var transformControls = new TransformControls(camera, renderer.domElement);
-                var dragControls = new DragControls(objects, camera, renderer.domElement);
-                scene.add(transformControls);
-                // 鼠标略过事件
-                dragControls.addEventListener('hoveron', function (event) {
-                    // 让变换控件对象和选中的对象绑定
-                    transformControls.attach(event.object);
-                    console.log("+++");
-                });
-                // 开始拖拽
-                dragControls.addEventListener('dragstart', function (event) {
-                    // controls.enabled = false;
-                    viewer.enableScale(false);
-                    viewer.enableTranslate(false);
-                    viewer.enableOrbit(false);
-                    event.object.material.emissive.set(0xaaaaaa);
-                    console.log("+-+-+");
-                });
-                // 拖拽结束
-                dragControls.addEventListener('dragend', function (event) {
-                    // controls.enabled = true;
-                    viewer.enableScale(true);
-                    viewer.enableTranslate(true);
-                    viewer.enableOrbit(true);
-                    event.object.material.emissive.set(0x000000);
-                    console.log("---");
-                });
-            });
-
-            document.getElementById('vertial').addEventListener('click', () => {
-
-            });**/
 
             let pointArray = [];
             let lineName;
@@ -138,30 +94,31 @@ function onSDKLoadSucceeded(viewMetaData) {
                     webUtils.layerPanel("#json-renderer", "auto", undefined, "构件信息", 'layui-layer-lan', e);
                 }
 
-                pointArray.push(new THREE.Vector3(e.worldPosition.x, e.worldPosition.y, e.worldPosition.z));
-                if (pointArray.length == 2) {
-                    // viewer.clearAllRooms();
-                    // viewer.render();
-                    if (lineName) {
-                        eoManager.removeById(eoManager.getObjectIdByName(lineName));
-                    }
-                    try {
-                        //计算直线方程
-                        math.resolveEquation(pointArray);
+                if (window.bim.drawRooms) {
+                    pointArray.push(new THREE.Vector3(e.worldPosition.x, e.worldPosition.y, e.worldPosition.z));
+                    if (pointArray.length == 2) {
+                        viewer.hideRoomsById(["origin"]);
+                        viewer.render();
+                        if (lineName) {
+                            eoManager.removeById(eoManager.getObjectIdByName(lineName));
+                        }
+                        try {
+                            //计算直线方程
+                            math.resolveEquation(pointArray);
 
-                        //寻找交点
-                        let crossPoint = math.findCrossPoint(newBoundary, pointArray, e.worldPosition.z);
-                        console.log(crossPoint);
+                            //寻找交点
+                            let crossPoint = math.findCrossPoint(newBoundary, pointArray, e.worldPosition.z);
 
-                        //绘制线段
-                        //lineName = webUtils.drawLine(crossPoint.pointCollection);
+                            //绘制线段
+                            //lineName = webUtils.drawLine(crossPoint.pointCollection);
 
-                        viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[0], e.worldPosition.z, "first", webUtils.fromColor(255, 0, 0, 0.5), webUtils.fromColor(255, 0, 0, 1));
-                        viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[1], e.worldPosition.z, "second", webUtils.fromColor(0, 255, 0, 0.5), webUtils.fromColor(0, 255, 0, 1));
-                        pointArray = [];
-                    } catch (error) {
-                        console.log(error);
-                        pointArray = [];
+                            viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[0], e.worldPosition.z, "first", webUtils.fromColor(255, 0, 0, 0.5), webUtils.fromColor(255, 0, 0, 1));
+                            viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[1], e.worldPosition.z, "second", webUtils.fromColor(0, 255, 0, 0.5), webUtils.fromColor(0, 255, 0, 1));
+                            pointArray = [];
+                        } catch (error) {
+                            console.log(error);
+                            pointArray = [];
+                        }
                     }
                 }
             });

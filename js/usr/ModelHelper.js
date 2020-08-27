@@ -57,6 +57,19 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
             boundarys.loops[0].push(arrayItem);
         }
         return boundarys;
+    },
+
+    /**
+     * 场景中创建雾化效果
+     * @param {String} color 雾颜色
+     * @param {Number} near 近视点
+     * @param {Number} far 远视点
+     */
+    buildFog: function (color, near, far) {
+        color = color || 0xcce0ff;
+        near = near || 180;
+        far = far || 250;
+        return new THREE.Fog(color, near, far);
     }
 });
 

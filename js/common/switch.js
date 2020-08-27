@@ -121,3 +121,14 @@ let onComponentQueryHandler = (obj) => {
         window.bim.component = false;
     }
 }
+
+//开启空间拆分与合并
+let onAreaRebuildHandler = (obj) => {
+    if (obj.checked) {
+        window['bim'] = {};
+        window.bim.drawRooms = true;
+    } else {
+        window['bim'] = {};
+        window.bim.drawRooms = false;
+    }
+}
