@@ -6,7 +6,7 @@
 import { WebUtils } from './WebUtils.js'
 
 /**
- * @fileOverview 模型工具包
+ * @fileOverview 模块功能：模型工具包
  * @module ModelHelper
  */
 function ModelHelper(viewer) {

@@ -11,7 +11,7 @@ function WebUtils(viewer) {
 }
 
 /**
- * @fileOverview 通用工具包
+ * @fileOverview 模块功能：Web通用工具包
  * @module WebUtils
  */
 WebUtils.prototype = Object.assign(WebUtils.prototype, {
@@ -177,7 +177,7 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
      * @param {Number} blue 蓝色分量
      * @param {Number} alpha alpha分量
      */
-    fromColor: function (r, g, b, a) {
+    fromColor: function (red, green, blue, alpha) {
         return new Glodon.Web.Graphics.Color(red, green, blue, alpha);
     },
 

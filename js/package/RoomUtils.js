@@ -5,7 +5,7 @@
 import { WebUtils } from './WebUtils.js'
 import { ModelHelper } from './ModelHelper.js';
 /**
- * @fileOverview 空间工具包
+ * @fileOverview 模块功能：空间工具包
  * @module RoomUtils
  */
 function RoomUtils(viewer) {

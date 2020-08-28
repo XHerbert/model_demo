@@ -7,7 +7,7 @@ import { WebUtils } from './WebUtils.js'
 import { RoomUtils } from './RoomUtils.js'
 import { ModelHelper } from './ModelHelper.js'
 /**
- * @fileOverview 数学、算法工具包
+ * @fileOverview 模块功能：数学、算法工具包
  * @module MathLibrary
  */
 function MathLibrary() {
@@ -20,6 +20,7 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      * 获取指定大小区间随机数
      * @param {Number} min 最小值
      * @param {Number} max 最大值
+     * @returns {Number} 最大值与最小值间的随机数
      */
     getRandomInt: function (min, max, scale) {
         (scale <= 0 || !scale) && (scale = 1.0);
@@ -32,6 +33,7 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      * 2D坐标转3D
      * @param {Object} event 点击事件对象
      * @param {Object} camera 相机对象
+     * @returns {Vector3} 3D坐标值
      */
     getLocalPosition: function (event, camera) {
         let webUtils = new WebUtils();
@@ -48,6 +50,7 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      *  3D坐标转2D
      * @param {Vector3} vector3 
      * @param {Object} camera 
+     * @returns {Vector2} 2D坐标值
      */
     get2dPosition(vector3, camera) {
         if (!camera) {
@@ -73,7 +76,7 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
     /**
      * 根据二维坐标点集和求解二元一次方程直线
      * @param {Array} pointArray 二维坐标点集合 [{x:100,y:200},{x:200,y:400}]
-     * @returns 返回直线【Y = Ax + b】的斜率【A】和截距【b】  
+     * @returns {Object} 返回直线【Y = Ax + b】的斜率【A】和截距【b】  
      */
     resolveEquation: function (pointArray) {
         let result = {
@@ -165,6 +168,7 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      * @param {Number} b 直线截距
      * @param {Number} x X坐标，如果X已知则Y传0
      * @param {Number} y Y坐标，如果Y已知则X传0
+     * @returns {Number} X或Y坐标的值
      */
     calculateCoordinate: function (A, b, x, y) {
         //如果x没有传值，求x；如果y没有传值，求y；
@@ -182,7 +186,7 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
     /**
      * 创建拆分后的空间
      * @param {Array} crossObjectArray 用于拆分空间的点集合 
-     * @returns 拆分后的空间边界集合
+     * @returns {Array} 拆分后的空间边界集合
      */
     buildSplitAreas: function (crossObjectArray) {
         if (!crossObjectArray) return;
@@ -284,6 +288,7 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      * 从一系列的点创建一条平滑的三维样条曲线
      * @param {Array} points 点集
      * @param {Boolean} closed 是否闭合
+     * @returns {THREE.CatmullRomCurve3} 三维曲线路径
      */
     createCurve: function (points, closed) {
         let path = new THREE.CatmullRomCurve3(points, closed || true, "catmullrom", 5);
