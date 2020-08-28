@@ -10,6 +10,7 @@ import { ModelHelper } from './ModelHelper.js';
  */
 function RoomUtils(viewer) {
     this.viewer = viewer || window.viewer;
+    this.type = "Glodon.Utils.Room";
 }
 
 var maxX, maxY, minX, minY;
@@ -65,7 +66,7 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
         let extremum = this.extremumBoundaryPoint(this.pointCollection, vertical);
         //第四步：根据极值点构造新边界
         let newBoundary = this.buildBoundary(extremum);
-        this.viewer.createRoom(newBoundary, height || 5500, id || webUtils.guid(), faceColor || new Glodon.Web.Graphics.Color('#ff0000', 0.25), frameColor || new Glodon.Web.Graphics.Color('#ff0000'));
+        this.viewer.createRoom(newBoundary, height || 5500, id || webUtils.guid(), faceColor || webUtils.fromHexColor('#ff0000', 0.25), frameColor || webUtils.fromHexColor('#ff0000'));
         return newBoundary;
     },
 

@@ -3,11 +3,8 @@
  * @function:wanda F01 effiective
  */
 
-import { WebUtils } from '../usr/WebUtils.js'
-import { ModelHelper } from '../usr/ModelHelper.js'
-// import { EffectComposer } from '../../node_modules/_three@0.85.2@three/examples/js/postprocessing/EffectComposer.js'
-// import { RenderPass } from '../../node_modules/_three@0.85.2@three/examples/js/postprocessing/RenderPass.js'
-// import { OutlinePass } from '../../node_modules/_three@0.85.2@three/examples/js/postprocessing/OutlinePass.js'
+import { WebUtils } from '../package/WebUtils.js'
+import { ModelHelper } from '../package/ModelHelper.js'
 
 var app, viewer, drawableContainer, composer, outlinePass, effectFXAA;
 const SINGLE_FILE = 0;
@@ -37,9 +34,10 @@ function onSDKLoadSucceeded(viewMetaData) {
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
-            let helper = new ModelHelper(viewer);
+            let modelHelper = new ModelHelper(viewer);
             //helper.createAixsHelper(viewer);
-            let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
+            window.bim = {};
+            let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             window.myscene = scene;
             renderer.shadowMap.enabled = true;
             viewer.enableShadow(true);

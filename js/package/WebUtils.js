@@ -7,6 +7,7 @@
 
 function WebUtils(viewer) {
     this.viewer = viewer || window.viewer;
+    this.type = "Glodon.Utils.Web";
 }
 
 /**
@@ -59,30 +60,6 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
     },
 
     /**
-     * 获取Scene对象
-     * @param {Object} scene 非bimface场景时，传入的camera对象 
-     */
-    getScene: function (scene) {
-        return scene || this.viewer.getViewer().modelManager.getScene();
-    },
-
-    /**
-     * 获取透视相机Camera对象
-     * @param {Object} camera  非bimface场景时，传入的camera对象
-     */
-    getPerspectiveCamera: function (camera) {
-        return camera || this.viewer.getViewer().camera;
-    },
-
-    /**
-     * 获取Render对象
-     * @param {Object} renderer 非bimface场景时，传入的renderer对象
-     */
-    getRender: function (renderer) {
-        return renderer || this.viewer.getViewer().rendererManager.renderer.renderer;
-    },
-
-    /**
      * 加载js脚本
      * @param {String} url 脚本地址 
      * @param {Function} callback 加载成功回调 
@@ -96,29 +73,6 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
         script.src = url;
         document.head.appendChild(script);
     },
-
-    /**
-     * 为场景添加天空盒
-     * @param {String} path 图片路径  
-     * @param {Array} imageArray 图片组，六张图片分别是朝前的（posz）、朝后的（negz）、朝上的（posy）、朝下的（negy）、朝右的（posx）和朝左的（negx） 
-     * @param {Object} scene scene 可选
-     */
-    setSkyBox: function (path, imageArray, scene) {
-        //给场景添加天空盒子纹理
-        let cubeTextureLoader = new THREE.CubeTextureLoader();
-        cubeTextureLoader.setPath(path);
-
-        // var cubeTexture = cubeTextureLoader.load([
-        //     'right.jpg', 'left.jpg',
-        //     'top.jpg', 'bottom.jpg',
-        //     'front.jpg', 'back.jpg'
-        // ]);
-
-        var cubeTexture = cubeTextureLoader.load(imageArray);
-        let currentScene = this.getScene(scene);
-        currentScene.background = cubeTexture;
-    },
-
 
     /**
      * 初始化模型公共配置
@@ -141,37 +95,6 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
             open_button.style.display = 'block';
         }
     },
-
-    /**
-     * 颜色归一化
-     * @param {Vector3} color 三维颜色向量，如Vector3(120,120,255)
-     * @returns {Vector3} 归一化后的三维颜色向量
-     */
-    normalizeColor: function (color) {
-        return new THREE.Vector3(color.x / 255, color.y / 255, color.z / 255);
-    },
-
-    /**
-     * 绘制直线
-     * @param {Array} pointArray 用于绘制直线的点集
-     * @returns {String} 返回直线的名称
-     */
-    drawLine: function (pointArray, color) {
-        let lineGeometry = new THREE.Geometry();
-        lineGeometry.vertices.push(
-            pointArray[0], pointArray[1]
-        );
-        lineGeometry.colors.push(
-            new THREE.Color(0xFFFF00 || color),
-            new THREE.Color(0x808000 || color)
-        )
-        let lineMaterial = new THREE.LineBasicMaterial({ vertexColors: true });
-        let line = new THREE.Line(lineGeometry, lineMaterial);
-        let lineName = "line" + Math.random();
-        this.viewer.addExternalObject(lineName, line);
-        return lineName;
-    },
-
 
     /**
      * 弾层显示JSON格式数据
@@ -211,6 +134,23 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
     },
 
     /**
+     * 复制单击的构件Id
+     * @param {Object} e 鼠标点击事件对象
+     */
+    copyObjectId: function (e) {
+        const input = document.createElement('input');
+        document.body.appendChild(input);
+        input.setAttribute('value', e.objectId);
+        input.setAttribute('id', "cp_o_input");
+        input.select();
+        if (document.execCommand('copy')) {
+            document.execCommand('copy');
+        }
+        document.getElementById('cp_o_input').remove();
+        layer.msg("【" + e.objectId + "】 copy success!");
+    },
+
+    /**
      * 比较两个对象属性值是否完全相同
      * @param {Object} obj1 被比较的第一个对象
      * @param {Object} obj2 被比较的第二个对象
@@ -232,27 +172,30 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
 
     /**
      * 获取十进制颜色值
-     * @param {Number} r 
-     * @param {Number} g 
-     * @param {Number} b 
-     * @param {Number} a 
+     * @param {Number} red 红色分量
+     * @param {Number} green 绿色分量
+     * @param {Number} blue 蓝色分量
+     * @param {Number} alpha alpha分量
      */
     fromColor: function (r, g, b, a) {
-        return new Glodon.Web.Graphics.Color(r, g, b, a);
+        return new Glodon.Web.Graphics.Color(red, green, blue, alpha);
     },
 
     /**
      * 获取十六进制颜色值
-     * @param {Number} color 
-     * @param {Number} a 
+     * @param {Number} color 十六进制色值
+     * @param {Number} alpha alpha分量
      */
-    fromHexColor: function (color, a) {
-        return new Glodon.Web.Graphics.Color(color, a);
+    fromHexColor: function (color, alpha) {
+        return new Glodon.Web.Graphics.Color(color, alpha);
     },
 
 
     /**
      * 产生随机字符
+     * @public
+     * @author xuhongbo
+     * @version 1.0
      */
     guid: function () {
         return 'xxxxxxxx'.replace(/[xy]/g, function (c) {

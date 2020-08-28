@@ -1,6 +1,6 @@
 
-import { WebUtils } from '../usr/WebUtils.js'
-import { ModelHelper } from '../usr/ModelHelper.js'
+import { WebUtils } from '../package/WebUtils.js'
+import { ModelHelper } from '../package/ModelHelper.js'
 import { light } from '../usr/light.js'
 
 var app, viewer;
@@ -30,10 +30,11 @@ function onSDKLoadSucceeded(viewMetaData) {
 
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
-        var helper = new ModelHelper(viewer);
+        var modelHelper = new ModelHelper(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
-            helper.createAixsHelper(viewer);
-            let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
+            modelHelper.createAixsHelper(viewer);
+            window.bim = {};
+            let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
             viewer.getViewer().rendererManager.renderer.renderer.shadowMap.enabled = true;

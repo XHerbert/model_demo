@@ -2,8 +2,8 @@
  * @author:xuhongbo
  * @function:wanda leng-ji white
  */
-import { WebUtils } from '../usr/WebUtils.js'
-import { ModelHelper } from '../usr/ModelHelper.js'
+import { WebUtils } from '../package/WebUtils.js'
+import { ModelHelper } from '../package/ModelHelper.js'
 
 var app, viewer, drawableContainer;
 const INTEGRATE_FILE = 1;
@@ -30,10 +30,10 @@ function onSDKLoadSucceeded(viewMetaData) {
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
-            let helper = new ModelHelper(viewer);
-
+            let modelHelper = new ModelHelper(viewer);
+            window.bim = {};
             //helper.createAixsHelper(viewer);
-            let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
+            let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             renderer.domElement.addClass('canvasClass');
             window.myscene = scene;
             renderer.shadowMap.enabled = true;

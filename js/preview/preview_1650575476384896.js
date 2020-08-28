@@ -3,10 +3,10 @@
  * @function:shop sapce split and combine
  */
 
-import { WebUtils } from '../usr/WebUtils.js'
-import { ModelHelper } from '../usr/ModelHelper.js'
-import { RoomUtils } from '../usr/RoomUtils.js'
-import { MathLibrary } from '../usr/MathLibrary.js';
+import { WebUtils } from '../package/WebUtils.js'
+import { ModelHelper } from '../package/ModelHelper.js'
+import { RoomUtils } from '../package/RoomUtils.js'
+import { MathLibrary } from '../package/MathLibrary.js';
 
 var app, viewer, maxX, maxY, minX, minY, objects = [], pointCollection = [], eoManager, newBoundary;
 const SINGLE_FILE = 0;
@@ -38,10 +38,9 @@ function onSDKLoadSucceeded(viewMetaData) {
         webUtils.viewer = window.viewer;
         eoManager = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
-            let helper = new ModelHelper(viewer);
-
-            helper.createAixsHelper(viewer);
-            let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
+            let modelHelper = new ModelHelper(viewer);
+            modelHelper.createAixsHelper(viewer);
+            let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             renderer.domElement.addClass('canvasClass');
             window.scene = scene;
             renderer.shadowMap.enabled = true;
@@ -92,6 +91,10 @@ function onSDKLoadSucceeded(viewMetaData) {
 
                 if (window.bim.component) {
                     webUtils.layerPanel("#json-renderer", "auto", undefined, "构件信息", 'layui-layer-lan', e);
+                }
+
+                if (window.bim.recordObjectId) {
+                    webUtils.copyObjectId(e);
                 }
 
                 if (window.bim.drawRooms) {

@@ -6,7 +6,10 @@
 import { WebUtils } from './WebUtils.js'
 import { RoomUtils } from './RoomUtils.js'
 import { ModelHelper } from './ModelHelper.js'
-
+/**
+ * @fileOverview 数学、算法工具包
+ * @module MathLibrary
+ */
 function MathLibrary() {
     this.type = "Glodon.Math.Library";
 };
@@ -15,8 +18,8 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
 
     /**
      * 获取指定大小区间随机数
-     * @param {最小值} min 
-     * @param {最大值} max 
+     * @param {Number} min 最小值
+     * @param {Number} max 最大值
      */
     getRandomInt: function (min, max, scale) {
         (scale <= 0 || !scale) && (scale = 1.0);
@@ -25,7 +28,11 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
         return (Math.floor(Math.random() * (max - min)) + min) * scale;
     },
 
-    // 2D 坐标转3D
+    /**
+     * 2D坐标转3D
+     * @param {Object} event 点击事件对象
+     * @param {Object} camera 相机对象
+     */
     getLocalPosition: function (event, camera) {
         let webUtils = new WebUtils();
         let ca = webUtils.getPerspectiveCamera(camera);
@@ -37,7 +44,11 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
         return new THREE.Vector3(mouse.x, mouse.y, 0);
     },
 
-    // 3D 坐标转 2D
+    /**
+     *  3D坐标转2D
+     * @param {Vector3} vector3 
+     * @param {Object} camera 
+     */
     get2dPosition(vector3, camera) {
         if (!camera) {
             return;
@@ -48,6 +59,15 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
         var x = Math.round(standardVector.x * a + a);//标准设备坐标转屏幕坐标
         var y = Math.round(-standardVector.y * b + b);//标准设备坐标转屏幕坐标
         return new THREE.Vector2(x, y);
+    },
+
+    /**
+     * 颜色归一化
+     * @param {Vector3} color 三维颜色向量，如Vector3(120,120,255)
+     * @returns {Vector3} 归一化后的三维颜色向量
+     */
+    normalizeColor: function (color) {
+        return new THREE.Vector3(color.x / 255, color.y / 255, color.z / 255);
     },
 
     /**
@@ -252,9 +272,23 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
 
     },
 
-    convertBoundary: function () {
+    /**
+     * 边界对象转换
+     * @param {Array} boundary 
+     */
+    convertBoundary: function (boundary) {
 
-    }
+    },
+
+    /**
+     * 从一系列的点创建一条平滑的三维样条曲线
+     * @param {Array} points 点集
+     * @param {Boolean} closed 是否闭合
+     */
+    createCurve: function (points, closed) {
+        let path = new THREE.CatmullRomCurve3(points, closed || true, "catmullrom", 5);
+        return path;
+    },
 });
 
 export { MathLibrary }

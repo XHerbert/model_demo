@@ -93,8 +93,6 @@ initPlaneGeometry = () => {
     obj3.position.set(50, 50, 0);
     obj3.rotation.z = Math.PI / 2;
 
-
-
     scene.add(obj2);
     scene.add(obj3);
 }

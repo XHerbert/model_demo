@@ -1,4 +1,4 @@
-import { WebUtils } from '../js/usr/WebUtils.js'
+import { WebUtils } from '../js/package/WebUtils.js'
 import { Elevator } from './usr/elevator.js'
 
 var app, viewer, curve;

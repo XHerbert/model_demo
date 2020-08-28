@@ -132,3 +132,14 @@ let onAreaRebuildHandler = (obj) => {
         window.bim.drawRooms = false;
     }
 }
+
+//开启构件Id复制
+let onRecordObjectIdHandler = (obj) => {
+    if (obj.checked) {
+        window['bim'] = {};
+        window.bim.recordObjectId = true;
+    } else {
+        window['bim'] = {};
+        window.bim.recordObjectId = false;
+    }
+}

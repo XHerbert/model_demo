@@ -23,11 +23,6 @@
       height: 100%;
     }
 
-    .canvasClass {
-      background: url("../../images/projecta.png") no-repeat center;
-      overflow: hidden;
-    }
-
     button {
       background-color: #FF5722;
       padding: 10px;
@@ -35,6 +30,13 @@
       margin-left: 15px;
     }
 
+    .point {
+      width: 75px;
+      height: 25px;
+      border-radius: 25px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
 
     .model {
       flex: 1
@@ -48,10 +50,13 @@
 
 <body>
   <div class='model' id="view"></div>
-
-  <div style="width: 320px;height:80px;position:absolute;top:50px;left:50px;">
-    <button id="horizon">horizon</button>
-    <button id="vertial">vertial</button>
+  <div style="width:80px;height:150px;position:absolute;right:50px;top:50px;z-index:99999;display: block;">
+    <div class="point" id="white" title="B01" style="background-color:#F5F5F5;">
+      <p style="margin-left: 27px;color:burlywood">B02</p>
+    </div>
+    <!-- <div class="point" id="blue" title="水泵" style="background-color:#F5F5F5;">
+      <p style="margin-left: 27px;color:burlywood">水泵</p>
+    </div> -->
   </div>
 
   <div class="menu-wrap">
@@ -76,13 +81,8 @@
               class="mui-switch mui-switch-anim" type="checkbox" onclick="onConditionQueryHandler(this)" /></label></a>
         <a href="#" title="构件信息查看"><i class="fa fa-fw fa-gavel"></i><span>构件信息查看</span><label><input
               class="mui-switch mui-switch-anim" type="checkbox" onclick="onComponentQueryHandler(this)" /></label></a>
-        <a href="#" title="空间重构"><i class="fa fa-fw fa-gavel"></i><span>空间重构</span><label><input
-              class="mui-switch mui-switch-anim" type="checkbox" onclick="onAreaRebuildHandler(this)" /></label></a>
-        <a href="#" title="复制构件"><i class="fa fa-fw fa-gavel"></i><span>复制构件ID</span><label><input
-              class="mui-switch mui-switch-anim" type="checkbox" onclick="onRecordObjectIdHandler(this)" /></label></a>
       </div>
     </nav>
-
 
     <div class="morph-shape" id="morph-shape"
       data-morph-open="M-7.312,0H15c0,0,66,113.339,66,399.5C81,664.006,15,800,15,800H-7.312V0z;M-7.312,0H100c0,0,0,113.839,0,400c0,264.506,0,400,0,400H-7.312V0z">
@@ -92,24 +92,21 @@
       </svg>
     </div>
   </div>
-  <pre id='json-renderer' style="display: none;color:hotpink"></pre>
+  <pre id='json-renderer' style="display: none;color:hotpink;width: max-content;"></pre>
   <button class="menu-button" id="open-button">Open Menu</button>
   <div class="content-wrap">
     <div class="content" style="height: 100%;">
     </div>
   </div>
 
-
-  <script src="../../js/preview/preview_1650575476384896.js" type="module"></script>
+  <script src="../../js/preview/preview_1939492308443808.js" type="module"></script>
   <script src="../../js/common/classie.js"></script>
-  <script src="../../js/usr/three.min.js"></script>
   <script src="../../js/common/main4.js"></script>
   <script src="../../js/common/switch.js"></script>
   <script src="../../js/common/dat.gui.min.js"></script>
   <script src="../../js/common/jquery-3.3.1.min.js"></script>
   <script src="../../js/common/jquery.json-viewer.js"></script>
   <script src="../../js/common/layer.js"></script>
-  <script src="../../js/usr/THREE.MeshLine.js"></script>
 </body>
 
 </html>

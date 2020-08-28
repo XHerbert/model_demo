@@ -2,8 +2,8 @@
  * @author:xuhongbo
  * @description:wanda 
  */
-import { WebUtils } from '../usr/WebUtils.js'
-import { ModelHelper } from '../usr/ModelHelper.js'
+import { WebUtils } from '../package/WebUtils.js'
+import { ModelHelper } from '../package/ModelHelper.js'
 import { light } from '../usr/light.js'
 import { unreal } from '../../external/bloom/bloom.js'
 
@@ -36,12 +36,12 @@ function onSDKLoadSucceeded(viewMetaData) {
         window.viewer = viewer;
 
         webUtils.viewer = window.viewer;
-        var helper = new ModelHelper(viewer);
+        var modelHelper = new ModelHelper(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
-            helper.createAixsHelper(viewer);
-            let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
+            modelHelper.createAixsHelper(viewer);
+            let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             camera.layers.enable(1);
-
+            window.bim = {};
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
             viewer.getViewer().rendererManager.renderer.renderer.shadowMap.enabled = true;

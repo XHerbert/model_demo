@@ -4,6 +4,8 @@
  */
 
 import { ModelShaderChunk } from '../../shaders/common/ModelShaderChunk.js'
+import { ModelHelper } from '../package/ModelHelper.js'
+import { MathLibrary } from '../package/MathLibrary.js'
 
 var scene = null;
 var camera = null;
@@ -13,6 +15,8 @@ var renderer = null;
 var axesHelper = null;
 var width = window.innerWidth;
 var height = window.innerHeight;
+var modelHelper = new ModelHelper();
+var math = new MathLibrary();
 
 
 let initScene = () => {
@@ -49,7 +53,7 @@ let uniform = {
     u_height: 50.0,
     u_time: 0.0,
     u_color: {
-        value: new THREE.Vector3(30 / 255, 144 / 255, 255 / 255) //颜色归一化
+        value: math.normalizeColor(new THREE.Vector3(30, 144, 255)) //颜色归一化
     }
 }
 
@@ -73,29 +77,13 @@ let initGeometry = () => {
     scene.add(mesh);
 };
 
-var rollTexture;
-let initPlaneGeometry = () => {
 
-    var gridHelper = new THREE.GridHelper(400, 100, 0xff0000, 0xffffff);
-    scene.add(gridHelper);
+let initPlaneGeometry = () => {
+    scene.add(modelHelper.createGridHelper(400, 100, 0xff0000, 0xffffff));
 }
 
 let initControl = () => {
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    // 使用阻尼,指定是否有惯性
-    controls.enableDamping = true;
-    // 动态阻尼系数 就是鼠标拖拽旋转灵敏度，阻尼越小越灵敏
-    controls.dampingFactor = 0.05;
-    // 是否可以缩放
-    controls.enableZoom = true;
-    //是否自动旋转
-    controls.autoRotate = false;
-    //设置相机距离原点的最近距离
-    controls.minDistance = 10;
-    //设置相机距离原点的最远距离
-    controls.maxDistance = 600;
-    //是否开启右键拖拽
-    controls.enablePan = true;
+    controls = modelHelper.buildOrbitControls(camera, renderer);
 };
 
 let scale = 1.000;

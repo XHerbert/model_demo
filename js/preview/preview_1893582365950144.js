@@ -3,8 +3,8 @@
  * @function:wanda highlight blue effiective
  */
 
-import { WebUtils } from '../usr/WebUtils.js'
-import { ModelHelper } from '../usr/ModelHelper.js'
+import { WebUtils } from '../package/WebUtils.js'
+import { ModelHelper } from '../package/ModelHelper.js'
 
 var app, viewer, drawableContainer, composer, outlinePass, effectFXAA;
 const INTEGRATE_FILE = 1;
@@ -31,10 +31,11 @@ function onSDKLoadSucceeded(viewMetaData) {
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
-            let helper = new ModelHelper(viewer);
+            let modelHelper = new ModelHelper(viewer);
             let open = true;
             //helper.createAixsHelper(viewer);
-            let scene = webUtils.getScene(), camera = webUtils.getPerspectiveCamera(), renderer = webUtils.getRender();
+            window.bim = {};
+            let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             renderer.domElement.addClass('canvasClass');
             window.myscene = scene;
             renderer.shadowMap.enabled = true;
@@ -57,7 +58,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.overrideComponentsFrameColorByObjectData([], new Glodon.Web.Graphics.Color(255, 255, 255, 1));
 
             // 全楼蓝透
-            viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(114, 116, 203, uniform.alpha));
+            //viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(114, 116, 203, uniform.alpha));
+            viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(146, 146, 146, uniform.alpha));
 
 
             if (!open) {
@@ -79,39 +81,28 @@ function onSDKLoadSucceeded(viewMetaData) {
 
                 }, true)
             }
-            //地平面
-            // let wid = 200000, hei = 200000;
-            // var planeGeometry = new THREE.PlaneBufferGeometry(wid, hei);
-            // let loader = new THREE.TextureLoader();
-            // var planeMaterial = new THREE.MeshBasicMaterial({});       
 
             let material = new THREE.MeshBasicMaterial({
-                color: 0x3032B8,
+                //color: 0x3032B8,
+                color: 0x929292,
                 wireframe: false,
                 transparent: true,
                 opacity: uniform.alpha
             });
 
             //通过包围盒创建线框
-            //'1893575056377824.3046473', '1893575056377824.3055113', '1893575056377824.3047070', '1893575056377824.3055079'
-            let geometryList = ['1893575056377824.3055097', '1893575056377824.3048897', '1893575056377824.3048896', '1893575056377824.3051366', '1893575056377824.3055159',
-                // '1893537376946272.2778415',
-                // '1893537376946272.2741125',
-                // '1893537376946272.2740811',
-                // '1893537376946272.2738435',
+
+            let geometryList = [
+                '1893575056377824.3055097',
+                '1893575056377824.3048897',
+                '1893575056377824.3048896',
+                '1893575056377824.3051366',
+                '1893575056377824.3055159',
                 '1893537376946272.2738421',
                 '1893537376946272.2751160',
                 '1893537376946272.2771234',
                 "1893580694636640.2855094",
                 "1893574719907808.2751863",
-                // "1893536618383328.2870335"
-                // '1893537376946272.2755732'
-                // "1893536618383328.2816617",
-                // "1893574719907808.2882929",
-                // "1893580694636640.2805595"
-                //"1893575056377824.2972734"
-
-
             ];
 
             let exteralList = [];
@@ -205,8 +196,6 @@ function onSDKLoadSucceeded(viewMetaData) {
 
             //开始绘制网格
             let linesGroup = new THREE.Group();
-
-
             let lMaterial = new THREE.LineBasicMaterial({ color: 0xeeeeee, opacity: 0.125, transparent: true });
             let h_segments = 20, v_segments = 60;
             let mo = [m_3047070, m_3052775, m_3051987, m_3048897];
@@ -242,33 +231,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             //光源
             let light = new THREE.PointLight(0xff0000, 0.35, 10000);
             light.position.set(53789.66668783984, 116882.37157129617, -18220.363535766293);
-            myscene.add(light);
-
-            // 星空盒
-            // myscene.background = new THREE.CubeTextureLoader()
-            //     .setPath('../../images/')
-            //     .load(['back.jpg', 'back.jpg', 'back.jpg', 'back.jpg', 'back.jpg', 'back.jpg']);
-
-            // var path = "../../images/";
-            // var img = 'starfiled.jpeg';
-            // var directions = [img, img, img, img, img, img];
-
-            // var skyGeometry = new THREE.BoxGeometry(1000, 1000, 1000);
-
-            // var materialArray = [];
-            // for (var i = 0; i < 6; i++)
-            //     materialArray.push(new THREE.MeshBasicMaterial({
-            //         map: THREE.ImageUtils.loadTexture(path + directions[i]),
-            //         side: THREE.BackSide
-            //     }));
-            // var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
-            // var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
-            // skyBox.translateX = 5000;
-            // skyBox.translateZ = -5000;
-            // window.mySky = skyBox;
-            // //skyBox.scale.x=-1;也是镜像翻转，与上面的side一个效果
-            // myscene.add(skyBox);
-
+            //myscene.add(light);
 
 
             //基础设置
