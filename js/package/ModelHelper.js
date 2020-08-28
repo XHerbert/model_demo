@@ -4,6 +4,7 @@
  */
 
 import { WebUtils } from './WebUtils.js'
+import { RoomUtils } from './RoomUtils.js'
 
 /**
  * @fileOverview 模块功能：模型工具包
@@ -13,6 +14,7 @@ function ModelHelper(viewer) {
 
     this.viewer = viewer || null;
     this.webUtils = new WebUtils(this.viewer);
+    this.roomUtils = new RoomUtils();
     this.type = "Glodon.Helper.ModelHelper";
 }
 
@@ -181,6 +183,20 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
         });
     },
 
+    /**
+     * 通过一系列的有序点集构造空间[待验证]
+     * @param {Array} pointArray 点集
+     * @param {Number} height 高度
+     * @param {String} name 空间名称
+     */
+    drawAreaByClickPoints: function (pointArray, height, name) {
+        if (!pointArray || !pointArray.length) {
+            console.warn("pointArray is empty!")
+            return;
+        }
+        let boundary = this.roomUtils.buildBoundary(pointArray);
+        this.viewer.createRoom(boundary, height, name);
+    },
 
     /**
      * 启动路径动画

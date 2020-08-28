@@ -235,9 +235,7 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
         let modelHelper = new ModelHelper();
         let boundaryArray = modelHelper.buildAreaBoundary(extremumPoints);
         return boundaryArray;
-
     }
-
 });
 
 export { RoomUtils }
