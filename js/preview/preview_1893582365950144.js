@@ -34,7 +34,6 @@ function onSDKLoadSucceeded(viewMetaData) {
             let modelHelper = new ModelHelper(viewer);
             let open = true;
             //helper.createAixsHelper(viewer);
-            window.bim = {};
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             renderer.domElement.addClass('canvasClass');
             window.myscene = scene;

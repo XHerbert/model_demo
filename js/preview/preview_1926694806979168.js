@@ -35,7 +35,6 @@ function onSDKLoadSucceeded(viewMetaData) {
         webUtils.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             let modelHelper = new ModelHelper(viewer);
-            window.bim = {};
             //helper.createAixsHelper(viewer);
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             renderer.domElement.addClass('canvasClass');

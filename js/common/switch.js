@@ -1,3 +1,5 @@
+window['bim'] = {};
+
 // 目录开关
 let onDirClickHandler = (obj) => {
     if (obj.checked) {
@@ -103,10 +105,8 @@ let onEnableBackgroundHandler = (obj) => {
 //开启单击构件查询构件筛选条件开关
 let onConditionQueryHandler = (obj) => {
     if (obj.checked) {
-        window['bim'] = {};
         window.bim.queryCondition = true;
     } else {
-        window['bim'] = {};
         window.bim.queryCondition = false;
     }
 }
@@ -114,10 +114,8 @@ let onConditionQueryHandler = (obj) => {
 //开启单击构件查询构件筛选条件开关
 let onComponentQueryHandler = (obj) => {
     if (obj.checked) {
-        window['bim'] = {};
         window.bim.component = true;
     } else {
-        window['bim'] = {};
         window.bim.component = false;
     }
 }
@@ -125,10 +123,8 @@ let onComponentQueryHandler = (obj) => {
 //开启空间拆分与合并
 let onAreaRebuildHandler = (obj) => {
     if (obj.checked) {
-        window['bim'] = {};
         window.bim.drawRooms = true;
     } else {
-        window['bim'] = {};
         window.bim.drawRooms = false;
     }
 }
@@ -136,10 +132,28 @@ let onAreaRebuildHandler = (obj) => {
 //开启构件Id复制
 let onRecordObjectIdHandler = (obj) => {
     if (obj.checked) {
-        window['bim'] = {};
         window.bim.recordObjectId = true;
     } else {
-        window['bim'] = {};
         window.bim.recordObjectId = false;
+    }
+}
+
+//开启空间自定义路径绘制
+var button;
+let onDrawCustomAreaHandler = (obj) => {
+    if (obj.checked) {
+        window.bim.drawCustomArea = true;
+        button = document.createElement("button");
+        button.style.position = "absolute";
+        button.style.top = "100px";
+        button.id = "draw_id";
+        button.style.right = "250px";
+        button.innerText = "draw_area";
+        button.style.zIndex = 99999;
+        document.body.appendChild(button);
+    } else {
+        window.bim.drawCustomArea = false;
+        window.bim.tagEventBind = false;
+        document.body.removeChild(button);
     }
 }

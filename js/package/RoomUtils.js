@@ -203,7 +203,6 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
                 }
             }
         }
-        // console.log("extremumPoint", extremumPoint);
         //对符合条件的点集进行顺时针排序，思路是找到最大和最小占1、3索引，剩余的两个点随机
         return extremumPoint;
 
@@ -216,7 +215,6 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
     buildBoundary: function (extremumPoints) {
 
         let copy = Object.assign([], extremumPoints);
-        console.log(copy);
         copy.forEach(item => {
             if (item.x === maxX && item.y === maxY) {
                 extremumPoints[0] = item;

@@ -60,9 +60,15 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
      * @param {Number} divisions 坐标格细分次数
      * @param {String} colorCenterLine  中线颜色
      * @param {String} colorGrid  坐标格网格线颜色
+     * @param {Number} rotate  坐标格旋转角度，默认不旋转
+     * @returns {Object} 网格辅助对象
      */
-    createGridHelper: function (size, divisions, colorCenterLine, colorGrid) {
-        return new THREE.GridHelper(size || 10, divisions || 10, colorCenterLine, colorGrid);
+    createGridHelper: function (size, divisions, colorCenterLine, colorGrid, rotate) {
+        let grid = new THREE.GridHelper(size || 10, divisions || 10, colorCenterLine, colorGrid);
+        if (rotate) {
+            grid.rotation.x = rotate;
+        }
+        return grid;
     },
 
     /**
@@ -184,18 +190,31 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
     },
 
     /**
-     * 通过一系列的有序点集构造空间[待验证]
+     * 通过一系列的有序点集构造空间
      * @param {Array} pointArray 点集
      * @param {Number} height 高度
      * @param {String} name 空间名称
+     * @param {Glodon.Web.Graphics.Color} name 空间颜色
+     * @param {Glodon.Web.Graphics.Color} name 空间边界颜色
      */
-    drawAreaByClickPoints: function (pointArray, height, name) {
+    drawAreaByClickPoints: function (pointArray, height, name, faceColor, borderColor) {
         if (!pointArray || !pointArray.length) {
             console.warn("pointArray is empty!")
             return;
         }
         let boundary = this.roomUtils.buildBoundary(pointArray);
-        this.viewer.createRoom(boundary, height, name);
+        console.log(name, boundary);
+        let ret = this.viewer.createRoom(boundary, height, name, faceColor, borderColor);
+    },
+
+    /**
+     * 在场景中根据外部构件名称获取外部构件
+     * @param {Object} scene 场景对象
+     * @param {String} name 外部构件名称
+     * @returns {Object} 外部构件
+     */
+    getExternalObjectByName: function (scene, name) {
+        return scene.getObjectByName(name);
     },
 
     /**

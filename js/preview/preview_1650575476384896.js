@@ -32,7 +32,6 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.setCameraAnimation(true);
         app.addView(BimfaceLoaderConfig.viewToken);
         viewer.setBorderLineEnabled(false);
-        window.bim = {};
 
         window.viewer = viewer;
         webUtils.viewer = window.viewer;

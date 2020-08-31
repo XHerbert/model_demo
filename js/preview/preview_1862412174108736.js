@@ -37,7 +37,6 @@ function onSDKLoadSucceeded(viewMetaData) {
         var modelHelper = new ModelHelper(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             // helper.createAixsHelper(viewer);
-            window.bim = {};
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';

@@ -41,7 +41,6 @@ function onSDKLoadSucceeded(viewMetaData) {
             modelHelper.createAixsHelper(viewer);
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             camera.layers.enable(1);
-            window.bim = {};
             window.myscene = scene;
             document.getElementById('open-button').style.display = 'block';
             viewer.getViewer().rendererManager.renderer.renderer.shadowMap.enabled = true;

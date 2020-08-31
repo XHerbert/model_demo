@@ -250,6 +250,7 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
             }
 
             //获取非三角侧边界对象
+            console.log("leftPoint", leftPoint);
             var boundarys2 = modelHelper.buildAreaBoundary(leftPoint);
             boundaryCollection.push(boundarys2);
 
