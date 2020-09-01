@@ -46,6 +46,7 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
      * @param {Glodon.Web.Graphics.Color} faceColor 空间表面颜色(非必填)
      * @param {Glodon.Web.Graphics.Color} frameColor 空间轮廓颜色(非必填)
      * @returns {Object} 新构造的空间边界
+     * @requires WebUtils
      * @public
      */
     mergeBoundaryPipeline: function (boundaryArray, id, height, faceColor, frameColor) {
@@ -73,6 +74,7 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
     /**
      * 整理空间边界数据，去除小数部分
      * @param {Object} boundaryData 空间边界数据
+     * @returns {Object} 去除小数部分的空间边界数据
      */
     cleanBoundaryData: function (boundaryData) {
 
@@ -96,6 +98,7 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
     /**
      * 验证并存储空间边界顶点数据
      * @param {Object} boundaryData 整理后的空间边界数据
+     * @returns {Array} 取出边界对象的顶点，存入顶点坐标集合
      */
     storePointArray: function (boundaryData) {
         let pointArray = [];
@@ -123,6 +126,7 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
     /**
      * 验证边界点集合是否首尾相接
      * @param {Object} pointArray 边界点集合
+     * @returns {Boolean} 是否符合收尾相接
      */
     validatePointData: function (pointArray) {
 
@@ -155,6 +159,7 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
      * 通过顶点集合获取极值点，以便构造新的空间边界
      * @param {Array} pointCollection 被合并前的多个空间的顶点集合
      * @param {Number} direction 原空间的分隔方向 1：纵向 2：横向
+     * @returns {Array} 从一系列顶点中筛选出的顶点集合
      */
     extremumBoundaryPoint: function (pointCollection, direction) {
         const vertical = 1, horizontal = 2;
@@ -211,6 +216,8 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
     /**
      * 通过极值点构造新的边界数据
      * @param {Array} extremumPoints 边界极值点
+     * @requires ModelHelper
+     * @returns {Object} boundary 空间边界   
      */
     buildBoundary: function (extremumPoints) {
 
@@ -231,9 +238,29 @@ RoomUtils.prototype = Object.assign(RoomUtils.prototype, {
         });
         //排序完成后开始构造新的边界数据
         let modelHelper = new ModelHelper();
-        let boundaryArray = modelHelper.buildAreaBoundary(extremumPoints);
-        return boundaryArray;
-    }
+        let boundary = modelHelper.buildAreaBoundary(extremumPoints);
+        return boundary;
+    },
+
+    /**
+     * 通过一系列的有序点集构造空间
+     * @param {Array} pointArray 点集
+     * @param {Number} height 高度
+     * @param {String} name 空间名称
+     * @param {Glodon.Web.Graphics.Color} faceColor 空间颜色
+     * @param {Glodon.Web.Graphics.Color} borderColor 空间边界颜色
+     * @returns {String} 空间名称
+   */
+    drawAreaByClickPoints: function (pointArray, height, name, faceColor, borderColor) {
+        if (!pointArray || !pointArray.length) {
+            console.warn("pointArray is empty!")
+            return;
+        }
+        let boundary = this.buildBoundary(pointArray);
+        console.log(name, boundary);
+        let ret = this.viewer.createRoom(boundary, height, name, faceColor, borderColor);
+        return ret;
+    },
 });
 
 export { RoomUtils }

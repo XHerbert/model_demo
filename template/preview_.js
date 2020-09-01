@@ -49,15 +49,24 @@ function onSDKLoadSucceeded(viewMetaData) {
             drawableConfig.viewer = viewer;
             drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
 
-
-
             //相机视角
             setCamera(viewer);
 
             //TODO:声明下方单击事件中需要的变量
             viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
                 if (!e.objectId) return;
+                if (window.bim.queryCondition) {
+                    let condition = viewer.getObjectDataById(e.objectId);
+                    webUtils.layerPanel("#json-renderer", "auto", "auto", "筛选条件", 'layui-layer-molv', condition);
+                }
 
+                if (window.bim.component) {
+                    webUtils.layerPanel("#json-renderer", "auto", undefined, "构件信息", 'layui-layer-lan', e);
+                }
+                if (window.bim.recordObjectId) {
+                    webUtils.copyObjectId(e);
+                }
+                //TODO:Click logic
 
             });
         });

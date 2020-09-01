@@ -23,6 +23,7 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
     /**
      * 获取Scene对象
      * @param {Object} scene 非bimface场景时，传入的scene对象 
+     * @returns {Object} 场景对象
      */
     getScene: function (scene) {
         return scene || this.viewer.getViewer().modelManager.getScene();
@@ -31,6 +32,7 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
     /**
      * 获取透视相机Camera对象
      * @param {Object} camera  非bimface场景时，传入的camera对象
+     * @returns {Object} 相机对象
      */
     getPerspectiveCamera: function (camera) {
         return camera || this.viewer.getViewer().camera;
@@ -39,19 +41,19 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
     /**
      * 获取Render对象
      * @param {Object} renderer 非bimface场景时，传入的renderer对象
+     * @returns {Object} 渲染器对象
      */
     getRender: function (renderer) {
         return renderer || this.viewer.getViewer().rendererManager.renderer.renderer;
     },
 
     /**
-     * 创建坐标轴Helper
-     * @param {Object} viewer 
+     * 创建辅助坐标轴
+     * @param {Number} axisSize 坐标轴尺寸    
      */
-    createAixsHelper: function () {
-        this.axisHelper = new THREE.AxisHelper(this.axisSize || 300);
-        this.getScene().add(this.axisHelper);
-        window.axis = this.axisHelper;
+    createAixsHelper: function (axisSize) {
+        let axisHelper = new THREE.AxisHelper(axisSize || 3000);
+        this.viewer.addExternalObject("axisHelper", axisHelper);
     },
 
     /**
@@ -73,23 +75,22 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
 
     /**
      * 创建环境光Helper
-     * @param {Object} viewer 
      */
     createAmbientLightHelper: function () {
-        this.ambientLightHelper = new THREE.DirectionalLightHelper();
-        this.webUtils.getScene(this.viewer).add(this.axisHelper);
+        let ambientLightHelper = new THREE.DirectionalLightHelper();
+        this.viewer.addExternalObject("ambientLightHelper", ambientLightHelper);
     },
 
     /**
-     * 创建边界信息对象
+     * 创建标准的边界信息对象
      * @param {Array} pointArray 用于创建边界的点集 
      * @returns 边界对象
      */
     buildAreaBoundary: function (pointArray) {
-        var boundarys = {};
-        boundarys.version = "2.0";
-        boundarys.loops = [];
-        boundarys.loops[0] = [];
+        let boundary = {};
+        boundary.version = "2.0";
+        boundary.loops = [];
+        boundary.loops[0] = [];
 
         for (let j = 0, len = pointArray.length; j < len; j++) {
             let arrayItem = [];
@@ -100,9 +101,9 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
                 arrayItem.push(pointArray[j]);
                 arrayItem.push(pointArray[j + 1]);
             }
-            boundarys.loops[0].push(arrayItem);
+            boundary.loops[0].push(arrayItem);
         }
-        return boundarys;
+        return boundary;
     },
 
     /**
@@ -127,6 +128,7 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
      * @param {String} color 雾颜色
      * @param {Number} near 近视点
      * @param {Number} far 远视点
+     * @returns {Object} 雾对象
      */
     buildFog: function (color, near, far) {
         color = color || 0xcce0ff;
@@ -187,24 +189,6 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
             }
             viewer.render();
         });
-    },
-
-    /**
-     * 通过一系列的有序点集构造空间
-     * @param {Array} pointArray 点集
-     * @param {Number} height 高度
-     * @param {String} name 空间名称
-     * @param {Glodon.Web.Graphics.Color} name 空间颜色
-     * @param {Glodon.Web.Graphics.Color} name 空间边界颜色
-     */
-    drawAreaByClickPoints: function (pointArray, height, name, faceColor, borderColor) {
-        if (!pointArray || !pointArray.length) {
-            console.warn("pointArray is empty!")
-            return;
-        }
-        let boundary = this.roomUtils.buildBoundary(pointArray);
-        console.log(name, boundary);
-        let ret = this.viewer.createRoom(boundary, height, name, faceColor, borderColor);
     },
 
     /**
@@ -276,13 +260,13 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
         //给场景添加天空盒子纹理
         let cubeTextureLoader = new THREE.CubeTextureLoader();
         cubeTextureLoader.setPath(path);
-
-        // var cubeTexture = cubeTextureLoader.load([
-        //     'right.jpg', 'left.jpg',
-        //     'top.jpg', 'bottom.jpg',
-        //     'front.jpg', 'back.jpg'
-        // ]);
-
+        /**
+        var cubeTexture = cubeTextureLoader.load([
+            'right.jpg', 'left.jpg',
+            'top.jpg', 'bottom.jpg',
+            'front.jpg', 'back.jpg'
+        ]);
+         */
         var cubeTexture = cubeTextureLoader.load(imageArray);
         let currentScene = this.getScene(scene);
         currentScene.background = cubeTexture;
@@ -291,6 +275,8 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
     /**
      * 绘制直线
      * @param {Array} pointArray 用于绘制直线的点集
+     * @param {THREE.Color} 直线颜色
+     * @requires WebUtils
      * @returns {String} 返回直线的名称
      */
     drawLine: function (pointArray, color) {

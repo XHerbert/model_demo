@@ -33,11 +33,12 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      * 2D坐标转3D
      * @param {Object} event 点击事件对象
      * @param {Object} camera 相机对象
+     * @requires WebUtils
      * @returns {Vector3} 3D坐标值
      */
     getLocalPosition: function (event, camera) {
         let webUtils = new WebUtils();
-        let ca = webUtils.getPerspectiveCamera(camera);
+        webUtils.getPerspectiveCamera(camera);
 
         let mouse = new THREE.Vector2();
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -115,6 +116,7 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      * @param {Object} boundary 空间边界数据
      * @param {Array} pointArray 分割点集合
      * @param {Number} height 高度
+     * @requires RoomUtils
      * @returns {Array} crossPointArray 直线与边界交点集合
      */
     findCrossPoint: function (boundary, pointArray, height) {
@@ -186,6 +188,8 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
     /**
      * 创建拆分后的空间
      * @param {Array} crossObjectArray 用于拆分空间的点集合 
+     * @requires WebUtils
+     * @requires ModelHelper
      * @returns {Array} 拆分后的空间边界集合
      */
     buildSplitAreas: function (crossObjectArray) {

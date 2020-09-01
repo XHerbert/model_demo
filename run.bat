@@ -8,7 +8,3 @@ xcopy .\template\preview_.js .\js\preview\ /y
 
 ren .\js\preview\preview_.js preview_%1.js
 echo 'success!'
-
-
-
-echo param[1] = %1

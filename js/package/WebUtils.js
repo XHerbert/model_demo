@@ -27,6 +27,7 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
     /**
      * 获取URL参数
      * @param {String} name 根据名称获取url地址中的参数值
+     * @returns {String} 参数名对应的参数值
      */
     getURLParameter: function (name) {
         return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
@@ -122,6 +123,7 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
      * 格式化JSON数据
      * @param {String} selector DOM节点 
      * @param {Object} data JSON数据 
+     * @returns {Object} 格式化后的DOM
      */
     formatHtml: function (selector, data) {
         var options = {
@@ -154,6 +156,7 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
      * 比较两个对象属性值是否完全相同
      * @param {Object} obj1 被比较的第一个对象
      * @param {Object} obj2 被比较的第二个对象
+     * @returns {Boolean} 是否相等
      */
     isObjectEqual: function (obj1, obj2) {
         let props1 = Object.getOwnPropertyNames(obj1);
@@ -176,6 +179,7 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
      * @param {Number} green 绿色分量
      * @param {Number} blue 蓝色分量
      * @param {Number} alpha alpha分量
+     * @returns {Glodon.Web.Graphics.Color} 颜色
      */
     fromColor: function (red, green, blue, alpha) {
         return new Glodon.Web.Graphics.Color(red, green, blue, alpha);
@@ -185,6 +189,7 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
      * 获取十六进制颜色值
      * @param {Number} color 十六进制色值
      * @param {Number} alpha alpha分量
+     * @returns {Glodon.Web.Graphics.Color} 颜色
      */
     fromHexColor: function (color, alpha) {
         return new Glodon.Web.Graphics.Color(color, alpha);
@@ -196,6 +201,7 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
      * @public
      * @author xuhongbo
      * @version 1.0
+     * @returns {String} 随机字符 
      */
     guid: function () {
         return 'xxxxxxxx'.replace(/[xy]/g, function (c) {

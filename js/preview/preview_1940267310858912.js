@@ -4,11 +4,13 @@
  */
 import { WebUtils } from '../package/WebUtils.js'
 import { ModelHelper } from '../package/ModelHelper.js'
+import { RoomUtils } from '../package/RoomUtils.js'
 
 var app, viewer, drawableContainer;
 const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
+var roomUtils = new RoomUtils();
 var hidetoken;
 
 webUtils.getViewtoken(1940267310858912, INTEGRATE_FILE).then((token) => {
@@ -31,6 +33,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         window.viewer = viewer;
         viewer.setBackgroundColor = webUtils.fromColor(53, 53, 66, 1);
         webUtils.viewer = window.viewer;
+        roomUtils.viewer = window.viewer;
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
 
             let modelHelper = new ModelHelper(viewer);
@@ -59,19 +62,63 @@ function onSDKLoadSucceeded(viewMetaData) {
             setCamera(viewer);
             //创建空间
 
-            drawArea(viewer, [], false);
+            document.getElementById('red').addEventListener("click", function () {
+                drawArea(viewer, [], false);
+            });
 
             document.getElementById('white').addEventListener("click", function () {
-
                 drawArea(viewer, [], true);
-
             });
+
+            //配电箱
+            document.getElementById("blue").addEventListener("click", function () {
+                viewer.overrideComponentsColorById(["1862928619006016.3240219"], webUtils.fromColor(255, 1, 1, 1));
+                // viewer.setSelectedComponentsById(["1862928619006016.3240219"]);
+                // viewer.zoomToSelectedComponents(0.5, null);
+                // viewer.clearSelectedComponents();
+                viewer.setCameraStatus({
+                    "name": "persp",
+                    "position": {
+                        "x": 45860.300174246186,
+                        "y": 28393.768680588306,
+                        "z": 29928.23749073099
+                    },
+                    "target": {
+                        "x": 47427.062878303936,
+                        "y": 28760.64618264102,
+                        "z": 28951.00212144469
+                    },
+                    "up": {
+                        "x": 0.5054067296820809,
+                        "y": 0.11834314464739062,
+                        "z": 0.8547274054966476
+                    },
+                    "fov": 45,
+                    "zoom": 1,
+                    "version": 1,
+                    "coordinateSystem": "world"
+                })
+                viewer.render();
+            })
 
             let pickupFinished = false;
             window.bim.tagEventBind = false;
             let points = [];
             viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
                 if (!e.objectId) return;
+
+                if (window.bim.queryCondition) {
+                    let condition = viewer.getObjectDataById(e.objectId);
+                    webUtils.layerPanel("#json-renderer", "auto", "auto", "筛选条件", 'layui-layer-molv', condition);
+                }
+
+                if (window.bim.component) {
+                    webUtils.layerPanel("#json-renderer", "auto", undefined, "构件信息", 'layui-layer-lan', e);
+                }
+
+                if (window.bim.recordObjectId) {
+                    webUtils.copyObjectId(e);
+                }
                 if (!window.bim.tagEventBind) {
                     if (document.getElementById("draw_id")) {
                         document.getElementById("draw_id").addEventListener("click", function () {
@@ -206,7 +253,7 @@ function drawArea(viewer, pointArray, multi) {
     let area_name = webUtils.guid();
     let left_area_name = webUtils.guid();
     let right_area_name = webUtils.guid();
-    modelHelper.drawAreaByClickPoints(points, height, area_name, faceColor, borderColor);
+    roomUtils.drawAreaByClickPoints(points, height, area_name, faceColor, borderColor);
     viewer.createRoom(a1, height, left_area_name, innerFaceColor, innerBorderColor);
     viewer.createRoom(a2, height, right_area_name, innerFaceColor, innerBorderColor);
 
