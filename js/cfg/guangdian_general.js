@@ -57,27 +57,5 @@ export function initGdGeneralModel(viewer) {
 
         let progress = 0;
         pathAnimation.path.arcLengthDivisions = 1000;
-        // function renderThis() {
-
-        //     if (progress > 1.0) {
-        //         return;    //停留在管道末端,否则会一直跑到起点 循环再跑
-        //     }
-        //     progress += 0.0009;
-        //     if (pathAnimation.path) {
-        //         let point = pathAnimation.path.getPoint(progress);
-        //         if (point && point.x) {
-        //             //object.position.set(point.x, point.y, point.z);
-        //             object.position.x = point.x;
-        //             object.position.y = point.y;
-        //             object.position.z = point.z;
-        //             object.updateMatrixWorld();
-        //         }
-        //         console.log(object.position);
-        //     }
-        //     viewer.render();
-        //     //getRender(viewer).render(getScene(viewer), getPerspectiveCamera(viewer));
-        //     requestAnimationFrame(renderThis.bind(this));
-        // }
-        //renderThis(); 生效，但不适合该模型，没有方向感
     });
 }

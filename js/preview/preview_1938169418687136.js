@@ -104,6 +104,7 @@ function buildCondition(viewer) {
     viewer.hideAllComponents();
     let showCondition = [];
     let hideCondition = [];
+    /** B01 begin **/
     showCondition.push({ "categoryId": "-2001320", "levelName": "B01" });//结构框架 - 排除{"family": "砼梁梯"}
     showCondition.push({ "categoryId": "-2001140", "levelName": "B01" });//机械设备 - 排除{"family": "FSHB-消火栓连体箱"}
     showCondition.push({ "familyType": "地下室外墙 - 300", "levelName": "B01" }, { "familyType": "地下室外墙 - 350", "levelName": "B01" }, { "familyType": "外墙 - A5.0蒸压加气砼砌块 - 砌筑砂浆M5.0 - 200", "levelName": "B01" });//B01墙
@@ -111,6 +112,47 @@ function buildCondition(viewer) {
     viewer.showComponentsByObjectData(showCondition);
 
     hideCondition.push({ "familyType": "消火栓连体箱", "levelName": "B01" });
+    hideCondition.push({ "family": "砼梁梯", "levelName": "B01" });
     viewer.hideComponentsByObjectData(hideCondition);
+    /** B01 end **/
+
+    /** F01 begin **/
+    showCondition.length = hideCondition.length = 0;
+    showCondition.push({ "family": "砼矩形梁", "levelName": "F01" }, { "family": "砼变截面矩形梁", "levelName": "F01" });//结构框架
+    showCondition.push({ "categoryId": "-2001140", "levelName": "F01" });//机械设备
+    showCondition.push({ "familyType": "外墙 - 玻璃幕墙 - 300", "levelName": "F01" });//墙
+    showCondition.push({ "familyType": "砼板 - 130", "levelName": "F01" }, { "familyType": "砼板 - 170", "levelName": "F01" }, { "familyType": "砼板 - 200", "levelName": "F01" }, { "familyType": "砼板 - 100", "levelName": "F01" }, { "familyType": "砼板 - 140", "levelName": "F01" }, { "familyType": "砼板 - 120", "levelName": "F01" }, { "familyType": "砼板 - 150", "levelName": "F01" }, { "familyType": "砼板 - 230", "levelName": "F01" });//楼板
+    viewer.showComponentsByObjectData(showCondition);
+
+    hideCondition.push({ "familyType": "消火栓连体箱", "levelName": "F01" });
+    hideCondition.push({ "family": "FEFE-手提式灭火器1", "levelName": "F01" }, { "family": "FEFE-超细干粉灭火器-吸顶", "levelName": "F01" }, { "family": "FSHB-薄型普通消火栓箱 - 暗装1", "levelName": "F01" });
+    viewer.hideComponentsByObjectData(hideCondition);
+    /** F01 end **/
+
+    /** F02 begin **/
+    showCondition.length = hideCondition.length = 0;
+    showCondition.push({ "family": "砼矩形梁", "levelName": "F02" }, { "family": "砼变截面矩形梁", "levelName": "F02" });//结构框架
+    showCondition.push({ "categoryId": "-2001140", "levelName": "F02" });//机械设备
+    showCondition.push({ "familyType": "幕墙- 玻璃 -300", "levelName": "F02" }, { "familyType": "幕墙- 防火玻璃 -200", "levelName": "F02" }, { "familyType": "外墙 - A5.0蒸压加气砼砌块 - 砌筑砂浆M5.0 - 200", "levelName": "F02" }, { "familyType": "幕墙- 玻璃 -270", "levelName": "F02" }, { "familyType": "幕墙- 玻璃 -100", "levelName": "F02" });//墙
+    showCondition.push({ "familyType": "砼板 - 130", "levelName": "F02" }, { "familyType": "砼板 - 170", "levelName": "F02" }, { "familyType": "砼板 - 200", "levelName": "F02" }, { "familyType": "砼板 - 100", "levelName": "F02" }, { "familyType": "砼板 - 140", "levelName": "F02" }, { "familyType": "砼板 - 120", "levelName": "F02" }, { "familyType": "砼板 - 150", "levelName": "F02" }, { "familyType": "砼板 - 220", "levelName": "F02" });//楼板
+    viewer.showComponentsByObjectData(showCondition);
+
+    hideCondition.push({ "family": "FEFE-手提式灭火器", "levelName": "F02" }, { "family": "FSHB-薄型普通消火栓箱 - 暗装", "levelName": "F02" });
+    viewer.hideComponentsByObjectData(hideCondition);
+    /** F02 end **/
+
+    /** F03 begin **/
+    showCondition.length = hideCondition.length = 0;
+    showCondition.push({ "family": "砼矩形梁", "levelName": "F03" }, { "family": "砼变截面矩形梁", "levelName": "F03" });//结构框架
+    showCondition.push({ "categoryId": "-2001140", "levelName": "F03" });//机械设备
+    showCondition.push({ "familyType": "内墙 - A5.0蒸压加气砼砌块 - 砌筑砂浆M5.0 - 300-玻璃", "levelName": "F03" });//墙
+    showCondition.push({ "familyType": "砼板 - 130", "levelName": "F03" }, { "familyType": "砼板 - 170", "levelName": "F03" }, { "familyType": "砼板 - 200", "levelName": "F03" }, { "familyType": "砼板 - 100", "levelName": "F03" }, { "familyType": "砼板 - 110", "levelName": "F03" }, { "familyType": "砼板 - 140", "levelName": "F03" }, { "familyType": "砼板 - 120", "levelName": "F03" }, { "familyType": "砼板 - 150", "levelName": "F03" }, { "familyType": "砼板 - 220", "levelName": "F03" });//楼板
+    viewer.showComponentsByObjectData(showCondition);
+
+    hideCondition.push({ "family": "FEFE-手提式灭火器", "levelName": "F03" }, { "family": "FEFE-超细干粉灭火器-吸顶", "levelName": "F03" }, { "family": "FSHB-薄型普通消火栓箱 - 暗装", "levelName": "F03" }, { "family": "FSHB-消火栓箱-左接", "levelName": "F03" });
+    viewer.hideComponentsByObjectData(hideCondition);
+    /** F03 end **/
+
+
     viewer.render();
 }

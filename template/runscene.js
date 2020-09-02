@@ -1,6 +1,6 @@
 /**
  * @author xuhbd
- * @function plane animation
+ * @function template of run a scene
  */
 
 var scene = null;
