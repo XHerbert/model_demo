@@ -54,7 +54,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             document.getElementsByClassName('gld-bf-tree')[0].style.display = 'none';
             document.getElementById('open-button').style.display = 'block';
 
-            viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(200, 200, 200, 0.25));
+            viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(200, 200, 200, 0.75));
             // viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(200, 0, 0, 1));
 
 
@@ -93,7 +93,7 @@ function onSDKLoadSucceeded(viewMetaData) {
                     webUtils.layerPanel("#json-renderer", "auto", undefined, "构件信息", 'layui-layer-lan', e);
                 }
                 if (window.bim.recordObjectId) {
-                    webUtils.copyObjectId(e);
+                    webUtils.copyStringValue(e.objectId);
                 }
 
             });

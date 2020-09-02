@@ -1,6 +1,6 @@
 /**
  * @author:xuhongbo
- * @function:wanda water system white
+ * @function:wanda
  */
 import { WebUtils } from '../package/WebUtils.js'
 import { ModelHelper } from '../package/ModelHelper.js'
@@ -11,7 +11,7 @@ var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 var hidetoken;
 
-webUtils.getViewtoken(1940267310858912, INTEGRATE_FILE).then((token) => {
+webUtils.getViewtoken(1938169418687136, INTEGRATE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     hidetoken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
@@ -34,7 +34,6 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
 
             let modelHelper = new ModelHelper(viewer);
-            //helper.createAixsHelper(viewer);
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
             renderer.domElement.addClass('canvasClass');
             window.myscene = scene;
@@ -48,7 +47,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             var drawableConfig = new Glodon.Bimface.Plugins.Drawable.DrawableContainerConfig();
             drawableConfig.viewer = viewer;
             drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
-
+            webUtils.initModel();
+            buildCondition(viewer);
             //相机视角
             setCamera(viewer);
 
@@ -98,4 +98,19 @@ function setCamera(viewer, callback) {
             })
         }, 800);
     });
+}
+
+function buildCondition(viewer) {
+    viewer.hideAllComponents();
+    let showCondition = [];
+    let hideCondition = [];
+    showCondition.push({ "categoryId": "-2001320", "levelName": "B01" });//结构框架 - 排除{"family": "砼梁梯"}
+    showCondition.push({ "categoryId": "-2001140", "levelName": "B01" });//机械设备 - 排除{"family": "FSHB-消火栓连体箱"}
+    showCondition.push({ "familyType": "地下室外墙 - 300", "levelName": "B01" }, { "familyType": "地下室外墙 - 350", "levelName": "B01" }, { "familyType": "外墙 - A5.0蒸压加气砼砌块 - 砌筑砂浆M5.0 - 200", "levelName": "B01" });//B01墙
+    showCondition.push({ "familyType": "砼板 - 200", "levelName": "B01" }, { "familyType": "砼板 - 350", "levelName": "B01" }, { "familyType": "砼板 - 550", "levelName": "B01" }, { "familyType": "砼板 - 250", "levelName": "B01" }, { "familyType": "砼板 - 180", "levelName": "B01" }, { "familyType": "砼板 - 300", "levelName": "B01" }, { "familyType": "砼板 - 500", "levelName": "B01" }, { "familyType": "砼板 - 120", "levelName": "B01" }, { "familyType": "砼板 - 150", "levelName": "B01" });//B01楼板
+    viewer.showComponentsByObjectData(showCondition);
+
+    hideCondition.push({ "familyType": "消火栓连体箱", "levelName": "B01" });
+    viewer.hideComponentsByObjectData(hideCondition);
+    viewer.render();
 }

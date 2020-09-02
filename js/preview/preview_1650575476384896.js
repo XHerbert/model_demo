@@ -93,7 +93,7 @@ function onSDKLoadSucceeded(viewMetaData) {
                 }
 
                 if (window.bim.recordObjectId) {
-                    webUtils.copyObjectId(e);
+                    webUtils.copyStringValue(e.objectId);
                 }
 
                 if (window.bim.drawRooms) {

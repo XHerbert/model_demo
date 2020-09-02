@@ -129,27 +129,27 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
         var options = {
             collapsed: false,
             rootCollapsable: true,
-            withQuotes: false,
+            withQuotes: true,
             withLinks: false
         };
         return $(selector).jsonViewer(data, options);
     },
 
     /**
-     * 复制单击的构件Id
-     * @param {Object} e 鼠标点击事件对象
+     * 复制目标文本
+     * @param {String} value 被复制的文本
      */
-    copyObjectId: function (e) {
+    copyStringValue: function (value) {
         const input = document.createElement('input');
         document.body.appendChild(input);
-        input.setAttribute('value', e.objectId);
+        input.setAttribute('value', value);
         input.setAttribute('id', "cp_o_input");
         input.select();
         if (document.execCommand('copy')) {
             document.execCommand('copy');
         }
         document.getElementById('cp_o_input').remove();
-        layer.msg("【" + e.objectId + "】 copy success!");
+        layer.msg("【" + value + "】 copy success!");
     },
 
     /**

@@ -11,12 +11,11 @@ const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 
-// webUtils.getViewtoken(1897052362842272, INTEGRATE_FILE).then((token) => {
-//     BimfaceLoaderConfig.viewToken = token;
-//     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
-// });
+webUtils.getViewtoken(1897052362842272, INTEGRATE_FILE).then((token) => {
+    BimfaceLoaderConfig.viewToken = token;
+    BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
+});
 
-BimfaceLoaderConfig.viewToken = 'aba8573857b44defbb0443cff8d6046c';
 BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
 
 function onSDKLoadSucceeded(viewMetaData) {

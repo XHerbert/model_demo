@@ -9,7 +9,7 @@ import { unreal } from '../../external/bloom/bloom.js'
 
 
 
-var app, viewer;
+var app, viewer, modelHelper;
 const INTEGRATION_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
@@ -36,7 +36,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         window.viewer = viewer;
 
         webUtils.viewer = window.viewer;
-        var modelHelper = new ModelHelper(viewer);
+        modelHelper = new ModelHelper(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             modelHelper.createAixsHelper(viewer);
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();
@@ -220,7 +220,7 @@ function setupPointsCloud() {
     geometry.addAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
     let points = new THREE.Points(geometry, pointsMaterial);
-    webUtils.getScene().add(points);
+    modelHelper.getScene().add(points);
     // viewer.addExternalObject("points", points);
 };
 

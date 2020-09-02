@@ -7,7 +7,7 @@ import { WebUtils } from '../package/WebUtils.js'
 import { light } from '../usr/light.js'
 import { ModelHelper } from '../package/ModelHelper.js'
 
-var app, viewer;
+var app, viewer, modelHelper;
 const SINGLE_FILE = 0;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
@@ -34,7 +34,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         //viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(204, 224, 255, 1));
         window.viewer = viewer;
         webUtils.viewer = window.viewer;
-        var modelHelper = new ModelHelper(viewer);
+        modelHelper = new ModelHelper(viewer);
         viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
             // helper.createAixsHelper(viewer);
             let scene = modelHelper.getScene(), camera = modelHelper.getPerspectiveCamera(), renderer = modelHelper.getRender();

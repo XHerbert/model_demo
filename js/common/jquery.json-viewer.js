@@ -1,10 +1,13 @@
+import { WebUtils } from "../package/WebUtils.js"
+
 /**
  * jQuery json-viewer
  * @author: Alexandre Bodelot <alexandre.bodelot@gmail.com>
  * @link: https://github.com/abodelot/jquery.json-viewer
  */
-(function($) {
+(function ($) {
 
+  var webUtils = new WebUtils();
   /**
    * Check if arg is either an array with at least 1 element, or a dict with at least 1 key
    * @return boolean
@@ -100,13 +103,14 @@
     }
     return html;
   }
+  //TODO:改造JSONViewer，实现节点的复制功能
 
   /**
    * jQuery plugin method
    * @param json: a javascript object
    * @param options: an optional options hash
    */
-  $.fn.jsonViewer = function(json, options) {
+  $.fn.jsonViewer = function (json, options) {
     // Merge user options with default options
     options = Object.assign({}, {
       collapsed: false,
@@ -116,7 +120,7 @@
     }, options);
 
     // jQuery chaining
-    return this.each(function() {
+    return this.each(function () {
 
       // Transform to HTML
       var html = json2html(json, options);
@@ -130,7 +134,7 @@
 
       // Bind click on toggle buttons
       $(this).off('click');
-      $(this).on('click', 'a.json-toggle', function() {
+      $(this).on('click', 'a.json-toggle', function () {
         var target = $(this).toggleClass('collapsed').siblings('ul.json-dict, ol.json-array');
         target.toggle();
         if (target.is(':visible')) {
@@ -144,7 +148,7 @@
       });
 
       // Simulate click on toggle button when placeholder is clicked
-      $(this).on('click', 'a.json-placeholder', function() {
+      $(this).on('click', 'a.json-placeholder', function () {
         $(this).siblings('a.json-toggle').click();
         return false;
       });
@@ -153,6 +157,10 @@
         // Trigger click to collapse all nodes
         $(this).find('a.json-toggle').click();
       }
+      $('#json-renderer li').addClass("json-cursor").bind("click", function (target) {
+        console.log(target.currentTarget.innerText);
+        webUtils.copyStringValue(target.currentTarget.innerText);
+      });
     });
   };
 })(jQuery);

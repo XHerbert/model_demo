@@ -1,2 +1,2 @@
-rem 生成jdoc文档
+rem generate jdoc running ... ...
 jsdoc -r ./js/package/

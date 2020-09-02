@@ -3,6 +3,10 @@
   padding: 1em 2em;
 }
 
+.json-cursor{
+  cursor: pointer;
+}
+
 /* Syntax highlighting for JSON objects */
 ul.json-dict, ol.json-array {
   list-style-type: none;
