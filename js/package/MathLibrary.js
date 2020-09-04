@@ -299,6 +299,20 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
         let path = new THREE.CatmullRomCurve3(points, closed || true, "catmullrom", 5);
         return path;
     },
+
+    /**
+     * 获取3*3单位矩阵
+     */
+    getThreeMatrix: function () {
+        return [1, 0, 0, 0, 1, 0, 0, 0, 1];
+    },
+
+    /**
+     * 获取4*4单位矩阵
+     */
+    getFourMatrix: function () {
+        return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    }
 });
 
 export { MathLibrary }

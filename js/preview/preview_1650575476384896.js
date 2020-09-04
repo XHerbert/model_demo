@@ -111,9 +111,10 @@ function onSDKLoadSucceeded(viewMetaData) {
                             //寻找交点
                             let crossPoint = math.findCrossPoint(newBoundary, pointArray, e.worldPosition.z);
 
-                            //绘制线段
-                            //lineName = webUtils.drawLine(crossPoint.pointCollection);
+                            //绘制切割线线段
+                            lineName = modelHelper.drawLine(crossPoint.pointCollection, 10, "#FFFFFF", 1);
 
+                            //绘制空间
                             viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[0], e.worldPosition.z, "first", webUtils.fromColor(255, 0, 0, 0.5), webUtils.fromColor(255, 0, 0, 1));
                             viewer.createRoom(math.buildSplitAreas(crossPoint.crossObjectArray)[1], e.worldPosition.z, "second", webUtils.fromColor(0, 255, 0, 0.5), webUtils.fromColor(0, 255, 0, 1));
                             pointArray = [];

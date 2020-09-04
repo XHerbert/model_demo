@@ -27,7 +27,8 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer.setCameraAnimation(true);
         app.addView(BimfaceLoaderConfig.viewToken);
 
-        viewer.setBorderLineEnabled(true);
+
+        viewer.setBorderLineEnabled(false);
         window.viewer = viewer;
         viewer.setBackgroundColor = webUtils.fromColor(53, 53, 66, 1);
         webUtils.viewer = window.viewer;
@@ -39,7 +40,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             renderer.domElement.addClass('canvasClass');
             window.myscene = scene;
             renderer.shadowMap.enabled = true;
-            viewer.enableShadow(false);
+            viewer.enableShadow(true);
             viewer.setExposureShift(0.0);//曝光会影响色值
             renderer.alpha = true;
             renderer.setClearAlpha(0.08);

@@ -15,7 +15,7 @@ var customPass = {
     outlinePass: null,
     viewer: null,
 
-    //使用前先进性初始化
+    //使用前先进行初始化
     init: function (viewer) {
         this.viewer = viewer;
         this.composer = new EffectComposer(getRender(viewer));
@@ -97,10 +97,6 @@ var unreal = {
     composerRenderer: function render() {
         this.composer.render();
         requestAnimationFrame(this.composerRenderer.bind(this));
-        // if (this.mesh) {
-        //     this.mesh.rotation.x += 0.005;
-        //     this.mesh.rotation.y += 0.005;
-        // }
     }
 
 }

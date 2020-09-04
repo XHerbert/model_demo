@@ -273,30 +273,41 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
     },
 
     /**
-     * 绘制直线
-     * @param {Array} pointArray 用于绘制直线的点集
-     * @param {THREE.Color} 直线颜色
+     * 绘制直线或折线线段，只有在bimface平台下可设置{width}参数
+     * @param {Array} pointArray 用于绘制直线或折线线段的点集
+     * @param {Number} width 直线或折线线段宽度
+     * @param {String} color 十六进制直线或折线线段颜色 
+     * @param {Number} alpha 线段颜色透明度     
      * @requires WebUtils
-     * @returns {String} 返回直线的名称
+     * @returns {String} 返回直线或折线线段的名称
      */
-    drawLine: function (pointArray, color) {
-        let lineGeometry = new THREE.Geometry();
-        lineGeometry.vertices.push(
-            pointArray[0], pointArray[1]
-        );
-        lineGeometry.colors.push(
-            new THREE.Color(0xFFFF00 || color),
-            new THREE.Color(0x808000 || color)
-        )
-        let lineMaterial = new THREE.LineBasicMaterial({ vertexColors: true });
-        let line = new THREE.Line(lineGeometry, lineMaterial);
+    drawLine: function (pointArray, width, color, alpha) {
         let lineName = "line-" + this.webUtils.guid();
+        let line = null;
+        if (width > 1) {
+            let splineCurve = new Glodon.Bimface.Plugins.Geometry.SplineCurve(pointArray);
+            splineCurve.setWidth(width);
+            splineCurve.setColor(this.webUtils.fromHexColor(color, alpha || 0.8));
+            splineCurve.setType("polyline");
+            line = splineCurve;
+        } else {
+            let lineGeometry = new THREE.Geometry();
+            lineGeometry.vertices.push(
+                pointArray[0], pointArray[1]
+            );
+            lineGeometry.colors.push(
+                new THREE.Color(0xFFFF00 || color),
+                new THREE.Color(0x808000 || color)
+            )
+            let lineMaterial = new THREE.LineBasicMaterial({ vertexColors: true });
+            line = new THREE.Line(lineGeometry, lineMaterial);
+        }
         this.viewer.addExternalObject(lineName, line);
         return lineName;
     },
 
     /**
-     * 重新构件材质
+     * 重写构件材质
      * @param {Object} materialContainer 材质容器
      * @param {String} image 材质贴图路径
      * @param {Number} offset 偏移
