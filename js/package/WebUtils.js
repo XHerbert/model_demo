@@ -208,6 +208,24 @@ WebUtils.prototype = Object.assign(WebUtils.prototype, {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
+    },
+
+    /**
+     * 获取指定json文件内容并执行回调函数
+     * @param {String} url 请求文件地址
+     * @param {Function} callback 加载数据文件后的回调函数
+     */
+    getFile: function (url, callback) {
+        let request = new XMLHttpRequest();
+        request.open('get', url, true);
+        request.send(null);
+        request.onload = function () {
+            if (request.status === 200) {
+                callback(request.responseText);
+            } else {
+                layer.msg("读取数据失败", { icon: 5 });
+            }
+        }
     }
 });
 

@@ -74,7 +74,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             mesh.scale.set(scaleChange, scaleChange, scaleChange);
             mesh.name = "cylinder";
             viewer.addExternalObject("cylinder", mesh.clone());
-            let extObjMng = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer);
+            var extObjMng = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer);
             meshId = extObjMng.getObjectIdByName('cylinder');
             console.log(meshId);
             //scene.add(mesh);
@@ -102,13 +102,17 @@ function onSDKLoadSucceeded(viewMetaData) {
                 if (mesh.material.opacity <= 0) {
                     cancelAnimationFrame(animationId);
                     //如果Mesh消失，还原Mesh
-                    extObjMng.removeById(meshId);
-                    extObjMng.addObject("cylinder", mesh.clone());
-                    meshId = extObjMng.getObjectIdByName('cylinder');
+                    // extObjMng.removeById(meshId);
+                    //extObjMng.addObject("cylinder", mesh.clone());
+                    //meshId = extObjMng.getObjectIdByName('cylinder');
                     mesh.material.opacity = 1.0;
                     scales = 1.0;
-                    //extObjMng.scale(meshId, { x: 1, y: 1, z: 1 });
-
+                    extObjMng.setTransformation(meshId,
+                        [1, 0, 0, 0,
+                            0, 1, 0, 0,
+                            0, 0, 1, 0,
+                            0, 0, 0, 1]);
+                    viewer.render();
                     //viewer.addExternalObject("cylinder", mesh);
                     //meshId = extObjMng.getObjectIdByName('cylinder');
                     //extObjMng.scale(meshId, { x: 0.8, y: 1, z: 0.8 });
