@@ -57,8 +57,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.overrideComponentsFrameColorByObjectData([], new Glodon.Web.Graphics.Color(255, 255, 255, 1));
 
             // 全楼蓝透
-            //viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(114, 116, 203, uniform.alpha));
-            viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(146, 146, 146, uniform.alpha));
+            viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(114, 116, 203, uniform.alpha));
+            // viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(146, 146, 146, uniform.alpha));
 
 
             if (!open) {
@@ -82,8 +82,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             }
 
             let material = new THREE.MeshBasicMaterial({
-                //color: 0x3032B8,
-                color: 0x929292,
+                color: 0x3032B8,
+                // color: 0x929292,
                 wireframe: false,
                 transparent: true,
                 opacity: uniform.alpha

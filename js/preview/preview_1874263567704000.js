@@ -6,12 +6,12 @@ import { WebUtils } from '../package/WebUtils.js'
 import { ModelHelper } from '../package/ModelHelper.js'
 
 var app, viewer, drawableContainer;
-const SINGLE_FILE = 0;
+const INTEGRATE_FILE = 1;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 var hidetoken;
 
-webUtils.getViewtoken(1938153798985728, SINGLE_FILE).then((token) => {
+webUtils.getViewtoken(1874263567704000, INTEGRATE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     hidetoken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
@@ -26,6 +26,7 @@ function onSDKLoadSucceeded(viewMetaData) {
         viewer = app.getViewer();
         viewer.setCameraAnimation(true);
         app.addView(BimfaceLoaderConfig.viewToken);
+
 
         viewer.setBorderLineEnabled(false);
         window.viewer = viewer;
@@ -48,39 +49,40 @@ function onSDKLoadSucceeded(viewMetaData) {
             var drawableConfig = new Glodon.Bimface.Plugins.Drawable.DrawableContainerConfig();
             drawableConfig.viewer = viewer;
             drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
+            webUtils.initModel();
 
-            viewer.isolateComponentsByObjectData([{ "family": "基本墙", "levelName": "F3-saga" }, { "family": "楼板", "levelName": "F3-saga" }], Glodon.Bimface.Viewer.IsolateOption.HideOthers);
-            viewer.overrideComponentsColorByObjectData([{ "family": "基本墙", "levelName": "F3-saga" }, { "family": "楼板", "levelName": "F3-saga" }], webUtils.fromColor(167, 167, 167, 1));
+            let flag = webUtils.getURLParameter('flag');
+            if (!flag) {
+                let hideCondition = [];
+                //此处思考精简
+                hideCondition.push({ "specialty": "结构" }, { "familyType": "内墙面5 - 水泥砂浆（防水防霉涂料）墙面 - 16", }, { "specialty": "电气" }, { "specialty": "给排水" }, { "specialty": "暖通空调" }, { "specialty": "消防" }, { "specialty": "装饰" }, { "specialty": "智能化" }, { "specialty": "空间" });
+                viewer.hideComponentsByObjectData(hideCondition);
 
-            webUtils.getFile('../../data/1938153798985728/space.json', function (data) {
-                viewer.createRoom(data, 3300, webUtils.guid(), webUtils.fromHexColor("#708090", 0.45), webUtils.fromHexColor("#778899", 1));
-            });
+                viewer.showComponentsById(["1771858151688000.5295009"]);
+                viewer.overrideComponentsColorById(["1771858151688000.5295009"], webUtils.fromColor(12, 234, 199, 1));
+                viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(167, 167, 167, 1));
+            } else {
+                //配电相关
+                let hideCondition = [];
 
-            function createTag(position, styleClass, text) {
-                var config = new Glodon.Bimface.Plugins.Drawable.CustomItemConfig();
-                var content = document.createElement('div');
-                //TODO:替换图标
-                // content.innerHTML = '<div class="item"><div style="width:49px;height:35px;"><img src="../../images/icon.png" height="32" width="32"/></div><div  id="canvasDiv" class="1' + styleClass + '">' + text + '</div></div>'
-                content.innerHTML = '<div class="item"><div style="width:49px;height:35px;"></div><div  id="canvasDiv" class="1' + styleClass + '">' + text + '</div></div>'
-                config.content = content;
-                config.viewer = viewer;
-                config.worldPosition = position;
-                var customItem = new Glodon.Bimface.Plugins.Drawable.CustomItem(config);
-                drawableContainer.addItem(customItem);
-            };
+                hideCondition.push(
+                    { "familyType": "顶棚8 - 板底刮腻子顶棚 - 2" },
+                    { "familyType": "顶棚3 - 水泥砂浆乳胶漆顶棚 - 16" },
+                    { "familyType": "顶棚6 - 板底刮腻子（防水防霉涂料）顶棚 - 2" }, { "familyType": "顶棚5 - 板底刮腻子（防水防霉防油涂料）顶棚 - 2" }, { "familyType": "楼面4A - 380防滑地砖防水楼面 - 1.5 - 防水" },
+                    { "specialty": "暖通空调" },
+                    { "specialty": "消防" }, { "specialty": "装饰" }, { "specialty": "电气" },
+                    { "specialty": "智能化" }, { "specialty": "空间" });
+                viewer.hideComponentsByObjectData(hideCondition);
 
-
-            createTag({ x: 106848.99342876796, y: 159958.46350893454, z: 15849.999883117878 }, "bigcircle2", "");
-            createTag({ x: 147259.284137998, y: 104541.69746192008, z: 15850.064883335008 }, "bigcircle2", "");
-            createTag({ x: 99081.2708190525, y: 13990.056421873413, z: 15850.01312551748 }, "bigcircle2", "");
-            createTag({ x: 21580.898206160877, y: 162879.80076748898, z: 14100.00064065045 }, "bigcircle2", "");
+                viewer.showComponentsByObjectData([{ "family": "电缆桥架配件" }, { "family": "电缆桥架" }, { "family": "电气设备" }])
+                viewer.showComponentsById(["1771858151688000.5294710", "1771858151688000.5294770"]);
+                viewer.overrideComponentsColorById(["1771858151688000.5294710", "1771858151688000.5294770"], webUtils.fromColor(12, 234, 199, 1));
+                viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(167, 167, 167, 1));
+            }
 
             //相机视角
-            setCamera(viewer, () => {
-                webUtils.initModel();
+            setCamera(viewer);
 
-            });
-            viewer.render();
 
             //TODO:声明下方单击事件中需要的变量
             viewer.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.MouseClicked, function (e) {
@@ -108,24 +110,23 @@ function onSDKLoadFailed(error) {
 };
 
 
-
 function setCamera(viewer, callback) {
     let start = {
         "name": "persp",
         "position": {
-            "x": -151298.6600262401,
-            "y": 68182.85351010374,
-            "z": 201429.4126784796
+            "x": -78486.49207493637,
+            "y": -124224.07283052756,
+            "z": 180391.6230819797
         },
         "target": {
-            "x": 77029.96889687181,
-            "y": 94450.61004729974,
-            "z": 18126.43261369797
+            "x": 106151.25156954145,
+            "y": 60414.35089409518,
+            "z": -4245.450062834535
         },
         "up": {
-            "x": 0.6194378916581947,
-            "y": 0.07125769130720014,
-            "z": 0.7818049883491526
+            "x": 0,
+            "y": -0.0000036732050583096847,
+            "z": 0.9999999999932538
         },
         "fov": 45,
         "zoom": 1,
@@ -136,19 +137,19 @@ function setCamera(viewer, callback) {
     let target = {
         "name": "persp",
         "position": {
-            "x": -31389.746906083536,
-            "y": 201945.61220601082,
-            "z": 44389.95103905967
+            "x": -14185.246126477363,
+            "y": 7502.177432238632,
+            "z": 43613.44126264117
         },
         "target": {
-            "x": 170544.08937820388,
-            "y": 70097.41444947965,
-            "z": -107906.10209393282
+            "x": 170452.49751800043,
+            "y": 192140.60115686138,
+            "z": -141023.63188217313
         },
         "up": {
-            "x": 0.44708088593911066,
-            "y": -0.29191584436937484,
-            "z": 0.8455198526551667
+            "x": 0,
+            "y": -0.0000036732050583096847,
+            "z": 0.9999999999932538
         },
         "fov": 45,
         "zoom": 1,
@@ -159,12 +160,18 @@ function setCamera(viewer, callback) {
     viewer.setCameraStatus(start, () => {
         setTimeout(() => {
             viewer.setCameraStatus(target, () => {
-
+                bindEvent();
                 if (callback) {
                     callback();
                 };
                 viewer.recordCustomedHomeview(target);
             })
         }, 800);
+    });
+}
+
+function bindEvent() {
+    document.getElementById('elctric').addEventListener("click", function () {
+
     });
 }

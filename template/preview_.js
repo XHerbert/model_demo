@@ -1,6 +1,6 @@
 /**
  * @author:xuhongbo
- * @function:wanda water system white
+ * @function:
  */
 import { WebUtils } from '../package/WebUtils.js'
 import { ModelHelper } from '../package/ModelHelper.js'
@@ -49,6 +49,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             var drawableConfig = new Glodon.Bimface.Plugins.Drawable.DrawableContainerConfig();
             drawableConfig.viewer = viewer;
             drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
+            webUtils.initModel();
 
             //相机视角
             setCamera(viewer);
@@ -91,7 +92,7 @@ function setCamera(viewer, callback) {
     viewer.setCameraStatus(start, () => {
         setTimeout(() => {
             viewer.setCameraStatus(target, () => {
-
+                bindEvent();
                 if (callback) {
                     callback();
                 };
@@ -99,4 +100,8 @@ function setCamera(viewer, callback) {
             })
         }, 800);
     });
+}
+
+function bindEvent(); {
+    //TODO:bind dom event
 }

@@ -7,7 +7,7 @@ import { WebUtils } from '../package/WebUtils.js'
 import { ModelHelper } from '../package/ModelHelper.js'
 import { ModelShaderChunk } from '../../shaders/common/ModelShaderChunk.js'
 
-var app, viewer, mesh, meshId, animationId;
+var app, viewer, mesh, meshId, animationId, origin;
 const SINGLE_FILE = 0;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
@@ -76,8 +76,9 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.addExternalObject("cylinder", mesh.clone());
             var extObjMng = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer);
             meshId = extObjMng.getObjectIdByName('cylinder');
-            console.log(meshId);
-            //scene.add(mesh);
+            //添加外部构件后，如果在动画中，需要还原该状态，则需要记录下该状态，通过矩阵还原
+            console.log(extObjMng.getTransformation(meshId));
+            origin = extObjMng.getTransformation(meshId);
 
 
             //光源
@@ -91,7 +92,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             document.getElementsByClassName('bf-toolbar bf-toolbar-bottom')[0].style.display = 'none';
             document.getElementsByClassName('gld-bf-tree')[0].style.display = 'none';
             document.getElementById('open-button').style.display = 'block';
-
+            uniform.u_opacity = 1;
             mesh.material.opacity = 1.0;
             let scales = 1;
 
@@ -99,31 +100,18 @@ function onSDKLoadSucceeded(viewMetaData) {
             let animation = () => {
                 uniform.u_color.value.x += 0.001;
                 mesh.material.opacity -= 0.0065;
-                if (mesh.material.opacity <= 0) {
-                    cancelAnimationFrame(animationId);
-                    //如果Mesh消失，还原Mesh
-                    // extObjMng.removeById(meshId);
-                    //extObjMng.addObject("cylinder", mesh.clone());
-                    //meshId = extObjMng.getObjectIdByName('cylinder');
+                // if (mesh.material.opacity <= 0) {
+                if (scales >= 1.005) {
                     mesh.material.opacity = 1.0;
+                    uniform.u_opacity = 1;
                     scales = 1.0;
-                    extObjMng.setTransformation(meshId,
-                        [1, 0, 0, 0,
-                            0, 1, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1]);
-                    viewer.render();
-                    //viewer.addExternalObject("cylinder", mesh);
-                    //meshId = extObjMng.getObjectIdByName('cylinder');
-                    //extObjMng.scale(meshId, { x: 0.8, y: 1, z: 0.8 });
-                    // bimface 逻辑有问题，暂时先移除再添加在开启
-                    // console.warn("less than 0");
-                    // console.warn(scales);
 
-                    //return;
+                    //次数还原到外部构件初始状态，需获取初始状态
+                    extObjMng.setTransformation(meshId, origin);
 
                 } else {
                     scales += 0.0001;
+                    uniform.u_opacity -= 0.005;
                     extObjMng.scale(meshId, { x: scales, y: 1, z: scales });
 
                 }
@@ -131,48 +119,8 @@ function onSDKLoadSucceeded(viewMetaData) {
                 animationId = requestAnimationFrame(animation);
             }
 
-
-            // threejs的方式
-            /*let animation = () => {
-                uniform.u_color.value.x += 0.01;
-                scales += 0.1;
-                mesh.scale.set(scales, 1, scales);
-                mesh.material.opacity -= 0.01;
-                if (mesh.material.opacity <= 0) {
-                    //如果Mesh消失，还原Mesh
-                    scales = 1.0;
-                    mesh.scale.set(scales, scales, scales);
-                    mesh.material.opacity = 1.0;
-                }
-                if (uniform.u_color.value.x > 1.0) {
-                    uniform.u_color.value.x = 0;
-                }
-                viewer.render();
-                renderer.render(scene, camera);
-                requestAnimationFrame(animation);
-            }*/
-
-
-
             //相机视角
             setCamera(viewer, animation);
-
-            // let extObjMng = new Glodon.Bimface.Viewer.ExternalObjectManager(viewer);
-            // var box = new THREE.BoxBufferGeometry(10000, 10000, 100000);
-            // var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-            // var boxMesh = new THREE.Mesh(box, material);
-
-            // extObjMng.addObject("boxMesh", boxMesh);
-            // let v = 1.0;
-            // let an = () => {
-            //     v += 1.5;
-            //     //boxMesh.scale.set(v, v, v);
-            //     extObjMng.scale(meshId, { x: v, y: v, z: v });
-            //     viewer.render();
-            //     requestAnimationFrame(an);
-
-            // }
-            // an();
 
         });
     }
