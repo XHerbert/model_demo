@@ -52,7 +52,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             webUtils.initModel();
 
             let flag = webUtils.getURLParameter('flag');
-            if (!flag) {
+            if (flag == 0) {
                 let hideCondition = [];
                 //此处思考精简
                 hideCondition.push({ "specialty": "结构" }, { "familyType": "内墙面5 - 水泥砂浆（防水防霉涂料）墙面 - 16", }, { "specialty": "电气" }, { "specialty": "给排水" }, { "specialty": "暖通空调" }, { "specialty": "消防" }, { "specialty": "装饰" }, { "specialty": "智能化" }, { "specialty": "空间" });
@@ -61,7 +61,7 @@ function onSDKLoadSucceeded(viewMetaData) {
                 viewer.showComponentsById(["1771858151688000.5295009"]);
                 viewer.overrideComponentsColorById(["1771858151688000.5295009"], webUtils.fromColor(12, 234, 199, 1));
                 viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(167, 167, 167, 1));
-            } else {
+            } else if (flag == 1) {
                 //配电相关
                 let hideCondition = [];
 
@@ -77,6 +77,17 @@ function onSDKLoadSucceeded(viewMetaData) {
                 viewer.showComponentsByObjectData([{ "family": "电缆桥架配件" }, { "family": "电缆桥架" }, { "family": "电气设备" }])
                 viewer.showComponentsById(["1771858151688000.5294710", "1771858151688000.5294770"]);
                 viewer.overrideComponentsColorById(["1771858151688000.5294710", "1771858151688000.5294770"], webUtils.fromColor(12, 234, 199, 1));
+                viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(167, 167, 167, 1));
+            } else {
+                let hideCondition = [];
+                hideCondition.push(
+                    { "specialty": "暖通空调" }, { "specialty": "结构" }, { "specialty": "给排水" },
+                    { "specialty": "消防" }, { "specialty": "装饰" }, { "specialty": "电气" }, { "familyType": "顶棚6 - 板底刮腻子（防水防霉涂料）顶棚 - 2" },
+                    { "specialty": "智能化" }, { "specialty": "空间" });
+                viewer.hideComponentsByObjectData(hideCondition);
+                viewer.showComponentsById(["1771858151688000.5295315", "1771858151688000.5294356", "1771858151688000.5294550"]);
+                viewer.overrideComponentsColorById(["1771858151688000.5295315"], webUtils.fromColor(212, 24, 19, 1));
+                viewer.overrideComponentsColorById(["1771858151688000.5294356", "1771858151688000.5294550"], webUtils.fromHexColor("#708090", 0.5));
                 viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(167, 167, 167, 1));
             }
 

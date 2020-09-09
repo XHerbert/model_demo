@@ -307,6 +307,22 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
     },
 
     /**
+     * 根据包围盒数据绘制包围盒
+     * @param {Object} boundingBoxData 包围盒数据，包括尺寸、位置信息 
+     * @param {String} faceColor 颜色
+     * @param {NUmber} opacity 颜色透明度
+     */
+    drawBoundingBox: function (boundingBoxData, faceColor, opacity) {
+        let boxGeometry = new THREE.BoxBufferGeometry(boundingBoxData.size.width, boundingBoxData.size.height, boundingBoxData.size.depth);
+        let boxMaterial = new THREE.MeshBasicMaterial({ color: faceColor || 0xff0000, transparent: true, opacity: opacity || 0.3 });
+        let boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+        boxMesh.position.x = boundingBoxData.position.x;
+        boxMesh.position.y = boundingBoxData.position.y;
+        boxMesh.position.z = boundingBoxData.position.z;
+        this.viewer.addExternalObject(webUtils.guid(), boxMesh);
+    },
+
+    /**
      * 重写构件材质
      * @param {Object} materialContainer 材质容器
      * @param {String} image 材质贴图路径

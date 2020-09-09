@@ -9,7 +9,13 @@
 <!--  后续考虑通过数据配置中心进行案例的维护-->
 
 <body>
+    <div style="width: 100%;">
+        <button class="scene_button">创建场景</button>
+    </div>
+    <div class='hr'>&nbsp;</div>
     <div id="app">
+
+
         <div class="box">
             <a href="#">
                 <div class="imgBox">
@@ -83,7 +89,7 @@
                 </div>
                 <span class="source">1874263567704000</span>
                 <h2 class="title"></h2>
-                <span class="detail"></span>
+                <span class="detail">万达强电井与影响的商铺</span>
             </a>
         </div>
 
@@ -252,6 +258,16 @@
             </a>
         </div>
 
+        <div class="box">
+            <a href="#">
+                <div class="imgBox">
+                    <img src="../../thumbnail/1948099216558080.png" alt="">
+                </div>
+                <span class="source">1948099216558080</span>
+                <h2 class="title">万达强电井</h2>
+                <span class="detail">未启用</span>
+            </a>
+        </div>
         <!-- <ul class="clearfix">
             <li><a href=""><img src="../../thumbnail/1650575476384896.png" alt="商品图片"></a></li>
             <li><a href=""><img src="../../thumbnail/1766166627845984.png" alt="商品图片"></a></li>
@@ -279,15 +295,26 @@
     </div>
 
     <script src="../../js/common/jquery-3.3.1.min.js"></script>
+    <script src="../../js/common/layer.js"></script>
     <script type="text/javascript">
         $(".box").each(function () {
+            //$(this).addClass('append');
             let id = ($(this).find('span.source').text());
             let href = 'http://10.2.65.31:8001/html/' + id + '/preview.html';
-            console.log(href);
+
             $(this).bind('click', function () {
                 window.open(href, "_blank");
             });
+
+            $(this).bind('hover', function () {
+                //$(this).last().css('height', '10px');
+            })
         });
+
+        $('button').click(function () {
+            //TODO:创建场景记录，仅限于文本
+            layer.msg("点我干啥？");
+        })
     </script>
 </body>
 

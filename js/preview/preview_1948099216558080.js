@@ -6,12 +6,12 @@ import { WebUtils } from '../package/WebUtils.js'
 import { ModelHelper } from '../package/ModelHelper.js'
 
 var app, viewer, drawableContainer;
-const INTEGRATE_FILE = 1;
+const SINGLE_FILE = 0;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 var hidetoken;
 
-webUtils.getViewtoken(1940267310858912, INTEGRATE_FILE).then((token) => {
+webUtils.getViewtoken(1948099216558080, SINGLE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
     hidetoken = token;
     BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
@@ -50,6 +50,12 @@ function onSDKLoadSucceeded(viewMetaData) {
             drawableConfig.viewer = viewer;
             drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
             webUtils.initModel();
+
+            //TODO:筛选构件
+            let hideCondition = [];
+
+            let height = 5900;
+            let jing = { "version": "2.0", "loops": [[[{ "z": 1.0828670859303058E-12, "y": 80300.232767295849, "x": 3199.5294063366568 }, { "z": 1.0828670859303058E-12, "y": 79799.754009717974, "x": 3199.5294063366568 }], [{ "z": 1.0828670859303058E-12, "y": 79799.754009717974, "x": 3199.5294063366568 }, { "z": 1.0828670859303058E-12, "y": 79799.754009717974, "x": 4200.2281023579908 }], [{ "z": 1.0828670859303058E-12, "y": 79799.754009717974, "x": 4200.2281023579908 }, { "z": 1.0828670859303058E-12, "y": 79799.754009717974, "x": 5900.0029747940753 }], [{ "z": 1.0828670859303058E-12, "y": 79799.754009717974, "x": 5900.0029747940753 }, { "z": 1.0828670859303058E-12, "y": 82799.907034041418, "x": 5900.0029747940753 }], [{ "z": 1.0828670859303058E-12, "y": 82799.907034041418, "x": 5900.0029747940753 }, { "z": 1.0828670859303058E-12, "y": 82799.907034041418, "x": 3199.5294063366568 }], [{ "z": 1.0828670859303058E-12, "y": 82799.907034041418, "x": 3199.5294063366568 }, { "z": 1.0828670859303058E-12, "y": 80300.232767295849, "x": 3199.5294063366568 }]]] };
 
             //相机视角
             setCamera(viewer);

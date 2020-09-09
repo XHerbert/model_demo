@@ -312,6 +312,28 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      */
     getFourMatrix: function () {
         return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    },
+
+    /**
+     * 根据包围盒数据绘制出场景或构件的包围盒
+     * @param {Object} boundingBox 构件或场景的包围盒数据对象 
+     * @returns {Object} 返回包围和尺寸和位置
+     */
+    getDrawBoundingBoxData: function (boundingBox) {
+        let max = boundingBox.max;
+        let min = boundingBox.min;
+
+        let size = { width: 0, height: 0, depth: 0 };
+        size.width = max.x - min.x;
+        size.height = max.y - min.y;
+        size.depth = max.z - min.z;
+
+        let position = { x: 0, y: 0, z: 0 };
+        position.x = min.x + width / 2;
+        position.y = min.y + height / 2;
+        position.z = min.z + depth / 2;
+
+        return { size: size, position: position };
     }
 });
 

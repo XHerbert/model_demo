@@ -96,6 +96,16 @@ header {
     
 }
 
+.append{
+    content: '';
+    width: 280px;
+    position: absolute;
+    background: #e52d67;
+    bottom: 0;
+    height: 0px;
+    transition: height 0.3s linear;
+}
+
 .box>a:hover::after {
     height: 10px;
 }
@@ -108,4 +118,23 @@ header {
     background: #e52d67;
     border-color: #e52d67;
     color: #ffffff;
+}
+
+.hr{
+    background-color: gray;
+    height: 2px;
+    width: 90%;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.scene_button{
+    background-color: white;
+    border: solid 1px gray;
+    border-radius: 3px;
+    width: 95px;
+    height: 28px;
+    cursor: pointer;
+    position: relative;
+    left: 90%;
 }
