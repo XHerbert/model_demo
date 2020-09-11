@@ -111,8 +111,9 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
      * @param {Object} drawableContainer 标签容器
      * @param {Object} position 标签位置
      * @param {String} html 标签内容
+     * @param {Function} html 单击标签回调事件
      */
-    createCustomTag: function (drawableContainer, position, html) {
+    createCustomTag: function (drawableContainer, position, html, callback) {
         let config = new Glodon.Bimface.Plugins.Drawable.CustomItemConfig();
         let content = document.createElement('div');
         content.innerHTML = html;
@@ -120,7 +121,27 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
         config.viewer = this.viewer;
         config.worldPosition = position;
         let customItem = new Glodon.Bimface.Plugins.Drawable.CustomItem(config);
+        customItem.onClick = callback;
         drawableContainer.addItem(customItem);
+    },
+
+    /**
+     * 创建3DMarker标签
+     * @param {Object} marker3DContainer 3DMarker标签容器
+     * @param {String} imageSrc 标签图片
+     * @param {Object} position 标签位置
+     * @param {String} tooltip 提示
+     * @param {Fuction} callback 单击回调函数
+     */
+    createMarker3DTag: function (marker3DContainer, imageSrc, position, tooltip, callback) {
+
+        var marker3dConfig = new Glodon.Bimface.Plugins.Marker3D.Marker3DConfig();
+        marker3dConfig.src = imageSrc;
+        marker3dConfig.worldPosition = position;
+        marker3dConfig.tooltip = tooltip;
+        var marker3d = new Glodon.Bimface.Plugins.Marker3D.Marker3D(marker3dConfig);
+        marker3d.onClick(callback);
+        marker3DContainer.addItem(marker3d);
     },
 
     /**

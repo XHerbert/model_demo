@@ -5,11 +5,15 @@
 
 import { WebUtils } from '../package/WebUtils.js'
 import { ModelHelper } from '../package/ModelHelper.js'
+import { MathLibrary } from '../package/MathLibrary.js'
 
-var app, viewer, drawableContainer, composer, outlinePass, effectFXAA;
+var app, viewer, viewer2, drawableContainer, markerContainer, composer, outlinePass, effectFXAA;
 const INTEGRATE_FILE = 1;
+var loaded = false;
 var BimfaceLoaderConfig = new BimfaceSDKLoaderConfig();
+var BimfaceLoaderConfig2 = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
+var math = new MathLibrary();
 
 webUtils.getViewtoken(1893582365950144, INTEGRATE_FILE).then((token) => {
     BimfaceLoaderConfig.viewToken = token;
@@ -50,8 +54,11 @@ function onSDKLoadSucceeded(viewMetaData) {
 
             // 创建标签容器
             var drawableConfig = new Glodon.Bimface.Plugins.Drawable.DrawableContainerConfig();
+            var markerConfig = new Glodon.Bimface.Plugins.Marker3D.Marker3DContainerConfig();
             drawableConfig.viewer = viewer;
+            markerConfig.viewer = viewer;
             drawableContainer = new Glodon.Bimface.Plugins.Drawable.DrawableContainer(drawableConfig);
+            markerContainer = new Glodon.Bimface.Plugins.Marker3D.Marker3DContainer(markerConfig);
 
             // 轮廓线不明显
             viewer.overrideComponentsFrameColorByObjectData([], new Glodon.Web.Graphics.Color(255, 255, 255, 1));
@@ -117,6 +124,12 @@ function onSDKLoadSucceeded(viewMetaData) {
                 exteralList.push(main);
 
                 var edges = new THREE.EdgesGeometry(new THREE.Geometry().fromBufferGeometry(main.children[0].geometry));
+                /** 这种方式实现的边框顺序不准确且线框太丑
+                console.log(edges);
+                let points = edges.attributes.position.array;
+                let vector3_list = math.convertArrayToVectorList(points, 3);
+                modelHelper.drawLine(vector3_list, 5, 0xff0000, 0.5);
+                **/
                 var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
                 for (let idx = (-1) * lines; idx < lines; idx++) {
                     let lineClone = line.clone();
@@ -248,13 +261,59 @@ function onSDKLoadSucceeded(viewMetaData) {
                 requestAnimationFrame(run);
                 uniform.time.value += 0.314 * dir;
             };
+
+
+
+
+            let src = 'http://static.bimface.com/resources/3DMarker/warner/warner_red.png';
+            modelHelper.createMarker3DTag(markerContainer, src, { x: 31218.652719722355, y: 102100.00248156043, z: 46043.52273502227 }, "tooltip", _callback);
+
+
+            //第一个模型加载成功后加载第二个模型(全专业)
+            webUtils.getViewtoken(1862968863022880, INTEGRATE_FILE).then((token) => {
+                BimfaceLoaderConfig2.viewToken = token;
+                BimfaceSDKLoader.load(BimfaceLoaderConfig2, onSDKLoadSucceeded2, onSDKLoadFailed);
+
+            });
         });
     }
 };
 
+function _callback() {
+    if (loaded) {
+        let data = ['1862953175230528.3410571'];
+        viewer2.setSelectedComponentsById(data);
+        viewer2.zoomToSelectedComponents();
+        document.getElementById('view').style.display = 'none';
+        document.getElementById('view2').style.display = 'block';
+        viewer2.render();
+    } else {
+        console.error("loading.. ..");
+    }
+}
+
 function onSDKLoadFailed(error) {
     console.log("Failed to load SDK!");
 };
+
+function onSDKLoadSucceeded2(viewMetaData) {
+    var view2 = document.getElementById('view2');
+    var config2 = new Glodon.Bimface.Application.WebApplication3DConfig();
+    config2.domElement = view2;
+    var app2 = new Glodon.Bimface.Application.WebApplication3D(config2);
+    viewer2 = app2.getViewer();
+    viewer2.setCameraAnimation(true);
+    app2.addView(BimfaceLoaderConfig2.viewToken);
+    viewer2.setBackgroundColor(new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 1), new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 0.5));
+    viewer2.setBorderLineEnabled(false);
+    window.viewer2 = viewer2;
+    viewer2.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
+        loaded = true;
+        console.log(BimfaceLoaderConfig2.viewToken);
+        viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(24, 24, 214, 1));
+        viewer2.render();
+    });
+}
 
 
 function setCamera(viewer, callback) {

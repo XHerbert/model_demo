@@ -334,6 +334,20 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
         position.z = min.z + depth / 2;
 
         return { size: size, position: position };
+    },
+
+    /**
+     * 将Float32数组按单元分组
+     * @param {Array} array Float32 数组 
+     * @param {Number} group 分组单元，一般3个元素为一组 
+     */
+    convertArrayToVectorList: function (array, group) {
+        let vector3List = [];
+        for (let i = 0; i < array.length; i += group) {
+            let subGroup = new THREE.Vector3(array[i], array[i + 1], array[i + 2]);
+            vector3List.push(subGroup);
+        }
+        return vector3List;
     }
 });
 
