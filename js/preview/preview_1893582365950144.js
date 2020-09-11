@@ -41,7 +41,7 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.enableShadow(true);
             //viewer.setExposureShift(0.2);
             renderer.alpha = true;
-            renderer.setClearAlpha(0.08);
+            // renderer.setClearAlpha(0.08);
             viewer.setBackgroundColor(new Glodon.Web.Graphics.Color(214, 214, 214, 1));
             let uniform = {
                 time: { value: 0.0 },
@@ -57,7 +57,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             viewer.overrideComponentsFrameColorByObjectData([], new Glodon.Web.Graphics.Color(255, 255, 255, 1));
 
             // 全楼蓝透
-            viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(114, 116, 203, uniform.alpha));
+            // viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color("#3e74ba", 1));
+            viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(62, 116, 186, 1));
             // viewer.overrideComponentsColorByObjectData([], new Glodon.Web.Graphics.Color(146, 146, 146, uniform.alpha));
 
 
@@ -82,11 +83,11 @@ function onSDKLoadSucceeded(viewMetaData) {
             }
 
             let material = new THREE.MeshBasicMaterial({
-                color: 0x3032B8,
-                // color: 0x929292,
+                color: 0x3e74ba,
+                // color:0x3e74ba,
                 wireframe: false,
-                transparent: true,
-                opacity: uniform.alpha
+                transparent: false,
+                opacity: 1
             });
 
             //通过包围盒创建线框
@@ -111,8 +112,8 @@ function onSDKLoadSucceeded(viewMetaData) {
             for (let g = 0, len = geometryList.length; g < len; g++) {
                 let item = [];
                 item.push(geometryList[g]);
-                let main = viewer.convertToExternalObject("main" + geometryList[g], item, true);
-                main.children[0].material = material;
+                let main = viewer.convertToExternalObject("main" + geometryList[g], item, false);
+                // main.children[0].material = material;
                 exteralList.push(main);
 
                 var edges = new THREE.EdgesGeometry(new THREE.Geometry().fromBufferGeometry(main.children[0].geometry));
@@ -126,7 +127,7 @@ function onSDKLoadSucceeded(viewMetaData) {
                 edgesList.push(lineGroup);
             }
 
-            viewer.addExternalObject("main", exteralList);
+            //viewer.addExternalObject("main", exteralList);
             viewer.addExternalObject("edges", edgesList);
 
             //如果构件不是Mesh类型，通过包围盒方式创建边框

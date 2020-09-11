@@ -84,7 +84,7 @@ header {
 }
 
 
-
+/* 
 .box>a::after {
     content: '';
     width: 280px;
@@ -94,7 +94,7 @@ header {
     height: 0px;
     transition: height 0.3s linear;
     
-}
+} */
 
 .append{
     content: '';
@@ -106,9 +106,9 @@ header {
     transition: height 0.3s linear;
 }
 
-.box>a:hover::after {
+/* .box>a:hover::after {
     height: 10px;
-}
+} */
 
 .box:hover img {
     transform: scale(1.15);
