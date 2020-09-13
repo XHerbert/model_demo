@@ -15,10 +15,10 @@ var BimfaceLoaderConfig2 = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 var math = new MathLibrary();
 
-webUtils.getViewtoken(1893582365950144, INTEGRATE_FILE).then((token) => {
-    BimfaceLoaderConfig.viewToken = token;
-    BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
-});
+//webUtils.getViewtoken(1893582365950144, INTEGRATE_FILE).then((token) => {
+BimfaceLoaderConfig.viewToken = 'cdb94e97ab314b8b8901462f9ebdf607';
+BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
+//});
 
 function onSDKLoadSucceeded(viewMetaData) {
     if (viewMetaData.viewType == "3DView") {
@@ -270,18 +270,18 @@ function onSDKLoadSucceeded(viewMetaData) {
 
 
             //第一个模型加载成功后加载第二个模型(全专业)
-            webUtils.getViewtoken(1862968863022880, INTEGRATE_FILE).then((token) => {
-                BimfaceLoaderConfig2.viewToken = token;
-                BimfaceSDKLoader.load(BimfaceLoaderConfig2, onSDKLoadSucceeded2, onSDKLoadFailed);
+            //webUtils.getViewtoken(1862968863022880, INTEGRATE_FILE).then((token) => {
+            BimfaceLoaderConfig2.viewToken = 'ba82e99e89134d9ca80a44910208a6ee';
+            BimfaceSDKLoader.load(BimfaceLoaderConfig2, onSDKLoadSucceeded2, onSDKLoadFailed);
 
-            });
+            //});
         });
     }
 };
 
 function _callback() {
     if (loaded) {
-        let data = ['1862953175230528.3410571'];
+        let data = ['1862913994221632.1230806'];
         viewer2.setSelectedComponentsById(data);
         viewer2.zoomToSelectedComponents();
         document.getElementById('view').style.display = 'none';
