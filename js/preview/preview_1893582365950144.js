@@ -15,10 +15,10 @@ var BimfaceLoaderConfig2 = new BimfaceSDKLoaderConfig();
 var webUtils = new WebUtils();
 var math = new MathLibrary();
 
-//webUtils.getViewtoken(1893582365950144, INTEGRATE_FILE).then((token) => {
-BimfaceLoaderConfig.viewToken = 'cdb94e97ab314b8b8901462f9ebdf607';
-BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
-//});
+webUtils.getViewtoken(1893582365950144, INTEGRATE_FILE).then((token) => {
+    BimfaceLoaderConfig.viewToken = token;
+    BimfaceSDKLoader.load(BimfaceLoaderConfig, onSDKLoadSucceeded, onSDKLoadFailed);
+});
 
 function onSDKLoadSucceeded(viewMetaData) {
     if (viewMetaData.viewType == "3DView") {
@@ -262,19 +262,18 @@ function onSDKLoadSucceeded(viewMetaData) {
                 uniform.time.value += 0.314 * dir;
             };
 
-
-
-
             let src = 'http://static.bimface.com/resources/3DMarker/warner/warner_red.png';
             modelHelper.createMarker3DTag(markerContainer, src, { x: 31218.652719722355, y: 102100.00248156043, z: 46043.52273502227 }, "tooltip", _callback);
 
+            modelHelper.createCustomTag(drawableContainer, { x: 97218.23149570914, y: 105727.59758084403, z: 33899.991630877004 }, "<img style='width:32px;height:32px' src='" + src + "'/>", function (e) {
+                __callback();
+            });
 
             //第一个模型加载成功后加载第二个模型(全专业)
-            //webUtils.getViewtoken(1862968863022880, INTEGRATE_FILE).then((token) => {
-            BimfaceLoaderConfig2.viewToken = 'ba82e99e89134d9ca80a44910208a6ee';
-            BimfaceSDKLoader.load(BimfaceLoaderConfig2, onSDKLoadSucceeded2, onSDKLoadFailed);
-
-            //});
+            webUtils.getViewtoken(1862968863022880, INTEGRATE_FILE).then((token) => {
+                BimfaceLoaderConfig2.viewToken = token;
+                BimfaceSDKLoader.load(BimfaceLoaderConfig2, onSDKLoadSucceeded2, onSDKLoadFailed);
+            });
         });
     }
 };
@@ -288,7 +287,22 @@ function _callback() {
         document.getElementById('view2').style.display = 'block';
         viewer2.render();
     } else {
-        console.error("loading.. ..");
+        console.warn('loading ... ...');
+        layer.msg('<span style="color:black">模型加载中... ...</span>', { icon: 4 });
+    }
+}
+
+function __callback() {
+    if (loaded) {
+        viewer2.isolateComponentsByObjectData([{ "levelName": "F01" }], Glodon.Bimface.Viewer.IsolateOption.MakeOthersTranslucent);
+        viewer2.render();
+        document.getElementById('view').style.display = 'none';
+        document.getElementById('view2').style.display = 'block';
+        // document.getElementById('view').style.z-Index = 1989925;
+        // document.getElementById('view2').style.z-Index = 1989925;
+    } else {
+        console.warn('loading ... ...');
+        layer.msg('<span style="color:black">模型加载中... ...</span>', { icon: 4 });
     }
 }
 
@@ -307,6 +321,8 @@ function onSDKLoadSucceeded2(viewMetaData) {
     viewer2.setBackgroundColor(new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 1), new Glodon.Web.Graphics.Color(Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), 0.5));
     viewer2.setBorderLineEnabled(false);
     window.viewer2 = viewer2;
+    viewer.enableShadow(false);
+    CLOUD.GlobalData.Renderer = CLOUD.EnumRendererType.FULL;
     viewer2.addEventListener(Glodon.Bimface.Viewer.Viewer3DEvent.ViewAdded, function () {
         loaded = true;
         console.log(BimfaceLoaderConfig2.viewToken);
