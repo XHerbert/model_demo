@@ -3,7 +3,7 @@
  * @function gradient box for white house
  */
 
-import { MathLibrary } from '../../js/usr/MathLibrary.js'
+import { MathLibrary } from '../../js/package/MathLibrary.js'
 import { ModelShaderChunk } from '../../shaders/common/ModelShaderChunk.js'
 
 var scene = null;
@@ -68,6 +68,7 @@ let callback = (event) => {
     // console.log(size);
 
     let mesh_position = math.getLocalPosition(event, camera);
+    console.log("mesh_position", mesh_position);
     let x = math.getRandomInt(10, 500, 1);
     let y = math.getRandomInt(10, 500, 1);
     let z = 0;
@@ -91,7 +92,7 @@ let initGeometry = (size, position) => {
     uniforms.u_resolution.value.x = renderer.domElement.width;
     uniforms.u_resolution.value.y = renderer.domElement.height;
     uniforms.surfacePosition.value = uniforms.u_resolution.value;
-    // var boxGeometry = new THREE.BoxGeometry(10, 2, 25);
+    var boxGeometry = new THREE.BoxGeometry(10, 2, 25);
     !size && size.set(10, 2, 25);
     !position && position.set(0, 0, 0);
     var boxGeometry = new THREE.BoxGeometry(size.x || 10, size.y || 2, size.z || 25);

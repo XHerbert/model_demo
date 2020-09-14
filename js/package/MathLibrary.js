@@ -37,8 +37,8 @@ MathLibrary.prototype = Object.assign(MathLibrary.prototype, {
      * @returns {Vector3} 3D坐标值
      */
     getLocalPosition: function (event, camera) {
-        let webUtils = new WebUtils();
-        webUtils.getPerspectiveCamera(camera);
+        let modelHelper = new ModelHelper();
+        modelHelper.getPerspectiveCamera(camera);
 
         let mouse = new THREE.Vector2();
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
