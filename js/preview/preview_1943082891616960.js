@@ -53,9 +53,9 @@ function onSDKLoadSucceeded(viewMetaData) {
             document.getElementsByClassName('bf-toolbar bf-toolbar-bottom')[0].style.display = 'none';
             document.getElementsByClassName('gld-bf-tree')[0].style.display = 'none';
             document.getElementById('open-button').style.display = 'block';
-
-            viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(200, 200, 200, 0.75));
-            // viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(200, 0, 0, 1));
+            viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(0, 105, 185, 0.2));//蓝色
+            // viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(0, 145, 255, 0.2));//蓝色
+            // viewer.overrideComponentsColorByObjectData([{ "specialty": "建筑" }], webUtils.fromColor(200, 200, 200, 0.75));//白色
 
 
             viewer.overrideComponentsColorByObjectData([{ "family": "自动扶梯", }], webUtils.fromColor(61, 136, 80, 1));

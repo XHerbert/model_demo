@@ -70,6 +70,11 @@ function onSDKLoadSucceeded(viewMetaData) {
             document.getElementsByClassName('gld-bf-tree')[0].style.display = 'none';
             document.getElementById('open-button').style.display = 'block';
 
+            //绿色设备
+            document.getElementById('green').addEventListener('click', function () {
+                greenEquipment();
+            })
+
             //相机视角
             setCamera(viewer);
 
@@ -89,6 +94,15 @@ function onSDKLoadSucceeded(viewMetaData) {
         });
     }
 };
+
+function greenEquipment() {
+    viewer.overrideComponentsColorByObjectData([{ "specialty": "暖通空调" }], new Glodon.Web.Graphics.Color(17, 177, 79, 1));
+    viewer.overrideComponentsColorByObjectData([{ "categoryId": "-2008000" }, { "categoryId": "-2008010" }, { "categoryId": "-2008049" }, { "categoryId": "-2008044" }], new Glodon.Web.Graphics.Color(100, 99, 99, 1));
+    viewer.overrideComponentsColorById(["1771855777580864.4711684"], new Glodon.Web.Graphics.Color(157, 14, 70, 1));
+    viewer.overrideComponentsColorById(["1771855777580864.4711685"], new Glodon.Web.Graphics.Color(113, 162, 160, 1));
+    viewer.render();
+}
+
 
 function onSDKLoadFailed(error) {
     console.log("Failed to load SDK!");

@@ -121,7 +121,10 @@ ModelHelper.prototype = Object.assign(ModelHelper.prototype, {
         config.viewer = this.viewer;
         config.worldPosition = position;
         let customItem = new Glodon.Bimface.Plugins.Drawable.CustomItem(config);
-        customItem.onClick = callback;
+        customItem.onClick(function (objectdata) {
+            callback(objectdata);
+        });
+
         drawableContainer.addItem(customItem);
     },
 
